@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:slark/ui/home.dart';
 import 'package:slark/ui/landing.dart';
 import 'package:slark/ui/login.dart';
 import 'package:slark/ui/register.dart';
+import 'package:slark/ui/space.dart';
 import 'package:slark/ui/splashScreen.dart';
+import 'package:slark/ui/user_tasks.dart';
 
 void main() {
   LicenseRegistry.addLicense(() async* {
@@ -28,12 +31,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/register',
+      initialRoute: '/home',
       routes: {
         '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
         '/login': (ctx) => LoginScreen(),
         '/landing': (ctx) => LandingUi(),
+        '/home': (ctx) => HomeScreen(),
+        '/space': (ctx) => SpaceScreen(),
+        '/uTasks': (ctx) => UserTasksScreen(),
       },
       // home: SplashScreen(),
     );

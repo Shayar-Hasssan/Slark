@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.0+2
+  flutter_spinkit: "^4.1.2"
+  flutter_signin_button: ^0.4.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -49,6 +51,8 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  # assets:
+  #  - images
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -73,5 +77,12 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+   - family: Aviliator
+     fonts:
+      - asset: fonts/Aviliator.otf
+   - family: AdventPro
+     fonts:
+      - asset: fonts/AdventPro-Medium.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:slark/bloc/registration_bloc.dart';
+import 'package:slark/model/user.dart';
 import 'package:slark/ui/register.dart';
+import 'package:slark/ui/splashScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -153,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 message = value.message;
                               });
-                              showAlertDialog(context, message);
+                              showAlertDialog(context, message, value.user);
                             });
                           },
                           color: Color(0xff7b68ee),
@@ -218,22 +220,22 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  showAlertDialog(BuildContext ctx, String message) {
+  showAlertDialog(BuildContext ctx, String message, User user) {
     // Create button
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HomeScreen()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SplashScreen()),
+        );
       },
     );
 
     // Create AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Verification"),
+      title: Text("Hello ${user.name}"),
       content: Text("$message"),
       actions: [
         okButton,

@@ -36,7 +36,8 @@ class API_Account_Provider {
     print(request.body);
     var response = accountLoginFromJson(request.body);
     print('*****');
-    print(response);
+    print(response.code);
+    print(response.user);
     return response;
   }
 

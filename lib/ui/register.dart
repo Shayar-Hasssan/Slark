@@ -211,12 +211,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'email': email,
                               'password': password
                             };
+                            int code;
                             print(register);
                             await _bloc.registerAcc(register).then((value) {
                               setState(() {
                                 message = value.message;
+                                code = value.code;
                               });
-                              showAlertDialog(context, message);
+                              showAlertDialog(context, code, message);
                             });
                           },
                         ),
@@ -256,7 +258,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  showAlertDialog(BuildContext ctx, String message) {
+  showAlertDialog(BuildContext ctx, int code, String message) {
     // Create button
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
@@ -268,15 +270,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       },
     );
-
-    // Create AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Verification"),
-      content: Text("$message"),
-      actions: [
-        okButton,
-      ],
-    );
+    AlertDialog alert;
+    if (code == 711) {
+      // Create AlertDialog
+      alert = AlertDialog(
+        title: Text("Verification"),
+        content: Text("$message"),
+        actions: [
+          okButton,
+        ],
+      );
+    } else {
+      alert = AlertDialog(
+        content: Text("$message"),
+        actions: [
+          okButton,
+        ],
+      );
+    }
 
     // show the dialog
     showDialog(

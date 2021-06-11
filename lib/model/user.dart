@@ -1,4 +1,3 @@
-import 'package:slark/model/Workspace.dart';
 import 'package:slark/model/role.dart';
 
 class User {
@@ -12,8 +11,8 @@ class User {
     this.email,
   });
 
-  bool verified;
-  List<Workspace> workspaces;
+  bool verified = false;
+  List<Workspaces> workspaces;
   List<dynamic> tasks;
   List<Role> roles;
   String id;
@@ -22,8 +21,8 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         verified: json["verified"],
-        workspaces: List<Workspace>.from(
-            json["_workspaces"].map((x) => Workspace.fromJson(x))),
+        workspaces: List<Workspaces>.from(
+            json["_workspaces"].map((x) => Workspaces.fromJson(x))),
         tasks: List<dynamic>.from(json["_tasks"].map((x) => x)),
         roles: List<Role>.from(json["_roles"].map((x) => Role.fromJson(x))),
         id: json["_id"],
@@ -39,5 +38,25 @@ class User {
         "_id": id,
         "name": name,
         "email": email,
+      };
+}
+
+class Workspaces {
+  Workspaces({
+    this.id,
+    this.name,
+  });
+
+  String id;
+  String name;
+
+  factory Workspaces.fromJson(Map<String, dynamic> json) => Workspaces(
+        id: json["_id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
       };
 }

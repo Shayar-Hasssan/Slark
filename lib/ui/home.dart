@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:slark/model/user.dart';
+
 import 'package:slark/ui/space.dart';
 import 'package:slark/ui/user_tasks.dart';
 
@@ -10,9 +10,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  User user;
   int _selectedIndex = 0;
   List<String> workspaces = ['work1', 'work2', 'work3'];
+  List<String> spaces = ['space1', 'space2', 'space3', 'space4', 'vvv'];
+
   String selectedWorkspace;
 
   final List<Widget> _widgetOptions = [
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     UserTasksScreen(),
   ];
 
-  @override
+  // ignore: must_call_super
   initState() {
     setState(() {
       selectedWorkspace = workspaces.first;
@@ -87,46 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // ignore: deprecated_member_use
               title: FlatButton(
                 onPressed: () async {
-                  final String workspaceName = '';
-                  showModalBottomSheet(
-                    context: context,
-                    barrierColor: Colors.white38,
-                    backgroundColor: Color(0xff7b68ee),
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    builder: (BuildContext context) {
-                      return Container(
-                        height: 300,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Text(
-                                'Your Workspaces:',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20.0),
-                              ),
-                              SizedBox(
-                                height: 15.0,
-                              ),
-                              ///////////////
-                              Container(
-                                child: Card(
-                                  child: workspaceList(),
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                  showModal(toView: workspaces);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -146,8 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               // ignore: deprecated_member_use
               title: FlatButton(
-                onPressed: () {
-                  //return showModalBottomSheet(context: context, builder: Text('Hellos'),),
+                onPressed: () async {
+                  showModal(toView: spaces);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -204,7 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModal(text: "Hello");
+              },
               icon: Icon(Icons.add),
             ),
           ),
@@ -232,27 +196,103 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  workspaceList() {
+  contentList(List myList) {
     // Widget listt;
     List<Widget> buttons = [];
-    for (var item in workspaces) {
+    for (var item in myList) {
       buttons.add(
-        // ignore: deprecated_member_use
-        FlatButton(
-          onPressed: () {},
-          child: Text(
-            '$item',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'AdventPro',
-              fontSize: 25.0,
-            ),
+        SizedBox(
+          child: Column(
+            children: [
+              // ignore: deprecated_member_use
+              FlatButton(
+                onPressed: () {},
+                child: Text(
+                  '$item',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'AdventPro',
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Divider(
+                height: 8.0,
+                color: Colors.grey,
+                thickness: 0.5,
+                endIndent: 1.0,
+                indent: 1.0,
+              )
+            ],
           ),
         ),
       );
     }
-    return Column(
-      children: buttons,
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 10.0, left: 120.0, bottom: 10.0, right: 120.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: buttons,
+      ),
+    );
+  }
+
+  showModal({String text, List toView}) {
+    return showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black38,
+      backgroundColor: Colors.white,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      builder: (BuildContext context) {
+        bool hasText = (text == null) ? false : true;
+        const double height = 400;
+        return Container(
+          height: height,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Visibility(
+                  visible: hasText,
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(
+                            left: 120.0, top: 10.0, bottom: 10.0, right: 120.0),
+                        // color: Colors.black45,
+                        child: Text(
+                          '$text',
+                          style: TextStyle(
+                            color: Color(0xff7b68ee),
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                ListView(
+                  children: [contentList(toView)],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

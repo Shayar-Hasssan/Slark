@@ -7,6 +7,24 @@ class ListInfo extends StatefulWidget {
 }
 
 class _ListInfoState extends State<ListInfo> {
+  bool _isEditingText = false;
+  TextEditingController _listController;
+  String initialListName = "List Name";
+  String initialDiscription = "Add Description";
+
+  @override
+  void initState() {
+    super.initState();
+    _listController = TextEditingController(text: initialListName);
+  }
+
+  @override
+  void dispose() {
+    _listController.dispose();
+    super.dispose();
+  }
+
+  DateTime selectedDate = DateTime.now();
   List<String> tasks = [
     'task1',
     'task2',
@@ -56,35 +74,26 @@ class _ListInfoState extends State<ListInfo> {
                       Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "List name",
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Container(
+                            height: 50.0,
+                            width: MediaQuery.of(context).size.width - 200,
+                            child: _editTitleTextField(
+                                initialListName, _listController, 1),
                           ),
                           SizedBox(
                             width: 15.0,
                           ),
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: Icon(Icons.more_horiz),
-                          // ),
                         ],
                       ),
                       Row(
                         children: [
                           IconButton(
-                            //Edit listName
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.edit,
-                              color: Colors.indigo,
-                            ),
-                          ),
-                          IconButton(
                             //delete list
-                            onPressed: () {},
+                            onPressed: () async {
+                              final ConfirmAction action =
+                                  await _asyncConfirmDialog(context);
+                              print(action);
+                            },
                             icon: Icon(
                               Icons.delete,
                               color: Colors.red,
@@ -103,7 +112,7 @@ class _ListInfoState extends State<ListInfo> {
                       // ignore: deprecated_member_use
                       RaisedButton.icon(
                         //Set the limit date
-                        onPressed: () {},
+                        onPressed: () => _selectDate(context),
                         icon: Icon(
                           Icons.calendar_today,
                           color: Colors.indigo,
@@ -269,7 +278,9 @@ class _ListInfoState extends State<ListInfo> {
           children: [
             ListTile(
               title: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/taskInfo');
+                },
                 child: Text(
                   '$item',
                   textAlign: TextAlign.left,
@@ -292,4 +303,79 @@ class _ListInfoState extends State<ListInfo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
     );
   }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+    print(selectedDate);
+  }
+
+  _editTitleTextField(initialText, controller, maxLine) {
+    if (_isEditingText)
+      return Center(
+        child: TextField(
+          maxLines: maxLine,
+          onSubmitted: (newValue) {
+            setState(() {
+              initialListName = newValue;
+              _isEditingText = false;
+            });
+          },
+          autofocus: true,
+          controller: _listController,
+        ),
+      );
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _isEditingText = true;
+        });
+      },
+      child: Text(
+        initialText,
+        style: TextStyle(
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+enum ConfirmAction { Cancel, Accept }
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+  return showDialog<ConfirmAction>(
+    context: context,
+    barrierDismissible: false, // user must tap button for close dialog!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Delete This List?'),
+        content: const Text(
+            'This will delete your list and its task from the workspace, confirm deletion?.'),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Cancel);
+            },
+          ),
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Delete'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Accept);
+            },
+          )
+        ],
+      );
+    },
+  );
 }

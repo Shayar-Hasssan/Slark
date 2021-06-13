@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:slark/ui/board.dart';
 import 'package:slark/ui/home.dart';
 import 'package:slark/ui/landing.dart';
 import 'package:slark/ui/listInfo.dart';
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
         '/uTasks': (ctx) => UserTasksScreen(),
         '/listInfo': (ctx) => ListInfo(),
         '/taskInfo': (ctx) => TaskInfo(),
-        '/spaceInfo': (ctx) => SpaceInfo()
+        '/spaceInfo': (ctx) => SpaceInfo(),
+        '/board': (ctx) => Board(),
       },
       // home: SplashScreen(),
     );

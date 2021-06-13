@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,7 +9,26 @@ class TaskInfo extends StatefulWidget {
 
 class _TaskInfoState extends State<TaskInfo> {
   var color = Colors.red;
-  // var _icon = Icons.favorite_outline_outlined;
+  String taskLink = 'https://pub.dev/';
+  bool _isEditingText = false;
+  TextEditingController _taskController;
+  TextEditingController _descrptionController;
+  String initialTask = "Task Name";
+  String initialDesc = 'This is your description';
+
+  @override
+  void initState() {
+    super.initState();
+    _taskController = TextEditingController(text: initialTask);
+    _descrptionController = TextEditingController(text: initialDesc);
+  }
+
+  @override
+  void dispose() {
+    _taskController.dispose();
+    _descrptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,24 +54,29 @@ class _TaskInfoState extends State<TaskInfo> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Task Name",
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Container(
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width - 200,
+                      child: _editTitleTextField(),
                     ),
                     //TODO on pressed copy link to keyboard
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            FlutterClipboard.copy('$taskLink')
+                                .then((value) => print('$taskLink'));
+                          },
                           icon: Icon(
                             Icons.share,
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final ConfirmAction action =
+                                await _asyncConfirmDialog(context);
+                            print(action);
+                          },
                           icon: Icon(
                             Icons.delete,
                             color: Colors.red,
@@ -178,12 +203,6 @@ class _TaskInfoState extends State<TaskInfo> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
-                        // SizedBox(height: 10.0),
-                        // Divider(
-                        //   thickness: 0.5,
-                        //   endIndent: 20.0,
-                        //   color: Colors.black87,
-                        // ),
                         SizedBox(height: 20.0),
                         Container(
                           width: 500,
@@ -191,7 +210,23 @@ class _TaskInfoState extends State<TaskInfo> {
                           color: Colors.indigo[50],
                           child: Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: Text('This is your description'),
+                            child: TextFormField(
+                              controller: _descrptionController,
+                              onChanged: (val) {
+                                setState(() {
+                                  initialDesc = val;
+                                });
+                              },
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                hintText: '$initialDesc',
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff7b68ee),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -205,15 +240,66 @@ class _TaskInfoState extends State<TaskInfo> {
       ),
     );
   }
+
+  _editTitleTextField() {
+    if (_isEditingText)
+      return Center(
+        child: TextField(
+          onSubmitted: (newValue) {
+            setState(() {
+              initialTask = newValue;
+              _isEditingText = false;
+            });
+          },
+          autofocus: true,
+          controller: _taskController,
+        ),
+      );
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _isEditingText = true;
+        });
+      },
+      child: Text(
+        initialTask,
+        style: TextStyle(
+          fontSize: 25.0,
+          color: Colors.grey[600],
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 }
-// IconButton(
-//   onPressed: () {
-//     setState(() {
-//       _icon = Icons.favorite;
-//     });
-//   },
-//   icon: Icon(
-//     _icon,
-//     color: color,
-//   ),
-// ),
+
+enum ConfirmAction { Cancel, Accept }
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+  return showDialog<ConfirmAction>(
+    context: context,
+    barrierDismissible: false, // user must tap button for close dialog!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Delete This List?'),
+        content: const Text(
+            'This will delete your list and its task from the workspace, confirm deletion?.'),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Cancel);
+            },
+          ),
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Delete'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Accept);
+            },
+          )
+        ],
+      );
+    },
+  );
+}

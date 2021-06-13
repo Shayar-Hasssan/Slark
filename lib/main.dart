@@ -7,6 +7,7 @@ import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/login.dart';
 import 'package:slark/ui/register.dart';
 import 'package:slark/ui/space.dart';
+import 'package:slark/ui/spaceInfo.dart';
 import 'package:slark/ui/splashScreen.dart';
 import 'package:slark/ui/taskInfo.dart';
 import 'package:slark/ui/user_tasks.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/listInfo',
+      initialRoute: '/home',
       routes: {
         '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/uTasks': (ctx) => UserTasksScreen(),
         '/listInfo': (ctx) => ListInfo(),
         '/taskInfo': (ctx) => TaskInfo(),
+        '/spaceInfo': (ctx) => SpaceInfo()
       },
       // home: SplashScreen(),
     );

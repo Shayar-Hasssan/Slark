@@ -12,7 +12,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<String> workspaces = ['work1', 'work2', 'work3'];
-  List<String> spaces = ['space1', 'space2', 'space3', 'space4', 'vvv'];
+  List<String> spaces = [
+    'space1',
+    'space2',
+    'space3',
+    'space4',
+    'vvv',
+    'gggg',
+    'jcds',
+    'jnjdkncj'
+  ];
 
   String selectedWorkspace;
 
@@ -57,7 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text(
                             'Shayar',
-                            // '${user.getUsername()}',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
@@ -129,9 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               // ignore: deprecated_member_use
               title: FlatButton(
-                onPressed: () {
-                  //return showModalBottomSheet(context: context, builder: Text('Hellos'),),
-                },
+                onPressed: () {},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -177,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 16.0,
-        selectedItemColor: Color(0xff7b68ee),
+        selectedItemColor: Colors.indigo,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
@@ -201,12 +207,16 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> buttons = [];
     for (var item in myList) {
       buttons.add(
-        SizedBox(
+        Container(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               // ignore: deprecated_member_use
               FlatButton(
-                onPressed: () {},
+                //TODO
+                onPressed: () {
+                  Navigator.pushNamed(context, '/spaceInfo');
+                },
                 child: Text(
                   '$item',
                   style: TextStyle(
@@ -223,8 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 8.0,
                 color: Colors.grey,
                 thickness: 0.5,
-                endIndent: 1.0,
-                indent: 1.0,
+                endIndent: 80.0,
+                indent: 80.0,
               )
             ],
           ),
@@ -233,10 +243,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Padding(
       padding: const EdgeInsets.only(
-          top: 10.0, left: 120.0, bottom: 10.0, right: 120.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: buttons,
+          top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+      child: Container(
+        child: ListView(
+          children: buttons,
+        ),
       ),
     );
   }
@@ -252,44 +263,53 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       builder: (BuildContext context) {
         bool hasText = (text == null) ? false : true;
-        const double height = 400;
+        bool hasList = (toView == null) ? false : true;
+        const double height = 500;
+
         return Container(
+          color: Color(0xff7b68ee),
           height: height,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Visibility(
-                  visible: hasText,
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            left: 120.0, top: 10.0, bottom: 10.0, right: 120.0),
-                        // color: Colors.black45,
-                        child: Text(
-                          '$text',
-                          style: TextStyle(
-                            color: Color(0xff7b68ee),
-                            fontSize: 20.0,
-                          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Visibility(
+                visible: hasText,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 80.0, top: 10.0, bottom: 10.0, right: 80.0),
+                      // color: Colors.black45,
+                      child: Text(
+                        '$text',
+                        style: TextStyle(
+                          color: Color(0xff7b68ee),
+                          fontSize: 20.0,
                         ),
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              Visibility(
+                visible: hasList,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Container(
+                    height: 350.0,
+                    color: Colors.indigo[50],
+                    child: contentList(toView),
                   ),
                 ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                ListView(
-                  children: [contentList(toView)],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

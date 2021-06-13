@@ -7,7 +7,7 @@ class ListInfo extends StatefulWidget {
 }
 
 class _ListInfoState extends State<ListInfo> {
-  List tasks = [
+  List<String> tasks = [
     'task1',
     'task2',
     'task3',
@@ -26,6 +26,18 @@ class _ListInfoState extends State<ListInfo> {
         centerTitle: true,
         title: Text('SLARK'),
         backgroundColor: Color(0xff7b68ee),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.done,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -54,15 +66,16 @@ class _ListInfoState extends State<ListInfo> {
                           SizedBox(
                             width: 15.0,
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.more_horiz),
-                          ),
+                          // IconButton(
+                          //   onPressed: () {},
+                          //   icon: Icon(Icons.more_horiz),
+                          // ),
                         ],
                       ),
                       Row(
                         children: [
                           IconButton(
+                            //Edit listName
                             onPressed: () {},
                             icon: Icon(
                               Icons.edit,
@@ -70,10 +83,11 @@ class _ListInfoState extends State<ListInfo> {
                             ),
                           ),
                           IconButton(
+                            //delete list
                             onPressed: () {},
                             icon: Icon(
-                              Icons.add,
-                              color: Colors.indigo,
+                              Icons.delete,
+                              color: Colors.red,
                             ),
                           ),
                         ],
@@ -88,6 +102,7 @@ class _ListInfoState extends State<ListInfo> {
                     children: [
                       // ignore: deprecated_member_use
                       RaisedButton.icon(
+                        //Set the limit date
                         onPressed: () {},
                         icon: Icon(
                           Icons.calendar_today,
@@ -137,6 +152,7 @@ class _ListInfoState extends State<ListInfo> {
                         width: 8.0,
                       ),
                       IconButton(
+                        //Add Assignee
                         onPressed: () {},
                         icon: Icon(Icons.person_add_alt),
                         color: Colors.indigo,
@@ -144,6 +160,47 @@ class _ListInfoState extends State<ListInfo> {
                     ],
                   ),
                   Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                      ],
+                    ),
                     height: 100.0,
                     color: Colors.indigo[50],
                   ),
@@ -156,7 +213,7 @@ class _ListInfoState extends State<ListInfo> {
                       TextButton(
                         onPressed: () {},
                         child: Text(
-                          'Tasks in this List',
+                          'List Tasks',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
                         ),
@@ -164,6 +221,7 @@ class _ListInfoState extends State<ListInfo> {
                       Row(
                         children: [
                           IconButton(
+                            //Add task to list
                             onPressed: () {},
                             icon: Icon(
                               Icons.add,
@@ -171,6 +229,7 @@ class _ListInfoState extends State<ListInfo> {
                             ),
                           ),
                           IconButton(
+                              //collapse tasks
                               onPressed: () {},
                               icon: Icon(
                                 Icons.arrow_drop_down,
@@ -182,11 +241,16 @@ class _ListInfoState extends State<ListInfo> {
                   ),
                   Container(
                     color: Colors.indigo[50],
-                    height: 110,
-                    child: ListView(
-                        // children:
-                        //  [tasksList(tasks)],
-                        ),
+                    height: 150,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: ListView(
+                        children: [tasksList(tasks)],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
                   ),
                 ],
               ),
@@ -197,18 +261,35 @@ class _ListInfoState extends State<ListInfo> {
     );
   }
 
-  // tasksList(List list) {
-  //   List<Widget> mytasks = [];
-  //   for (var item in list) {
-  //     mytasks.add(
-  //       TextButton(
-  //           onPressed: () {},
-  //           child: Text(
-  //             '$item',
-  //             style: TextStyle(color: Colors.black, fontSize: 16.0),
-  //           )),
-  //     );
-  //   }
-  //   return Column(children: tasks);
-  // }
+  tasksList(List list) {
+    List<Widget> mytasks = [];
+    for (var item in list) {
+      mytasks.add(
+        Column(
+          children: [
+            ListTile(
+              title: TextButton(
+                onPressed: () {},
+                child: Text(
+                  '$item',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.black, fontSize: 16.0),
+                ),
+              ),
+            ),
+            Divider(
+              thickness: 0.8,
+              indent: 90.0,
+              endIndent: 90.0,
+            ),
+          ],
+        ),
+      );
+    }
+    return Column(
+      children: mytasks,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+    );
+  }
 }

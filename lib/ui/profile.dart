@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class GanttChartScreen extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   @override
-  _GanttChartScreenState createState() => _GanttChartScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _GanttChartScreenState extends State<GanttChartScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _GanttChartScreenState extends State<GanttChartScreen> {
         backgroundColor: Color(0xff7b68ee),
       ),
       body: Center(
-        child: Text('Ganntt Chart'),
+        child: Text('Profile'),
       ),
     );
   }

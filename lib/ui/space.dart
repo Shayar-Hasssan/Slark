@@ -35,7 +35,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Alll your Space lists and tasks are here"),
+            Text("All your Space lists and tasks are here"),
             SizedBox(
               height: 15.0,
             ),
@@ -55,13 +55,13 @@ class _SpaceScreenState extends State<SpaceScreen> {
     } else {
       return ListView(
         children: [
-          contentList(list),
+          groupingLists(list),
         ],
       );
     }
   }
 
-  contentList(List myList) {
+  groupingLists(List myList) {
     List listsName = [];
     List<Widget> myWidget = [];
     var listGrouping = groupBy(myList, (obj) {

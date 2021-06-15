@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:slark/ui/space.dart';
 import 'package:slark/ui/user_tasks.dart';
 
@@ -10,8 +9,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController _workspaceEditController = TextEditingController();
+  TextEditingController _spaceEditController = TextEditingController();
+  TextEditingController _newTaskController = TextEditingController();
   int _selectedIndex = 0;
-  List<String> workspaces = ['work1', 'work2', 'work3'];
+  String newTask = '';
+  String newWSName = '';
+  String newSpaceName = '';
+  String selectedSpace = '';
+
+  List<String> workspaces = [
+    'work1',
+    'work2',
+    'work3',
+    'work3',
+    'work3',
+    'work3',
+    'work3',
+  ];
+
   List<String> spaces = [
     'space1',
     'space2',
@@ -22,8 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
     'jcds',
     'jnjdkncj'
   ];
+  List<String> tasks = ['task1'];
+  List<String> lists = ['list', 'list2', 'list3'];
+  bool isWorkspace;
+  String selectedList;
 
   String selectedWorkspace;
+  bool isExpand;
 
   final List<Widget> _widgetOptions = [
     SpaceScreen(),
@@ -34,6 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
   initState() {
     setState(() {
       selectedWorkspace = workspaces.first;
+      selectedList = lists.first;
+      selectedSpace = spaces.first;
+      isWorkspace = false;
+      isExpand = false;
     });
   }
 
@@ -59,7 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/profile');
+                            },
                             icon: Icon(Icons.person_rounded),
                             iconSize: 70.0,
                             color: Colors.white,
@@ -75,8 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 8.0,
                           ),
                           Text(
-                            'shero.16@gmail.com',
-                            // '${user.email}',
+                            'User Role',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15.0,
@@ -92,66 +118,124 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 60.0,
             ),
-            ListTile(
-              // ignore: deprecated_member_use
-              title: FlatButton(
-                onPressed: () async {
-                  showModal(toView: workspaces);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.group_outlined),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text('Workspaces'),
-                  ],
+            ExpansionPanelList(
+              elevation: 0,
+              expansionCallback: (int index, bool isExpanded) {},
+              children: [
+                ExpansionPanel(
+                  backgroundColor: Colors.white12,
+                  canTapOnHeader: true,
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                        leading: Icon(
+                          Icons.workspaces_filled,
+                          color: Colors.black,
+                          size: 20.0,
+                        ),
+                        title: Text(
+                          'Workspace Spaces',
+                          style: TextStyle(fontSize: 17.0),
+                        ),
+                        subtitle: Text(
+                          selectedSpace,
+                          style: TextStyle(color: Colors.indigo),
+                        ),
+                        onTap: () {
+                          print('HIIIIII');
+                          setState(() {
+                            isExpand = !isExpanded;
+                          });
+                          print(isExpand);
+                        },
+                        onLongPress: () {
+                          print("HELLLLOOOOOOOO");
+                        });
+                  },
+                  body: Container(
+                    height: 200.0,
+                    child: contentList(spaces, isWorkspace),
+                  ),
+                  isExpanded: isExpand,
                 ),
-              ),
+              ],
             ),
             SizedBox(
               height: 10.0,
             ),
             ListTile(
-              // ignore: deprecated_member_use
-              title: FlatButton(
-                onPressed: () async {
-                  showModal(toView: spaces);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.workspaces_filled),
-                    SizedBox(
-                      width: 15.0,
+              onTap: () {
+                setState(() {
+                  isWorkspace = true;
+                });
+
+                showModal(workspaces);
+              },
+              leading: Icon(
+                Icons.group_work,
+                color: Colors.black,
+                size: 28.0,
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Workspace',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.add,
+                      size: 20.0,
                     ),
-                    Text('Spaces'),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              subtitle: Text(
+                "$selectedWorkspace",
+                style: TextStyle(color: Colors.indigo),
               ),
             ),
+            SizedBox(
+              height: 40.0,
+            ),
+            Divider(
+              thickness: 1.0,
+              indent: 100.0,
+              endIndent: 100.0,
+              color: Colors.indigo[100],
+            ),
+            SizedBox(
+              height: 40.0,
+            ),
+            // ListTile(
+            //   title: Text(
+            //     'Favorite',
+            //     style: TextStyle(fontSize: 16.0),
+            //   ),
+            //   leading: Icon(
+            //     Icons.favorite,
+            //     color: Colors.black,
+            //     size: 20.0,
+            //   ),
+            //   onTap: () {},
+            // ),
             SizedBox(
               height: 10.0,
             ),
             ListTile(
-              // ignore: deprecated_member_use
-              title: FlatButton(
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.favorite),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text('Favorites'),
-                  ],
-                ),
+              leading: Icon(
+                Icons.settings,
+                color: Colors.black,
+                size: 20.0,
               ),
-            ),
-            SizedBox(
-              height: 10.0,
+              title: Text(
+                'Settings',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              onTap: () async {
+                Navigator.pushNamed(context, '/setting');
+              },
             ),
           ],
         ),
@@ -173,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 15.0),
             child: IconButton(
               onPressed: () {
-                showModal(text: "Hello");
+                _newTaskDialog(context, lists, _newTaskController);
               },
               icon: Icon(Icons.add),
             ),
@@ -202,41 +286,63 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  contentList(List myList) {
+  contentList(List myList, bool isWorkspace) {
     // Widget listt;
     List<Widget> buttons = [];
     for (var item in myList) {
       buttons.add(
         Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // ignore: deprecated_member_use
-              FlatButton(
-                //TODO
-                onPressed: () {
-                  Navigator.pushNamed(context, '/spaceInfo');
-                },
-                child: Text(
-                  '$item',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'AdventPro',
-                    fontSize: 18.0,
+          child: ListTile(
+            onTap: () {
+              if (isWorkspace) {
+                setWorkspace(item);
+              } else
+                spaceNavigate(item);
+            },
+            leading: Text(
+              '$item',
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'AdventPro',
+                fontSize: 18.0,
+              ),
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    if (isWorkspace) {
+                      _editNameDialog(context, _workspaceEditController);
+                      setState(() {
+                        item = newWSName;
+                      });
+                    } else
+                      _editNameDialog(context, _spaceEditController);
+                    setState(() {
+                      item = newSpaceName;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.indigo,
+                    size: 18.0,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Divider(
-                height: 8.0,
-                color: Colors.grey,
-                thickness: 0.5,
-                endIndent: 80.0,
-                indent: 80.0,
-              )
-            ],
+                IconButton(
+                  onPressed: () async {
+                    final ConfirmAction action =
+                        await _asyncConfirmDialog(context);
+                    print(action);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red[800],
+                    size: 20.0,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -252,17 +358,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  showModal({String text, List toView}) {
+  spaceNavigate(name) {
+    setState(() {
+      selectedSpace = name;
+      print(selectedSpace);
+    });
+    Navigator.pushNamed(context, '/home');
+  }
+
+  setWorkspace(name) {
+    setState(() {
+      selectedWorkspace = name;
+      print(selectedWorkspace);
+    });
+  }
+
+  showModal(List toView) {
     return showModalBottomSheet(
       context: context,
       barrierColor: Colors.black38,
       backgroundColor: Colors.white,
       elevation: 10,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(30.0),
       ),
       builder: (BuildContext context) {
-        bool hasText = (text == null) ? false : true;
         bool hasList = (toView == null) ? false : true;
         const double height = 500;
 
@@ -273,28 +393,6 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Visibility(
-                visible: hasText,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(
-                          left: 80.0, top: 10.0, bottom: 10.0, right: 80.0),
-                      // color: Colors.black45,
-                      child: Text(
-                        '$text',
-                        style: TextStyle(
-                          color: Color(0xff7b68ee),
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               SizedBox(
                 height: 15.0,
               ),
@@ -305,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     height: 350.0,
                     color: Colors.indigo[50],
-                    child: contentList(toView),
+                    child: contentList(toView, isWorkspace),
                   ),
                 ),
               ),
@@ -315,4 +413,143 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  _editNameDialog(BuildContext context, controller) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Edit Name'),
+            content: TextField(
+              controller: controller,
+              decoration: InputDecoration(hintText: "Enter new name"),
+            ),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              new FlatButton(
+                child: new Text('SUBMIT'),
+                onPressed: () {
+                  setState(() {
+                    if (isWorkspace) {
+                      newWSName = controller.text;
+                      print('NEW WS NAME IS $newWSName');
+                      print("Controller Value is ${controller.text}");
+                    } else {
+                      newSpaceName = controller.text;
+                      print('NEW Space NAME IS $newSpaceName');
+                      print("Controller Value is ${controller.text}");
+                    }
+                  });
+
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  _newTaskDialog(
+      BuildContext context, List<String> listOfLists, controller) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.only(left: 60, right: 60.0),
+            title: Text(
+              'New Task Name',
+              style: TextStyle(color: Colors.indigo, fontSize: 24.0),
+            ),
+            content: Container(
+              height: 200.0,
+              width: 250.0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  Container(
+                    width: 100.0,
+                    color: Colors.indigo[50],
+                    child: Center(
+                      child: DropdownButton(
+                        items: listOfLists.map(
+                          (item) {
+                            return DropdownMenuItem(
+                                value: item, child: Text(item));
+                          },
+                        ).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            selectedList = val;
+                          });
+                        },
+                        value: selectedList,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(hintText: "Enter Task name"),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              new FlatButton(
+                child: new Text(
+                  'SUBMIT',
+                  style: TextStyle(color: Colors.indigo, fontSize: 16),
+                ),
+                onPressed: () async {
+                  // ignore: await_only_futures
+                  await setState(() {
+                    newTask = controller.text;
+                  });
+
+                  print('Controller Value ${controller.text}');
+                  print('New Task Name is $newTask');
+                  tasks.add(newTask);
+                  for (var item in tasks) {
+                    print('Tasks list items $item');
+                  }
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+}
+
+enum ConfirmAction { Cancel, Accept }
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+  return showDialog<ConfirmAction>(
+    context: context,
+    barrierDismissible: false, // user must tap button for close dialog!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm Deletion:'),
+        content: const Text('Are you sure you want to delete this?'),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Cancel);
+            },
+          ),
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: const Text('Delete'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.Accept);
+            },
+          )
+        ],
+      );
+    },
+  );
 }

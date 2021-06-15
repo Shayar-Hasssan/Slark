@@ -2,15 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slark/ui/board.dart';
-import 'package:slark/ui/home.dart';
+import 'package:slark/ui/ganttChart.dart';
 import 'package:slark/ui/landing.dart';
 import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/login.dart';
+import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/register.dart';
+import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
-import 'package:slark/ui/spaceInfo.dart';
 import 'package:slark/ui/splashScreen.dart';
 import 'package:slark/ui/taskInfo.dart';
+import 'package:slark/ui/home.dart';
 import 'package:slark/ui/user_tasks.dart';
 
 void main() {
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/home',
+      initialRoute: '/board',
       routes: {
         '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
@@ -47,8 +49,10 @@ class MyApp extends StatelessWidget {
         '/uTasks': (ctx) => UserTasksScreen(),
         '/listInfo': (ctx) => ListInfo(),
         '/taskInfo': (ctx) => TaskInfo(),
-        '/spaceInfo': (ctx) => SpaceInfo(),
         '/board': (ctx) => Board(),
+        '/setting': (ctx) => SettingScreen(),
+        '/profile': (ctx) => ProfileScreen(),
+        '/gantt': (ctx) => GanttChartScreen()
       },
       // home: SplashScreen(),
     );

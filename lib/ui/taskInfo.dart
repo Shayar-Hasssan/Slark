@@ -8,19 +8,22 @@ class TaskInfo extends StatefulWidget {
 }
 
 class _TaskInfoState extends State<TaskInfo> {
-  var color = Colors.red;
+  var color;
   String taskLink = 'https://pub.dev/';
   bool _isEditingText = false;
   TextEditingController _taskController;
   TextEditingController _descrptionController;
   String initialTask = "Task Name";
   String initialDesc = 'This is your description';
+  bool taskStatus = false; //Not Completed task yet
 
   @override
   void initState() {
     super.initState();
     _taskController = TextEditingController(text: initialTask);
     _descrptionController = TextEditingController(text: initialDesc);
+    statusColor();
+    print('Task status is : $taskStatus');
   }
 
   @override
@@ -28,6 +31,17 @@ class _TaskInfoState extends State<TaskInfo> {
     _taskController.dispose();
     _descrptionController.dispose();
     super.dispose();
+  }
+
+  statusColor() {
+    if (taskStatus == true)
+      setState(() {
+        color = Colors.green;
+      });
+    else
+      setState(() {
+        color = Colors.red;
+      });
   }
 
   @override
@@ -38,7 +52,9 @@ class _TaskInfoState extends State<TaskInfo> {
         title: Text('SLARK'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: Icon(Icons.done),
           ),
         ],
@@ -53,13 +69,21 @@ class _TaskInfoState extends State<TaskInfo> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width - 200,
-                      child: _editTitleTextField(),
-                    ),
-                    //TODO on pressed copy link to keyboard
+                        height: 60.0,
+                        width: MediaQuery.of(context).size.width - 200,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            _editTitleTextField(),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Text('SpaceName')
+                          ],
+                        )),
                     Row(
                       children: [
                         IconButton(
@@ -119,15 +143,10 @@ class _TaskInfoState extends State<TaskInfo> {
                                     RaisedButton.icon(
                                       color: Colors.indigo[200],
                                       onPressed: () {
-                                        if (color == Colors.red) {
-                                          setState(() {
-                                            color = Colors.green;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            color = Colors.red;
-                                          });
-                                        }
+                                        setState(() {
+                                          taskStatus = !taskStatus;
+                                          statusColor();
+                                        });
                                       },
                                       icon: Icon(
                                         Icons.done,

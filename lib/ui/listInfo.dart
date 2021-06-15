@@ -9,9 +9,10 @@ class ListInfo extends StatefulWidget {
 class _ListInfoState extends State<ListInfo> {
   bool _isEditingText = false;
   TextEditingController _listController;
+  TextEditingController _newTaskController = TextEditingController();
+  String newTask = '';
   String initialListName = "List Name";
   String initialDiscription = "Add Description";
-
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,15 @@ class _ListInfoState extends State<ListInfo> {
     'task9',
     'task10'
   ];
+  List<String> assignees = [
+    'John',
+    'Rebeca',
+    'Semi',
+    'Danny',
+    'Serra',
+    'Loriece',
+    'Chris'
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +58,9 @@ class _ListInfoState extends State<ListInfo> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               icon: Icon(
                 Icons.done,
                 color: Colors.white,
@@ -170,46 +182,9 @@ class _ListInfoState extends State<ListInfo> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // child: Row(
+                    //   children: [showAssignees()],
+                    // ),
                     height: 100.0,
                     color: Colors.indigo[50],
                   ),
@@ -231,19 +206,14 @@ class _ListInfoState extends State<ListInfo> {
                         children: [
                           IconButton(
                             //Add task to list
-                            onPressed: () {},
+                            onPressed: () {
+                              _newTaskDialog(context, _newTaskController);
+                            },
                             icon: Icon(
                               Icons.add,
                               color: Colors.indigo,
                             ),
                           ),
-                          IconButton(
-                              //collapse tasks
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.indigo,
-                              )),
                         ],
                       )
                     ],
@@ -324,12 +294,12 @@ class _ListInfoState extends State<ListInfo> {
           maxLines: maxLine,
           onSubmitted: (newValue) {
             setState(() {
-              initialListName = newValue;
+              initialText = newValue;
               _isEditingText = false;
             });
           },
           autofocus: true,
-          controller: _listController,
+          controller: controller,
         ),
       );
     return InkWell(
@@ -347,6 +317,87 @@ class _ListInfoState extends State<ListInfo> {
       ),
     );
   }
+
+  _newTaskDialog(BuildContext context, controller) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.only(left: 60, right: 60.0),
+            title: Text(
+              'New Task Name',
+              style: TextStyle(color: Colors.indigo, fontSize: 24.0),
+            ),
+            content: Container(
+              height: 200.0,
+              width: 250.0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  Container(
+                    width: 100.0,
+                    color: Colors.indigo[50],
+                    child: Center(
+                      child: Text('$initialListName'),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(hintText: "Enter Task name"),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              // ignore: deprecated_member_use
+              new FlatButton(
+                child: new Text(
+                  'SUBMIT',
+                  style: TextStyle(color: Colors.indigo, fontSize: 16),
+                ),
+                onPressed: () async {
+                  // ignore: await_only_futures
+                  await setState(() {
+                    newTask = controller.text;
+                  });
+
+                  print('Controller Value ${controller.text}');
+                  print('New Task Name is $newTask');
+                  tasks.add(newTask);
+                  for (var item in tasks) {
+                    print('Tasks list items $item');
+                  }
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Widget showAssignees() {
+    List<Widget> aList = [];
+    // ignore: unused_local_variable
+    for (var item in assignees) {
+      aList.add(
+        ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            CircleAvatar(
+              child: Icon(Icons.person),
+            ),
+            Text('$item'),
+          ],
+        ),
+      );
+    }
+    return Column(
+      children: aList,
+    );
+  }
 }
 
 enum ConfirmAction { Cancel, Accept }
@@ -358,7 +409,7 @@ Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
       return AlertDialog(
         title: Text('Delete This List?'),
         content: const Text(
-            'This will delete your list and its task from the workspace, confirm deletion?.'),
+            'This will delete your list and its task from the Space, confirm deletion?.'),
         actions: <Widget>[
           // ignore: deprecated_member_use
           FlatButton(

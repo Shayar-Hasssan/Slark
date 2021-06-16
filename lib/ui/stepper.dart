@@ -8,9 +8,9 @@ class StepperScreen extends StatefulWidget {
 }
 
 class _StepperScreenState extends State<StepperScreen> {
-  TextEditingController workspaceController = TextEditingController();
-  TextEditingController _spaceController = TextEditingController();
-  TextEditingController _emailsController = TextEditingController();
+  TextEditingController workspaceController = new TextEditingController();
+  TextEditingController _spaceController = new TextEditingController();
+  TextEditingController _emailsController = new TextEditingController();
 
   String emails = '';
   String workspace = '';
@@ -110,13 +110,32 @@ class _StepperScreenState extends State<StepperScreen> {
           height: 40.0,
         ),
         complete
-            ? showAlertDialog(context)
+            ? Expanded(
+                child: Center(
+                  child: AlertDialog(
+                    title: new Text("Profile Created"),
+                    content: new Text(
+                      "Tada!",
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text("Close"),
+                        onPressed: () {
+                          setState(() => complete = false);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : Expanded(
                 child: Stepper(
                   steps: steps,
                   currentStep: currentStep,
                   onStepContinue: next,
-                  onStepTapped: (step) => goTo(step),
+                  onStepTapped: (step) {
+                    goTo(step);
+                  },
                   onStepCancel: cancel,
                 ),
               ),

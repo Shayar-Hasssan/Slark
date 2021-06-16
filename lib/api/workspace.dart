@@ -3,24 +3,31 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/issue.dart';
-import 'package:slark/model/workspace.dart';
+import 'package:slark/model/CreateWorkSpeace.dart';
 
 // ignore: camel_case_types
 class API_Workspace_Provider {
-  Map<String, String> token = {'bearer': accToken};
   String baseUrl = 'https://slark-backend.herokuapp.com/';
   String createUrl = 'workspace';
   String inviteUrl = 'workspace/invite-user';
   Future createWorkspace(name) async {
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json",
+      'Authorization': '$accToken'
+    };
+    var body = jsonEncode(name);
     print('IN PROVIDER');
     var response;
+    print(requestHeaders);
+    print('$baseUrl$createUrl');
     var request = await post(
       Uri.parse('$baseUrl$createUrl'),
-      headers: {'content-type': 'application/json', 'Authorization': '$token'},
-      body: jsonEncode(name),
+      headers: requestHeaders,
+      body: "$body",
     );
     print('///////////////');
-    response = workspaceFromJson(request.body);
+    print(request.body);
+    response = CreateworkspaceFromJson(request.body);
     print('***********');
     return response;
   }

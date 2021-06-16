@@ -8,9 +8,10 @@ class StepperScreen extends StatefulWidget {
 }
 
 class _StepperScreenState extends State<StepperScreen> {
-  TextEditingController workspaceController = TextEditingController();
+  // TextEditingController workspaceController = TextEditingController();
   TextEditingController _spaceController = TextEditingController();
   TextEditingController _emailsController = TextEditingController();
+  TextEditingController _wsController = new TextEditingController();
 
   String emails = '';
   String workspace = '';
@@ -25,11 +26,11 @@ class _StepperScreenState extends State<StepperScreen> {
 
     _emailsController.addListener(_handleEmailsChanged);
     _spaceController.addListener(_handleSpaceChanged);
-    workspaceController.addListener(_handleWSChanged);
+    // workspaceController.addListener(_handleWSChanged);
   }
 
   void _handleWSChanged() {
-    this.workspace = workspaceController.text;
+    this.workspace = _wsController.text;
   }
 
   void _handleEmailsChanged() {
@@ -41,11 +42,10 @@ class _StepperScreenState extends State<StepperScreen> {
   }
 
   next() {
+    print(currentStep);
     currentStep + 1 != steps.length
         ? goTo(currentStep + 1)
-        : setState(() {
-            complete = true;
-          });
+        : showAlertDialog(context);
   }
 
   cancel() {
@@ -68,7 +68,6 @@ class _StepperScreenState extends State<StepperScreen> {
       content: Column(
         children: <Widget>[
           TextField(
-            // controller: workspaceController,
             decoration: InputDecoration(labelText: 'Workspace name'),
           ),
         ],
@@ -109,17 +108,14 @@ class _StepperScreenState extends State<StepperScreen> {
         SizedBox(
           height: 40.0,
         ),
-        complete
-            ? showAlertDialog(context)
-            : Expanded(
-                child: Stepper(
-                  steps: steps,
-                  currentStep: currentStep,
-                  onStepContinue: next,
-                  onStepTapped: (step) => goTo(step),
-                  onStepCancel: cancel,
-                ),
-              ),
+        Expanded(
+          child: Stepper(
+            steps: steps,
+            currentStep: currentStep,
+            onStepContinue: next,
+            onStepCancel: cancel,
+          ),
+        ),
       ]),
     );
   }

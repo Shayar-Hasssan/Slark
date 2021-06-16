@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/landing',
+      initialRoute: '/register',
       routes: {
         '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),

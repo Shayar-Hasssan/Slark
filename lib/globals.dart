@@ -5,4 +5,4 @@ import 'package:slark/model/user.dart';
 
 User user;
 AccountLogin login;
-String token = login.token;
+String accToken = login.token;

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:slark/api/account.dart';
-import 'package:slark/model/account_login.dart';
+
 import 'package:slark/model/account_register.dart';
+import 'package:slark/globals.dart';
 
 class AccountBloc {
   AccountRegister response;
@@ -15,11 +16,11 @@ class AccountBloc {
 
   AccountBloc();
 
-  Future<AccountRegister> registerAcc(userData) async {
+  Future registerAcc(userData) async {
     print("i am in register bloc");
     print('User Data in Bloc : $userData');
     API_Account_Provider apiProv = new API_Account_Provider();
-    AccountRegister accountData;
+    var accountData;
     await apiProv.register(userData).then((value) {
       print("/////");
       print(value);
@@ -28,23 +29,32 @@ class AccountBloc {
     return accountData;
   }
 
-  Future<AccountLogin> loginAcc(userData) async {
+  Future loginAcc(userData) async {
     print("i am in login bloc");
     print('User Data in Bloc : $userData');
     API_Account_Provider apiProv = new API_Account_Provider();
-    AccountLogin accountData;
+    var accountData;
     await apiProv.login(userData).then((value) {
       print("/////");
       print(value);
       accountData = value;
+      accToken = value.token;
+      print('TOKEN IN BLOC IS $accToken');
     });
+
     return accountData;
   }
 
-  // void verifyAcc(email) async {
-  //   API_Account_Provider apiProv = new API_Account_Provider();
-  //   await apiProv.verify(email).then((value) {});
-  // }
+  Future<AccountRegister> verifyAcc(email) async {
+    AccountRegister verifyData;
+    API_Account_Provider apiProv = new API_Account_Provider();
+    await apiProv.verify(email).then((value) {
+      print(']]]]]]]]');
+      print(value);
+      verifyData = value;
+    });
+    return verifyData;
+  }
 
   void dispose() {
     _accountStateController.close();

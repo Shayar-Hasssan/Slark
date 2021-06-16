@@ -6,11 +6,12 @@ import 'package:slark/ui/ganttChart.dart';
 import 'package:slark/ui/landing.dart';
 import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/login.dart';
-import 'package:slark/ui/profile.dart';
+
 import 'package:slark/ui/register.dart';
 import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
 import 'package:slark/ui/splashScreen.dart';
+import 'package:slark/ui/stepper.dart';
 import 'package:slark/ui/taskInfo.dart';
 import 'package:slark/ui/home.dart';
 import 'package:slark/ui/user_tasks.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/board',
+      initialRoute: '/register',
       routes: {
         '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
@@ -51,9 +52,10 @@ class MyApp extends StatelessWidget {
         '/taskInfo': (ctx) => TaskInfo(),
         '/board': (ctx) => Board(),
         '/setting': (ctx) => SettingScreen(),
-        '/profile': (ctx) => ProfileScreen(),
-        '/gantt': (ctx) => GanttChartScreen()
+        '/gantt': (ctx) => GanttChartScreen(),
+        '/stepper': (ctx) => StepperScreen()
       },
+
       // home: SplashScreen(),
     );
   }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:slark/bloc/registration_bloc.dart';
-import 'package:slark/model/user.dart';
+import 'package:slark/bloc/account_bloc.dart';
+import 'package:slark/globals.dart';
+
 import 'package:slark/ui/register.dart';
-import 'package:slark/ui/splashScreen.dart';
+import 'package:slark/ui/stepper.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -151,11 +152,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             login = {'email': email, 'password': password};
                             print(login);
+                            int code;
                             await _bloc.loginAcc(login).then((value) {
                               setState(() {
                                 message = value.message;
+                                code = value.code;
                               });
-                              showAlertDialog(context, message, value.user);
+                              print('TOKEN IN LOGINSCREEN $accToken');
+                              showAlertDialog(
+                                context,
+                                message,
+                                code,
+                              );
                             });
                           },
                           color: Color(0xff7b68ee),
@@ -220,27 +228,65 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  showAlertDialog(BuildContext ctx, String message, User user) {
-    // Create button
+  showAlertDialog(BuildContext ctx, String message, int code) {
+    bool isOK = false;
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
+        if (isOK) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => StepperScreen()),
+          );
+        } else
+          Navigator.pop(context);
+      },
+    );
+    // ignore: deprecated_member_use
+    Widget signButton = FlatButton(
+      child: Text("Sign up"),
+      onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplashScreen()),
+          MaterialPageRoute(builder: (context) => RegisterScreen()),
         );
       },
     );
-
-    // Create AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Hello ${user.name}"),
-      content: Text("$message"),
-      actions: [
-        okButton,
-      ],
+    // ignore: deprecated_member_use
+    Widget cancel = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
     );
+    AlertDialog alert;
+    if (code == 711) {
+      setState(() {
+        isOK = true;
+      });
+      alert = AlertDialog(
+        content: Text("$message"),
+        actions: [
+          okButton,
+        ],
+      );
+    } else if (code == 812) {
+      alert = AlertDialog(
+        content: Text("$message"),
+        actions: [
+          cancel,
+          signButton,
+        ],
+      );
+    } else if (code == 901) {
+      alert = AlertDialog(
+        content: Text("$message"),
+        actions: [
+          okButton,
+        ],
+      );
+    }
 
     // show the dialog
     showDialog(

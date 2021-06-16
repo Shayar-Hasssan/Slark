@@ -12,11 +12,13 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _workspaceEditController = TextEditingController();
   TextEditingController _spaceEditController = TextEditingController();
   TextEditingController _newTaskController = TextEditingController();
+  TextEditingController _newListController = TextEditingController();
   int _selectedIndex = 0;
   String newTask = '';
   String newWSName = '';
   String newSpaceName = '';
   String selectedSpace = '';
+  String newList = '';
 
   List<String> workspaces = [
     'work1',
@@ -457,8 +459,12 @@ class _HomeScreenState extends State<HomeScreen> {
           return AlertDialog(
             contentPadding: EdgeInsets.only(left: 60, right: 60.0),
             title: Text(
-              'New Task Name',
-              style: TextStyle(color: Colors.indigo, fontSize: 24.0),
+              'Create Task',
+              style: TextStyle(
+                color: Colors.indigo,
+                fontSize: 24.0,
+                letterSpacing: 3.0,
+              ),
             ),
             content: Container(
               height: 200.0,
@@ -469,22 +475,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 25.0,
                   ),
                   Container(
-                    width: 100.0,
+                    width: 250.0,
                     color: Colors.indigo[50],
-                    child: Center(
-                      child: DropdownButton(
-                        items: listOfLists.map(
-                          (item) {
-                            return DropdownMenuItem(
-                                value: item, child: Text(item));
-                          },
-                        ).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            selectedList = val;
-                          });
-                        },
-                        value: selectedList,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DropdownButton(
+                            items: listOfLists.map(
+                              (item) {
+                                return DropdownMenuItem(
+                                    value: item, child: Text(item));
+                              },
+                            ).toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                selectedList = val;
+                              });
+                            },
+                            value: selectedList,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              createNewList(context);
+                            },
+                            child: Text('Or create new list'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -515,12 +534,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   for (var item in tasks) {
                     print('Tasks list items $item');
                   }
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
                 },
               )
             ],
           );
         });
+  }
+
+  createNewList(BuildContext ctx) {
+    // ignore: deprecated_member_use
+    Widget submit = FlatButton(
+      child: Text(
+        "Submit",
+      ),
+      onPressed: () {
+        print('&&&&&&&&');
+        print('${_newListController.text}');
+        setState(() {
+          newList = _newListController.text;
+          print('......');
+          print(newList);
+        });
+        lists.add(newList);
+        print('////////');
+        print(lists);
+        setState(() {
+          selectedList = newList;
+          print(selectedList);
+        });
+        Navigator.pop(context);
+        _newTaskDialog(context, lists, _newTaskController);
+      },
+    );
+    AlertDialog alert;
+
+    alert = AlertDialog(
+      title: Text("New List"),
+      content: TextField(
+        controller: _newListController,
+      ),
+      actions: [
+        submit,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:slark/bloc/registration_bloc.dart';
+import 'package:slark/bloc/account_bloc.dart';
 import 'package:slark/ui/login.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -270,6 +270,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       },
     );
+    // ignore: deprecated_member_use
+    Widget resendButton = FlatButton(
+      child: Text("re-send"),
+      onPressed: () async {
+        await _bloc.verifyAcc(email).then((value) {
+          setState(() {
+            message = value.message;
+            code = value.code;
+          });
+          showAlertDialog(ctx, code, message);
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      },
+    );
     AlertDialog alert;
     if (code == 711) {
       // Create AlertDialog
@@ -280,7 +297,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           okButton,
         ],
       );
-    } else {
+    } else if (code == 812) {
+      alert = AlertDialog(
+        content: Text("$message"),
+        actions: [
+          resendButton,
+        ],
+      );
+    } else if (code == 732) {
       alert = AlertDialog(
         content: Text("$message"),
         actions: [

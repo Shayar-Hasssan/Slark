@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/ui/home.dart';
 
 class StepperScreen extends StatefulWidget {
@@ -8,10 +10,10 @@ class StepperScreen extends StatefulWidget {
 }
 
 class _StepperScreenState extends State<StepperScreen> {
-  // TextEditingController workspaceController = TextEditingController();
-  TextEditingController _spaceController = TextEditingController();
-  TextEditingController _emailsController = TextEditingController();
-  TextEditingController _wsController = new TextEditingController();
+  static TextEditingController _spaceController = new TextEditingController();
+  static TextEditingController _emailsController = TextEditingController();
+  static TextEditingController _wsController = new TextEditingController();
+  final WorkspaceBloc wkbloc = new WorkspaceBloc();
 
   String emails = '';
   String workspace = '';
@@ -26,7 +28,7 @@ class _StepperScreenState extends State<StepperScreen> {
 
     _emailsController.addListener(_handleEmailsChanged);
     _spaceController.addListener(_handleSpaceChanged);
-    // workspaceController.addListener(_handleWSChanged);
+    _wsController.addListener(_handleWSChanged);
   }
 
   void _handleWSChanged() {
@@ -41,11 +43,34 @@ class _StepperScreenState extends State<StepperScreen> {
     this.space = _spaceController.text;
   }
 
-  next() {
+  next() async {
     print(currentStep);
-    currentStep + 1 != steps.length
-        ? goTo(currentStep + 1)
-        : showAlertDialog(context);
+    if (currentStep + 1 != steps.length) {
+      if (currentStep == 0) {
+        if (workspace.isNotEmpty) {
+          Map<String, dynamic> ws = {
+            "name": workspace,
+          };
+          await wkbloc.createWorkspace(ws).then((value) {
+            Fluttertoast.showToast(
+                msg: value.message,
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          });
+          goTo(currentStep + 1);
+        }
+      } else if (currentStep == 1) {
+        goTo(currentStep + 1);
+      } else if (currentStep == 2) {
+        goTo(currentStep + 1);
+      }
+    } else {
+      showAlertDialog(context);
+    }
   }
 
   cancel() {
@@ -67,7 +92,8 @@ class _StepperScreenState extends State<StepperScreen> {
       state: StepState.indexed,
       content: Column(
         children: <Widget>[
-          TextField(
+          TextFormField(
+            controller: _wsController,
             decoration: InputDecoration(labelText: 'Workspace name'),
           ),
         ],
@@ -81,6 +107,7 @@ class _StepperScreenState extends State<StepperScreen> {
       content: Column(
         children: <Widget>[
           TextFormField(
+            controller: _emailsController,
             decoration: InputDecoration(
                 labelText: 'ex. person1@exapmle.com person2@example.com'),
           ),
@@ -94,6 +121,7 @@ class _StepperScreenState extends State<StepperScreen> {
       content: Column(
         children: <Widget>[
           TextFormField(
+            controller: _spaceController,
             decoration: InputDecoration(labelText: 'Your space name'),
           ),
         ],

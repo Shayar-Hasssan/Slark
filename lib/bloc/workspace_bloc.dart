@@ -6,14 +6,14 @@ class WorkspaceBloc {
     print("IN workspace bloc");
     print('Workspace Name in Bloc : $name');
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
-    var accountData;
+    var workspaceData;
     await apiProv.createWorkspace(name).then((value) {
       print("/////");
       print('PRINTING THE MESSAGE');
       print(value.message);
       print('________________');
-      accountData = value;
+      workspaceData = value;
     });
-    return accountData;
+    return workspaceData;
   }
 }

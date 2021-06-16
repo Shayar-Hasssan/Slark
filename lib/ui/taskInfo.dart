@@ -64,6 +64,7 @@ class _TaskInfoState extends State<TaskInfo> {
         child: Padding(
           padding: EdgeInsets.all(15.0),
           child: Container(
+            width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -74,16 +75,9 @@ class _TaskInfoState extends State<TaskInfo> {
                     Container(
                         height: 60.0,
                         width: MediaQuery.of(context).size.width - 200,
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            _editTitleTextField(),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Text('SpaceName')
-                          ],
-                        )),
+                        child: ListTile(
+                            title: _editTitleTextField(),
+                            subtitle: Text('SpaceName'))),
                     Row(
                       children: [
                         IconButton(

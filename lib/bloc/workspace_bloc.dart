@@ -6,14 +6,29 @@ class WorkspaceBloc {
     print("IN workspace bloc");
     print('Workspace Name in Bloc : $name');
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
-    var accountData;
+    var workspaceData;
     await apiProv.createWorkspace(name).then((value) {
       print("/////");
       print('PRINTING THE MESSAGE');
       print(value.message);
       print('________________');
-      accountData = value;
+      workspaceData = value;
     });
-    return accountData;
+    return workspaceData;
+  }
+
+  Future invite(email) async {
+    print("IN Invite bloc");
+    print('Workspace Name in Bloc : $email');
+    API_Workspace_Provider apiProv = new API_Workspace_Provider();
+    var workspaceData;
+    await apiProv.createWorkspace(email).then((value) {
+      print("/////");
+      print('PRINTING THE MESSAGE');
+      print(value.message);
+      print('________________');
+      workspaceData = value;
+    });
+    return workspaceData;
   }
 }

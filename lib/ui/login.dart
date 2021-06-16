@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 message = value.message;
                                 code = value.code;
                               });
-                              print('TOKEN IN LOGINSCREEN $accToken');
+                              // print('TOKEN IN LOGINSCREEN $accToken');
                               showAlertDialog(
                                 context,
                                 message,

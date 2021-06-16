@@ -38,8 +38,7 @@ class AccountBloc {
       print("/////");
       print(value);
       accountData = value;
-      accToken = value.token;
-      print('TOKEN IN BLOC IS $accToken');
+      // print(object)
     });
 
     return accountData;

@@ -9,8 +9,8 @@ class StepperScreen extends StatefulWidget {
 
 class _StepperScreenState extends State<StepperScreen> {
   // TextEditingController workspaceController = TextEditingController();
-  TextEditingController _spaceController = TextEditingController();
-  TextEditingController _emailsController = TextEditingController();
+  TextEditingController _spaceController = new TextEditingController();
+  TextEditingController _emailsController = new TextEditingController();
   TextEditingController _wsController = new TextEditingController();
 
   String emails = '';
@@ -24,8 +24,8 @@ class _StepperScreenState extends State<StepperScreen> {
   void initState() {
     super.initState();
 
-    _emailsController.addListener(_handleEmailsChanged);
-    _spaceController.addListener(_handleSpaceChanged);
+    // _emailsController.addListener(_handleEmailsChanged);
+    // _spaceController.addListener(_handleSpaceChanged);
     // workspaceController.addListener(_handleWSChanged);
   }
 
@@ -68,6 +68,7 @@ class _StepperScreenState extends State<StepperScreen> {
       content: Column(
         children: <Widget>[
           TextField(
+            // controller: _wsController,
             decoration: InputDecoration(labelText: 'Workspace name'),
           ),
         ],

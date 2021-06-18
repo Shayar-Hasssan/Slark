@@ -10,11 +10,11 @@ class API_Workspace_Provider {
   String baseUrl = 'https://slark-backend.herokuapp.com/';
   String createUrl = 'workspace';
   String inviteUrl = 'workspace/invite-user';
+  Map<String, String> requestHeaders = {
+    "Content-Type": "application/json",
+    'Authorization': '$accToken'
+  };
   Future createWorkspace(name) async {
-    Map<String, String> requestHeaders = {
-      "Content-Type": "application/json",
-      'Authorization': '$accToken'
-    };
     var body = jsonEncode(name);
     print('IN PROVIDER');
     var response;
@@ -36,8 +36,8 @@ class API_Workspace_Provider {
     print('IN PROVIDER');
     var response;
     var request = await post(
-      Uri.parse('$baseUrl$createUrl'),
-      headers: {'content-type': 'application/json', 'Authorization': '$token'},
+      Uri.parse('$baseUrl$inviteUrl'),
+      headers: requestHeaders,
       body: jsonEncode(email),
     );
     print('///////////////');

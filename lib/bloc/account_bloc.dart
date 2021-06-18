@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:slark/api/account.dart';
 
 import 'package:slark/model/account_register.dart';
-import 'package:slark/globals.dart';
 
 class AccountBloc {
   AccountRegister response;
@@ -38,6 +37,8 @@ class AccountBloc {
       print("/////");
       print(value);
       accountData = value;
+      print(';;;;;;;;;;;');
+
       // print(object)
     });
 

@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:slark/bloc/space_bloc.dart';
+import 'package:slark/bloc/workspace_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
+  final data;
+  SplashScreen(this.data);
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  WorkspaceBloc wsbloc;
+  SpaceBloc spaceBloc;
+
+  ///////TODO GETTERS////////
+  // getUserData() async {
+  //   await spaceBloc;
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // getUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -10,10 +10,10 @@ import 'package:slark/ui/login.dart';
 import 'package:slark/ui/register.dart';
 import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
-import 'package:slark/ui/splashScreen.dart';
-import 'package:slark/ui/stepper.dart';
+// import 'package:slark/ui/splashScreen.dart';
+// import 'package:slark/ui/stepper.dart';
 import 'package:slark/ui/taskInfo.dart';
-import 'package:slark/ui/home.dart';
+// import 'package:slark/ui/home.dart';
 import 'package:slark/ui/user_tasks.dart';
 
 void main() {
@@ -41,11 +41,11 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        '/splash': (ctx) => SplashScreen(),
+        // '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
         '/login': (ctx) => LoginScreen(),
         '/landing': (ctx) => LandingUi(),
-        '/home': (ctx) => HomeScreen(),
+        // '/home': (ctx) => HomeScreen(),
         '/space': (ctx) => SpaceScreen(),
         '/uTasks': (ctx) => UserTasksScreen(),
         '/listInfo': (ctx) => ListInfo(),
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         '/board': (ctx) => Board(),
         '/setting': (ctx) => SettingScreen(),
         '/gantt': (ctx) => GanttChartScreen(),
-        '/stepper': (ctx) => StepperScreen()
+        // '/stepper': (ctx) => StepperScreen(data)
       },
 
       // home: SplashScreen(),

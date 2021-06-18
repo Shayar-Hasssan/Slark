@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slark/model/dto_user.dart';
 import 'package:slark/ui/space.dart';
 import 'package:slark/ui/user_tasks.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
+  final data;
+  final bool isStepper;
+  // final userWSS; //Worskspaces and Spaces
+  const HomeScreen({Key key, this.data, this.isStepper}) : super(key: key);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -55,6 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ignore: must_call_super
   initState() {
+    print('AT HOME SCREEN');
+    print(widget.data);
+
     setState(() {
       selectedWorkspace = workspaces.first;
       selectedList = lists.first;
@@ -482,20 +490,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DropdownButton(
-                            items: listOfLists.map(
-                              (item) {
-                                return DropdownMenuItem(
-                                    value: item, child: Text(item));
-                              },
-                            ).toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                selectedList = val;
-                              });
-                            },
-                            value: selectedList,
-                          ),
+                          listOfLists.isNotEmpty
+                              ? DropdownButton(
+                                  items: listOfLists.map(
+                                    (item) {
+                                      return DropdownMenuItem(
+                                          value: item, child: Text(item));
+                                    },
+                                  ).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedList = val;
+                                    });
+                                  },
+                                  value: selectedList,
+                                )
+                              : IconButton(
+                                  onPressed: createNewList(context),
+                                  icon: Icon(Icons.add),
+                                ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:slark/bloc/account_bloc.dart';
 import 'package:slark/globals.dart';
+// import 'package:slark/globals.dart';
+// import 'package:slark/ui/home.dart';
 
 import 'package:slark/ui/register.dart';
+import 'package:slark/ui/splashScreen.dart';
 import 'package:slark/ui/stepper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -157,13 +160,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 message = value.message;
                                 code = value.code;
+                                // accToken = value.token;
                               });
                               // print('TOKEN IN LOGINSCREEN $accToken');
-                              showAlertDialog(
-                                context,
-                                message,
-                                code,
-                              );
+                              showAlertDialog(context, message, code, value);
                             });
                           },
                           color: Color(0xff7b68ee),
@@ -228,17 +228,35 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  showAlertDialog(BuildContext ctx, String message, int code) {
+  showAlertDialog(BuildContext ctx, String message, int code, data) {
     bool isOK = false;
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
         if (isOK) {
+          setState(() {
+            accToken = data.token;
+            print('DATA.TOEKN ${data.token}');
+            print('ON PRESSED TOKEN $accToken');
+          });
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StepperScreen()),
+            MaterialPageRoute(builder: (context) => StepperScreen(data)),
           );
+          // if (data.user.workspaces.length > 0) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => SplashScreen(data)),
+          //   );
+          // } else {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => StepperScreen(data)),
+          //   );
+          // }
+          // accToken = data.token;
+          print('Global Token is $accToken');
         } else
           Navigator.pop(context);
       },

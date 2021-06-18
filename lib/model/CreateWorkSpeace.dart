@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+// ignore: non_constant_identifier_names
 CreateWorkspace CreateworkspaceFromJson(String str) =>
     CreateWorkspace.fromJson(json.decode(str));
 
+// ignore: non_constant_identifier_names
 String CreateworkspaceToJson(CreateWorkspace data) =>
     json.encode(data.toJson());
 

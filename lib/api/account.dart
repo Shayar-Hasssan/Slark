@@ -48,9 +48,15 @@ class API_Account_Provider {
     print(request.body);
     if (request.statusCode == 200) {
       print('200 Status Coddee if statement');
+      var xx = jsonDecode(request.body)['user']['_roles'];
+      // var ss = jsonDecode(xx)['roles'].toString();
+      print('SSSSSS $xx');
       response = accountLoginFromJson(request.body);
       print('*****');
       print(response.code);
+      print('[[[[[[]]]]]]]');
+      print('ROLES ARE ${response.user.roles}');
+      print('TOKEN IS ${response.token}');
     } else if (request.statusCode == 401) {
       print('AN ISSUE IS HERE 401 STATUS CODEE');
       response = issueFromJson(request.body);

@@ -22,7 +22,7 @@ class WorkspaceBloc {
     print('Workspace Name in Bloc : $email');
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
     var workspaceData;
-    await apiProv.createWorkspace(email).then((value) {
+    await apiProv.invite(email).then((value) {
       print("/////");
       print('PRINTING THE MESSAGE');
       print(value.message);

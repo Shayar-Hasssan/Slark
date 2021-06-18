@@ -25,15 +25,16 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedSpace = '';
   String newList = '';
 
-  List<String> workspaces = [
-    'work1',
-    'work2',
-    'work3',
-    'work3',
-    'work3',
-    'work3',
-    'work3',
-  ];
+  // List<String> workspaces = [
+  //   'work1',
+  //   'work2',
+  //   'work3',
+  //   'work3',
+  //   'work3',
+  //   'work3',
+  //   'work3',
+  // ];
+  List<String> workspaces = [];
 
   List<String> spaces = [
     'space1',
@@ -61,7 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
   // ignore: must_call_super
   initState() {
     print('AT HOME SCREEN');
-    print(widget.data);
+    print(widget.data.username);
+    for (var item1 in widget.data.workspaces) {
+      workspaces.add(item1.workspacename);
+      print(item1.workspacename);
+      for (var item in item1.spaces) {
+        print(item.spacename);
+      }
+    }
+    print(';;;;;;;;;;;');
+    for (var item in workspaces) {
+      print(item);
+    }
+
+    // print(widget.data.workspaces.workspacename);
+    // print(widget.data.workspace.spaces.name);
 
     setState(() {
       selectedWorkspace = workspaces.first;
@@ -102,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                           ),
                           Text(
-                            'Shayar',
+                            '${widget.data.username}',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
@@ -112,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 8.0,
                           ),
                           Text(
-                            'User Role',
+                            '${widget.data.role}',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15.0,

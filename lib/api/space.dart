@@ -9,7 +9,7 @@ import 'package:slark/model/space.dart';
 class API_Space_Provider {
   Map<String, String> token = {'bearer': accToken};
   String baseUrl = 'https://slark-backend.herokuapp.com/';
-  String createUrl = 'space';
+  String spaceUrl = 'space';
   Map<String, String> requestHeaders = {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
@@ -18,7 +18,7 @@ class API_Space_Provider {
     print('IN PROVIDER');
     var response;
     var request = await post(
-      Uri.parse('$baseUrl$createUrl'),
+      Uri.parse('$baseUrl$spaceUrl'),
       headers: requestHeaders,
       body: jsonEncode(spacedata),
     );
@@ -28,6 +28,17 @@ class API_Space_Provider {
     response = createSpaceFromJson(request.body);
     print(response);
     print('***********');
+    return response;
+  }
+
+  Future getSpace(id) async {
+    print('IN PROVIDER');
+    var response;
+    var request =
+        await get(Uri.parse('$baseUrl$spaceUrl/$id'), headers: requestHeaders);
+
+    response = spaceFromJson(request.body);
+    print('OUT OF PROVIDER');
     return response;
   }
 }

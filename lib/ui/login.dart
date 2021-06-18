@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:slark/bloc/account_bloc.dart';
+import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/globals.dart';
+import 'package:slark/model/dto_space.dart';
+import 'package:slark/model/dto_user.dart';
+import 'package:slark/model/dto_ws.dart';
 // import 'package:slark/globals.dart';
 // import 'package:slark/ui/home.dart';
 
@@ -23,6 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _bloc = AccountBloc();
   String message = '';
   String name = '';
+  final _wsbloc = WorkspaceBloc();
+  var udto = new DtoUser();
+  var wsdto = new DtoWS();
+  var spacedto = new DtoSpace();
 
   @override
   void initState() {
@@ -160,9 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 message = value.message;
                                 code = value.code;
-                                // accToken = value.token;
                               });
-                              // print('TOKEN IN LOGINSCREEN $accToken');
                               showAlertDialog(context, message, code, value);
                             });
                           },
@@ -240,21 +246,24 @@ class _LoginScreenState extends State<LoginScreen> {
             print('DATA.TOEKN ${data.token}');
             print('ON PRESSED TOKEN $accToken');
           });
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => StepperScreen(data)),
-          );
-          // if (data.user.workspaces.length > 0) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => SplashScreen(data)),
-          //   );
-          // } else {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => StepperScreen(data)),
-          //   );
-          // }
+
+          if (data.user.workspaces.length > 0) {
+            for (var item in data.user.workspaces) {
+              print('||||||||||||||||');
+              print('Printing the spaces names');
+              print(item.name);
+              //check if it prints right
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SplashScreen(data)),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StepperScreen(data)),
+            );
+          }
           // accToken = data.token;
           print('Global Token is $accToken');
         } else

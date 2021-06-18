@@ -16,4 +16,16 @@ class SpaceBloc {
     });
     return spaceData;
   }
+
+  Future getSpace(id) async {
+    API_Space_Provider apiProv = new API_Space_Provider();
+    var spacedata;
+    print('IN GET Space BLOC');
+    print('Space Id is $id');
+    await apiProv.getSpace(id).then((value) {
+      print('THE MESSAGE IS ${value.message}');
+      spacedata = value;
+    });
+    return spacedata;
+  }
 }

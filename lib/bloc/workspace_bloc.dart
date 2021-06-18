@@ -1,6 +1,7 @@
 import 'package:slark/api/workspace.dart';
 
 class WorkspaceBloc {
+  // API_Workspace_Provider apiProv = new API_Workspace_Provider();
   WorkspaceBloc();
   Future createWorkspace(name) async {
     print("IN workspace bloc");
@@ -30,5 +31,17 @@ class WorkspaceBloc {
       workspaceData = value;
     });
     return workspaceData;
+  }
+
+  Future getWS(id) async {
+    API_Workspace_Provider apiProv = new API_Workspace_Provider();
+    var wsdata;
+    print('IN GET WS BLOC');
+    print('WS Id is $id');
+    await apiProv.getWS(id).then((value) {
+      print('THE MESSAGE IS ${value.message}');
+      wsdata = value;
+    });
+    return wsdata;
   }
 }

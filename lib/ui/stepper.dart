@@ -72,7 +72,8 @@ class _StepperScreenState extends State<StepperScreen> {
     List<String> email = [];
 
     print(currentStep);
-    if (currentStep + 1 < steps.length) {
+    // if (currentStep + 1 < steps.length) {
+    if (currentStep != 3) {
       if (currentStep == 0) {
         if (workspace.isNotEmpty) {
           print('//STARTING CREATION REQUEST FROM UI');
@@ -82,18 +83,18 @@ class _StepperScreenState extends State<StepperScreen> {
           await wkbloc.createWorkspace(ws).then((value) {
             setState(() {
               workspaceId = value.id;
-              workspaceData = value;
+              workspaceData = value; // the response object
               wsdto.workspaceId = value.id;
-              print('wsdto.workspaceId ${wsdto.workspaceId}');
+              // print('wsdto.workspaceId ${wsdto.workspaceId}');
               wsdto.workspacename = value.name;
-              print('wsdto.workspacename ${wsdto.workspacename}');
+              // print('wsdto.workspacename ${wsdto.workspacename}');
               // addWorkspace.id = value.id;
               // addWorkspace.name = value.name;
-              print('+++++++++++++');
+              // print('+++++++++++++');
               // widget.data.user.workspaces.add(addWorkspace);
               udto.workspaces.add(wsdto);
-              print('udto.workspaces ${udto.workspaces}');
-              print('#########################');
+              // print('udto.workspaces ${udto.workspaces}');
+              // print('#########################');
               print(widget.data.user.workspaces.length);
               Fluttertoast.showToast(
                   msg: value.message,
@@ -106,22 +107,14 @@ class _StepperScreenState extends State<StepperScreen> {
             });
 
             print('WS DATA ${workspaceData.toString()}');
-            print('WORKSPACE IS $workspace');
-            print('NEW WORKSPACE ID IS: $workspaceId');
-            print('WORKSPACE NAME : ${workspaceData.name}');
           });
           goTo(currentStep + 1);
         }
       } else if (currentStep == 1) {
-        ///////
         if (emails.isNotEmpty) {
-          print(workspaceId);
-          print('WORKSPACE DATA IS : $workspaceData');
-          print('WS MESSAGE : ${workspaceData.message}');
           email = emails.split(' ');
-          print('PEOPLES INVITATION MAILS TO BE SENT TO ARE: $email');
+
           for (var item in email) {
-            print('EMAIL $item');
             print('//STARTING INVITAION REQUEST FROM UI');
             Map<String, dynamic> invite = {
               "workspaceName": workspaceData.name,
@@ -144,9 +137,7 @@ class _StepperScreenState extends State<StepperScreen> {
           }
         }
         goTo(currentStep + 1);
-        print('$currentStep IN STEP 1');
       } else if (currentStep == 2) {
-        print('$currentStep IN STEP 2');
         if (space.isNotEmpty) {
           print('//STARTING SPACE CREATION REQUEST FROM UI');
           Map<String, dynamic> newspace = {
@@ -189,16 +180,22 @@ class _StepperScreenState extends State<StepperScreen> {
         } else {
           print('???????');
         }
-        goTo(currentStep + 1);
+        print(currentStep);
+        print("WIDGET DATA:");
+        print(widget.data);
+        print('ADDSPACE : $addSpace');
+        showAlertDialog(context);
+        // goTo(currentStep + 1);
       }
-    } else {
-      // print('${steps.length}');
-      print(currentStep);
-      print("WIDGET DATA:");
-      print(widget.data);
-      print('ADDSPACE : $addSpace');
-      showAlertDialog(context);
     }
+    // else {
+    //   // print('${steps.length}');
+    //   print(currentStep);
+    //   print("WIDGET DATA:");
+    //   print(widget.data);
+    //   print('ADDSPACE : $addSpace');
+    //   showAlertDialog(context);
+    // }
   }
 
   cancel() {
@@ -287,10 +284,9 @@ class _StepperScreenState extends State<StepperScreen> {
     // ignore: deprecated_member_use
     Widget button = FlatButton(
       child: Text("GO"),
-      onPressed: () {
-        print('::::::::');
-        print(jsonEncode(udto));
-        print('AAAAAAA');
+      onPressed: () async {
+        print('ON PRESSED ALERT BUTTON NAVIGATING TO HOMME');
+
         Navigator.push(
           context,
           MaterialPageRoute(

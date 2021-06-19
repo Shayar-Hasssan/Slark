@@ -39,21 +39,39 @@ class _SplashScreenState extends State<SplashScreen> {
       print('Round $counter ');
       print('Printing the workspaces names');
       print(item.name);
+      // ignore: await_only_futures
       await setState(() {
+        wsdto = new DtoWS();
+
         wsdto.workspaceId = item.id;
+        print(wsdto.workspaceId);
         wsdto.workspacename = item.name;
-        udto.workspaces..add(wsdto);
+        // udto.workspaces.add(wsdto);
         counter++;
       });
-      await print('### ${wsdto.workspacename}');
 
-      print('//////');
+      await _wsbloc.getWS(item.id).then((value) {
+        for (var item2 in value.workspace.spaces) {
+          setState(() {
+            spacedto = new DtoSpace();
+            spacedto.spaceId = item2;
+            spacedto.spacename = 'Space $counter';
+            wsdto.spaces.add(spacedto);
+            // udto.workspaces.add(wsdto);
+          });
+        }
+      });
+
+      udto.workspaces.add(wsdto);
     }
 
     for (var item in udto.workspaces) {
-      print('======');
-      print(item.workspacename);
-      print('_________');
+      for (var item2 in item.spaces) {
+        print('======');
+        print(item2.spacename);
+        print(item2.spaceId);
+        print('_________');
+      }
     }
 
     Navigator.push(

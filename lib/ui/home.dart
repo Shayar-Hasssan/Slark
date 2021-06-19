@@ -26,9 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String newSpaceName = '';
   String selectedSpace = '';
   String newList = '';
+  List<Map<String, String>> testWS = [];
+  List<Map<String, String>> testSpace = [];
 
   List<String> workspaces = [];
-  List<String> spaces = [];
+  List<String> spaces = ['sss'];
 
   List<String> tasks = ['task1'];
   List<String> lists = ['list', 'list2', 'list3'];
@@ -50,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setWS();
     setSpace();
-
+    wSTest();
     setState(() {
       selectedWorkspace = workspaces.first;
       selectedList = lists.first;
@@ -58,6 +60,38 @@ class _HomeScreenState extends State<HomeScreen> {
       isWorkspace = false;
       isExpand = false;
     });
+  }
+
+  wSTest() {
+    for (var item in widget.data.workspaces) {
+      setState(() {
+        testWS.add({item.workspaceId: item.workspacename});
+      });
+      for (var item2 in item.spaces) {
+        setState(() {
+          testSpace.add({item.spaceId: item2.spacename});
+        });
+      }
+    }
+  }
+
+  testWSDropdown() {
+    for (var item in testWS) {
+      List<DropdownMenuItem<String>> menuItems = List();
+      for (String key in item.keys) {
+        menuItems.add(DropdownMenuItem<String>(
+          child: Text(item[key]),
+          value: key,
+        ));
+      }
+      DropdownButton<String>(
+        items: menuItems,
+        onChanged: (value) {
+          print('HELLO THERE');
+          print(value);
+        },
+      );
+    }
   }
 
   setWS() async {
@@ -240,6 +274,9 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 10.0,
             ),
             ListTile(
+              title: testWSDropdown(),
+            ),
+            ListTile(
               leading: Icon(
                 Icons.settings,
                 color: Colors.black,
@@ -390,6 +427,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       selectedWorkspace = name;
     });
+    Navigator.pop(context);
   }
 
   showModal(List toView) {

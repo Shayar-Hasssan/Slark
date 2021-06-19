@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/model/dto_user.dart';
+import 'package:slark/ui/profile.dart';
+import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
 import 'package:slark/ui/user_tasks.dart';
 
@@ -25,27 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedSpace = '';
   String newList = '';
 
-  // List<String> workspaces = [
-  //   'work1',
-  //   'work2',
-  //   'work3',
-  //   'work3',
-  //   'work3',
-  //   'work3',
-  //   'work3',
-  // ];
   List<String> workspaces = [];
+  List<String> spaces = [];
 
-  List<String> spaces = [
-    'space1',
-    'space2',
-    'space3',
-    'space4',
-    'vvv',
-    'gggg',
-    'jcds',
-    'jnjdkncj'
-  ];
   List<String> tasks = ['task1'];
   List<String> lists = ['list', 'list2', 'list3'];
   bool isWorkspace;
@@ -59,24 +43,13 @@ class _HomeScreenState extends State<HomeScreen> {
     UserTasksScreen(),
   ];
 
+  @override
   // ignore: must_call_super
   initState() {
     print('AT HOME SCREEN');
-    print(widget.data.username);
-    for (var item1 in widget.data.workspaces) {
-      workspaces.add(item1.workspacename);
-      print(item1.workspacename);
-      for (var item in item1.spaces) {
-        print(item.spacename);
-      }
-    }
-    print(';;;;;;;;;;;');
-    for (var item in workspaces) {
-      print(item);
-    }
 
-    // print(widget.data.workspaces.workspacename);
-    // print(widget.data.workspace.spaces.name);
+    setWS();
+    setSpace();
 
     setState(() {
       selectedWorkspace = workspaces.first;
@@ -85,6 +58,24 @@ class _HomeScreenState extends State<HomeScreen> {
       isWorkspace = false;
       isExpand = false;
     });
+  }
+
+  setWS() async {
+    for (var item1 in widget.data.workspaces) {
+      await setState(() {
+        workspaces.add(item1.workspacename);
+      });
+    }
+  }
+
+  setSpace() async {
+    for (var item1 in widget.data.workspaces) {
+      for (var item in item1.spaces) {
+        await setState(() {
+          spaces.add(item.spacename);
+        });
+      }
+    }
   }
 
   void _onItemTapped(int index) {
@@ -110,7 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/profile');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileScreen()),
+                              );
                             },
                             icon: Icon(Icons.person_rounded),
                             iconSize: 70.0,
@@ -152,29 +147,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   canTapOnHeader: true,
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
-                        leading: Icon(
-                          Icons.workspaces_filled,
-                          color: Colors.black,
-                          size: 20.0,
-                        ),
-                        title: Text(
-                          'Workspace Spaces',
-                          style: TextStyle(fontSize: 17.0),
-                        ),
-                        subtitle: Text(
-                          selectedSpace,
-                          style: TextStyle(color: Colors.indigo),
-                        ),
-                        onTap: () {
-                          print('HIIIIII');
-                          setState(() {
-                            isExpand = !isExpanded;
-                          });
-                          print(isExpand);
-                        },
-                        onLongPress: () {
-                          print("HELLLLOOOOOOOO");
+                      leading: Icon(
+                        Icons.workspaces_filled,
+                        color: Colors.black,
+                        size: 20.0,
+                      ),
+                      title: Text(
+                        'Workspace Spaces',
+                        style: TextStyle(fontSize: 17.0),
+                      ),
+                      subtitle: Text(
+                        selectedSpace,
+                        style: TextStyle(color: Colors.indigo),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          isExpand = !isExpanded;
                         });
+                      },
+                    );
                   },
                   body: Container(
                     height: 200.0,
@@ -259,7 +250,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 16.0),
               ),
               onTap: () async {
-                Navigator.pushNamed(context, '/setting');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingScreen()),
+                );
               },
             ),
           ],
@@ -358,7 +352,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     final ConfirmAction action =
                         await _asyncConfirmDialog(context);
-                    print(action);
                   },
                   icon: Icon(
                     Icons.delete,
@@ -386,15 +379,16 @@ class _HomeScreenState extends State<HomeScreen> {
   spaceNavigate(name) {
     setState(() {
       selectedSpace = name;
-      print(selectedSpace);
     });
-    Navigator.pushNamed(context, '/home');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
   }
 
   setWorkspace(name) {
     setState(() {
       selectedWorkspace = name;
-      print(selectedWorkspace);
     });
   }
 
@@ -577,19 +571,14 @@ class _HomeScreenState extends State<HomeScreen> {
         "Submit",
       ),
       onPressed: () {
-        print('&&&&&&&&');
-        print('${_newListController.text}');
         setState(() {
           newList = _newListController.text;
-          print('......');
-          print(newList);
         });
         lists.add(newList);
-        print('////////');
+
         print(lists);
         setState(() {
           selectedList = newList;
-          print(selectedList);
         });
         Navigator.pop(context);
         _newTaskDialog(context, lists, _newTaskController);

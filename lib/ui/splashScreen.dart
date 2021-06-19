@@ -30,49 +30,32 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   getData() async {
+    print('In getdata function');
+    int counter = 0;
     udto.username = widget.data.user.name;
+    print(udto.username);
 
-    for (var item1 in widget.data.user.workspaces) {
-      print(item1.id);
-      setState(() {
-        wsdto.workspaceId = item1.id;
-        wsdto.workspacename = item1.name;
+    for (var item in widget.data.user.workspaces) {
+      print('Round $counter ');
+      print('Printing the workspaces names');
+      print(item.name);
+      await setState(() {
+        wsdto.workspaceId = item.id;
+        wsdto.workspacename = item.name;
+        udto.workspaces..add(wsdto);
+        counter++;
       });
+      await print('### ${wsdto.workspacename}');
 
-      print('00000000');
-      for (var item in udto.workspaces) {
-        print(item.workspacename);
-      }
-      print('>>>>>>>>>');
-      // print(udto.workspaces);
-      await _wsbloc.getWS(item1.id).then((value) async {
-        print(value);
-
-        for (var item in value.workspace.spaces) {
-          setState(() {
-            spacedto.spaceId = item;
-          });
-        }
-        wsdto.spaces.add(spacedto);
-        udto.workspaces.add(wsdto);
-        print('spacedto.spaceId ${spacedto.spaceId}');
-      });
+      print('//////');
     }
-    // for (var item in udto.workspaces) {
-    //   for (var item1 in item.spaces) {
-    //     await _spacebloc.getSpace(item1.spaceId).then((value) {
 
-    //     });
-    //   }
-    // }
-    print('USERNAME ${udto.username}');
     for (var item in udto.workspaces) {
-      print('WS ${item.workspacename}');
-      print('WS ${item.workspaceId}');
-      for (var item1 in item.spaces) {
-        print('SPACE ${item1.spaceId}');
-      }
+      print('======');
+      print(item.workspacename);
+      print('_________');
     }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -83,6 +66,28 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+
+/////////////////////
+  // await _wsbloc.getWS(item1.id).then((value) async {
+  //   print(value);
+
+  //   for (var item in value.workspace.spaces) {
+  //     setState(() {
+  //       spacedto.spaceId = item;
+  //     });
+  //   }
+  // wsdto.spaces.add(spacedto);
+  // udto.workspaces.add(wsdto);
+  // print('spacedto.spaceId ${spacedto.spaceId}');
+  // });
+  // }
+  // for (var item in udto.workspaces) {
+  //   for (var item1 in item.spaces) {
+  //     await _spacebloc.getSpace(item1.spaceId).then((value) {
+
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

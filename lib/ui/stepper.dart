@@ -52,7 +52,6 @@ class _StepperScreenState extends State<StepperScreen> {
     _spaceController.addListener(_handleSpaceChanged);
     _wsController.addListener(_handleWSChanged);
     udto.username = widget.data.user.name;
-    print('USERNAME FROM DTO ${udto.username}');
   }
 
   void _handleWSChanged() {
@@ -71,8 +70,6 @@ class _StepperScreenState extends State<StepperScreen> {
     String workspaceId = '';
     List<String> email = [];
 
-    print(currentStep);
-    // if (currentStep + 1 < steps.length) {
     if (currentStep != 3) {
       if (currentStep == 0) {
         if (workspace.isNotEmpty) {
@@ -85,17 +82,11 @@ class _StepperScreenState extends State<StepperScreen> {
               workspaceId = value.id;
               workspaceData = value; // the response object
               wsdto.workspaceId = value.id;
-              // print('wsdto.workspaceId ${wsdto.workspaceId}');
+
               wsdto.workspacename = value.name;
-              // print('wsdto.workspacename ${wsdto.workspacename}');
-              // addWorkspace.id = value.id;
-              // addWorkspace.name = value.name;
-              // print('+++++++++++++');
-              // widget.data.user.workspaces.add(addWorkspace);
+
               udto.workspaces.add(wsdto);
-              // print('udto.workspaces ${udto.workspaces}');
-              // print('#########################');
-              print(widget.data.user.workspaces.length);
+
               Fluttertoast.showToast(
                   msg: value.message,
                   toastLength: Toast.LENGTH_SHORT,
@@ -105,8 +96,6 @@ class _StepperScreenState extends State<StepperScreen> {
                   textColor: Colors.white,
                   fontSize: 16.0);
             });
-
-            print('WS DATA ${workspaceData.toString()}');
           });
           goTo(currentStep + 1);
         }
@@ -150,19 +139,10 @@ class _StepperScreenState extends State<StepperScreen> {
             setState(() {
               spaceData = value;
               spacedto.spaceId = value.id;
-              print(' spacedto.spaceId ${spacedto.spaceId}');
+
               spacedto.spacename = value.name;
-              print(' spacedto.spacename ${spacedto.spacename}');
 
               wsdto.spaces.add(spacedto);
-              print('WSDTO SPACES ${wsdto.spaces}');
-              // addSpace.id = addWorkspace.id;
-              // print('addSpace.id ${addSpace.id}');
-              // addSpace.name = addWorkspace.name;
-              // print('addSpace.name ${addSpace.name}');
-              // addSpace.spaces = new List<String>();
-              // addSpace.spaces.add(value.id);
-              // print('Spaces ${addSpace.spaces}');
 
               Fluttertoast.showToast(
                   msg: value.message,
@@ -175,27 +155,12 @@ class _StepperScreenState extends State<StepperScreen> {
             });
 
             print('//REQUEST END IN STEPPER SCREEN//');
-            // goTo(currentStep + 1);
           });
-        } else {
-          print('???????');
         }
-        print(currentStep);
-        print("WIDGET DATA:");
-        print(widget.data);
-        print('ADDSPACE : $addSpace');
+
         showAlertDialog(context);
-        // goTo(currentStep + 1);
       }
     }
-    // else {
-    //   // print('${steps.length}');
-    //   print(currentStep);
-    //   print("WIDGET DATA:");
-    //   print(widget.data);
-    //   print('ADDSPACE : $addSpace');
-    //   showAlertDialog(context);
-    // }
   }
 
   cancel() {
@@ -285,8 +250,6 @@ class _StepperScreenState extends State<StepperScreen> {
     Widget button = FlatButton(
       child: Text("GO"),
       onPressed: () async {
-        print('ON PRESSED ALERT BUTTON NAVIGATING TO HOMME');
-
         Navigator.push(
           context,
           MaterialPageRoute(

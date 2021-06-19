@@ -105,9 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         controller: _emailController,
-                        onEditingComplete: () {
-                          print('email $email');
-                        },
                       ),
                     ),
                   ),
@@ -139,9 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: true,
                         obscuringCharacter: '*',
                         controller: _passwordController,
-                        onEditingComplete: () {
-                          print('password $password');
-                        },
                       ),
                     ),
                   ),
@@ -162,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Color(0xff7b68ee)),
                             );
                             login = {'email': email, 'password': password};
-                            print(login);
+
                             int code;
                             await _bloc.loginAcc(login).then((value) {
                               setState(() {
@@ -243,17 +237,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (isOK) {
           setState(() {
             accToken = data.token;
-            print('DATA.TOEKN ${data.token}');
-            print('ON PRESSED TOKEN $accToken');
           });
 
           if (data.user.workspaces.length > 0) {
-            for (var item in data.user.workspaces) {
-              print('||||||||||||||||');
-              print('Printing the spaces names');
-              print(item.name);
-              //check if it prints right
-            }
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SplashScreen(data)),
@@ -264,8 +250,6 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => StepperScreen(data)),
             );
           }
-          // accToken = data.token;
-          print('Global Token is $accToken');
         } else
           Navigator.pop(context);
       },

@@ -99,9 +99,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         controller: _emailController,
-                        onEditingComplete: () {
-                          print('email $email');
-                        },
                       ),
                     ),
                   ),
@@ -131,9 +128,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         controller: _usernameController,
-                        onEditingComplete: () {
-                          print('username $username');
-                        },
                       ),
                     ),
                   ),
@@ -164,9 +158,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: true,
                         obscuringCharacter: '*',
                         controller: _passwordController,
-                        onEditingComplete: () {
-                          print('password $password');
-                        },
                       ),
                     ),
                   ),
@@ -212,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'password': password
                             };
                             int code;
-                            print(register);
+
                             await _bloc.registerAcc(register).then((value) {
                               setState(() {
                                 message = value.message;

@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String newSpaceName = '';
   String selectedSpace = '';
   String newList = '';
+  List<DropdownMenuItem<String>> SpacesmenuItem = [];
+
   List<Map<String, String>> testWS = [];
   List<Map<String, String>> testSpace = [];
 
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       for (var item2 in item.spaces) {
         setState(() {
-          testSpace.add({item.spaceId: item2.spacename});
+          testSpace.add({item2.spaceId: item2.spacename});
         });
       }
     }
@@ -76,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   printwSTest() async {
     for (var item in widget.data.workspaces) {
-      await setState(() {
+      setState(() {
         testWS.add({item.workspaceId: item.workspacename});
       });
       print('Workspace ---- ${item.workspaceId}');
@@ -84,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       for (var item2 in item.spaces) {
         print('Space ---- ${item2.spaceId}');
         print('Space ----> ${item2.spacename}');
-        await setState(() {
+        setState(() {
           testSpace.add({item2.spaceId: item2.spacename});
         });
       }
@@ -97,22 +99,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   testWSDropdown() {
-    for (var item in testWS) {
-      List<DropdownMenuItem<String>> menuItems = List();
-      for (String key in item.keys) {
-        menuItems.add(DropdownMenuItem<String>(
-          child: Text(item[key]),
-          value: key,
-        ));
-      }
-      DropdownButton<String>(
-        items: menuItems,
-        onChanged: (value) {
-          print('HELLO THERE');
-          print(value);
-        },
-      );
+    print("************");
+    List<DropdownMenuItem<String>> menuItems = [];
+    for (var item in widget.data.workspaces) {
+      menuItems.add(DropdownMenuItem<String>(
+        child: Text(item.workspacename),
+        value: item.workspaceId,
+      ));
     }
+
+    return DropdownButton<String>(
+      items: menuItems,
+      onChanged: (value) {
+        setState(() {
+          SpacesmenuItem = <DropdownMenuItem<String>>[];
+        });
+        for (var item in widget.data.workspaces) {
+          if (item.workspaceId == value) {
+            print('HELLO THERE');
+
+            for (var spaceitem in item.spaces) {
+              print('**********');
+              print(spaceitem.spaceId);
+              setState(() {
+                SpacesmenuItem.add(DropdownMenuItem<String>(
+                  child: Text(spaceitem.spacename),
+                  value: spaceitem.spaceId,
+                ));
+              });
+            }
+          }
+        }
+      },
+    );
   }
 
   setWS() async {
@@ -294,9 +313,15 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 10.0,
             ),
-            ListTile(
-              title: testWSDropdown(),
+            testWSDropdown(),
+            DropdownButton<String>(
+              items: SpacesmenuItem,
+              onChanged: (value) {
+                print('HELLO THERE');
+                print(value);
+              },
             ),
+
             ListTile(
               leading: Icon(
                 Icons.settings,

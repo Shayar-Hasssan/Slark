@@ -1,4 +1,4 @@
-import 'package:slark/model/dto_ws.dart';
+import 'package:slark/dto/dto_ws.dart';
 
 class DtoUser {
   String username = '';

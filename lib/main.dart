@@ -1,20 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:slark/ui/board.dart';
-import 'package:slark/ui/ganttChart.dart';
-import 'package:slark/ui/landing.dart';
-import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/login.dart';
-
-import 'package:slark/ui/register.dart';
-import 'package:slark/ui/setting.dart';
-import 'package:slark/ui/space.dart';
-// import 'package:slark/ui/splashScreen.dart';
-// import 'package:slark/ui/stepper.dart';
-import 'package:slark/ui/taskInfo.dart';
-// import 'package:slark/ui/home.dart';
-import 'package:slark/ui/user_tasks.dart';
 
 void main() {
   LicenseRegistry.addLicense(() async* {
@@ -41,22 +28,20 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        // '/splash': (ctx) => SplashScreen(),
-        '/register': (ctx) => RegisterScreen(),
+        //   '/splash': (ctx) => SplashScreen(),
+        //   '/register': (ctx) => RegisterScreen(),
         '/login': (ctx) => LoginScreen(),
-        '/landing': (ctx) => LandingUi(),
-        // '/home': (ctx) => HomeScreen(),
-        '/space': (ctx) => SpaceScreen(),
-        '/uTasks': (ctx) => UserTasksScreen(),
-        '/listInfo': (ctx) => ListInfo(),
-        '/taskInfo': (ctx) => TaskInfo(),
-        '/board': (ctx) => Board(),
-        '/setting': (ctx) => SettingScreen(),
-        '/gantt': (ctx) => GanttChartScreen(),
-        // '/stepper': (ctx) => StepperScreen(data)
+        //   '/landing': (ctx) => LandingUi(),
+        //   '/home': (ctx) => HomeScreen(),
+        //   '/space': (ctx) => SpaceScreen(),
+        //   '/uTasks': (ctx) => UserTasksScreen(),
+        //   '/listInfo': (ctx) => ListInfo(),
+        //   '/taskInfo': (ctx) => TaskInfo(),
+        //   '/board': (ctx) => Board(),
+        //   '/setting': (ctx) => SettingScreen(),
+        //   '/gantt': (ctx) => GanttChartScreen(),
+        //   '/stepper': (ctx) => StepperScreen(data)
       },
-
-      // home: SplashScreen(),
     );
   }
 

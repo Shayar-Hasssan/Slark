@@ -14,6 +14,7 @@ class API_Space_Provider {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
   };
+
   Future createSpace(spacedata) async {
     print('IN PROVIDER');
     var response;
@@ -22,12 +23,8 @@ class API_Space_Provider {
       headers: requestHeaders,
       body: jsonEncode(spacedata),
     );
-    print('///////////////');
     print(request.body);
-    print('^^^^^^');
     response = createSpaceFromJson(request.body);
-    print(response);
-    print('***********');
     return response;
   }
 
@@ -36,9 +33,25 @@ class API_Space_Provider {
     var response;
     var request =
         await get(Uri.parse('$baseUrl$spaceUrl/$id'), headers: requestHeaders);
-
     response = spaceFromJson(request.body);
-    print('OUT OF PROVIDER');
+    return response;
+  }
+
+  Future deleteSpace(spacedata) async {
+    print('In Provider');
+    var response;
+    var request =
+        await delete(Uri.parse('$baseUrl$spaceUrl'), headers: requestHeaders);
+    response = spaceFromJson(request.body);
+    return response;
+  }
+
+  Future updateSpace(spacedata) async {
+    print('In Provider');
+    var response;
+    var request = await put(Uri.parse('$baseUrl$spaceUrl'),
+        headers: requestHeaders, body: spacedata);
+    response = spaceFromJson(request.body);
     return response;
   }
 }

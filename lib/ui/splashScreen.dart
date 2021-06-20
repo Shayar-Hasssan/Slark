@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slark/bloc/space_bloc.dart';
 import 'package:slark/bloc/workspace_bloc.dart';
-import 'package:slark/model/dto_space.dart';
-import 'package:slark/model/dto_user.dart';
-import 'package:slark/model/dto_ws.dart';
+import 'package:slark/dto/dto_space.dart';
+import 'package:slark/dto/dto_user.dart';
+import 'package:slark/dto/dto_ws.dart';
 import 'package:slark/ui/home.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           setState(() {
             spacedto = new DtoSpace();
             spacedto.spaceId = item2;
-            spacedto.spacename = 'Space $counter';
+            spacedto.spacename = 'Space ${item.name}';
             wsdto.spaces.add(spacedto);
             // udto.workspaces.add(wsdto);
           });

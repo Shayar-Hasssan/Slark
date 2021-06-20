@@ -1,4 +1,4 @@
-import 'package:slark/model/dto_space.dart';
+import 'package:slark/dto/dto_space.dart';
 
 class DtoWS {
   String workspaceId = '';

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:slark/bloc/account_bloc.dart';
 import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/globals.dart';
-import 'package:slark/model/dto_space.dart';
-import 'package:slark/model/dto_user.dart';
-import 'package:slark/model/dto_ws.dart';
+import 'package:slark/dto/dto_space.dart';
+import 'package:slark/dto/dto_user.dart';
+import 'package:slark/dto/dto_ws.dart';
 // import 'package:slark/globals.dart';
 // import 'package:slark/ui/home.dart';
 

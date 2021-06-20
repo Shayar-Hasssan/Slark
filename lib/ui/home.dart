@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:slark/model/dto_user.dart';
 import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
@@ -71,6 +70,28 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           testSpace.add({item.spaceId: item2.spacename});
         });
+      }
+    }
+  }
+
+  printwSTest() async {
+    for (var item in widget.data.workspaces) {
+      await setState(() {
+        testWS.add({item.workspaceId: item.workspacename});
+      });
+      print('Workspace ---- ${item.workspaceId}');
+      print('Workspace ----> ${item.workspacename}');
+      for (var item2 in item.spaces) {
+        print('Space ---- ${item2.spaceId}');
+        print('Space ----> ${item2.spacename}');
+        await setState(() {
+          testSpace.add({item2.spaceId: item2.spacename});
+        });
+      }
+    }
+    for (var item in widget.data.workspaces) {
+      for (var item2 in item.spaces) {
+        print(item.workspacename + item2.spacename);
       }
     }
   }

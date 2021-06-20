@@ -4,14 +4,11 @@ class SpaceBloc {
   SpaceBloc();
   Future createSpace(spacedata) async {
     print("IN Space bloc");
-    print('Workspace Name in Bloc : $spacedata');
     API_Space_Provider apiProv = new API_Space_Provider();
     var spaceData;
     await apiProv.createSpace(spacedata).then((value) {
-      print("/////");
       print('PRINTING THE MESSAGE');
       print(value.message);
-      print('________________');
       spaceData = value;
     });
     return spaceData;
@@ -20,10 +17,29 @@ class SpaceBloc {
   Future getSpace(id) async {
     API_Space_Provider apiProv = new API_Space_Provider();
     var spacedata;
-    print('IN GET Space BLOC');
-    print('Space Id is $id');
+    print('IN  Space BLOC');
     await apiProv.getSpace(id).then((value) {
       print('THE MESSAGE IS ${value.message}');
+      spacedata = value;
+    });
+    return spacedata;
+  }
+
+  Future deleteSpace(data) async {
+    API_Space_Provider apiProv = new API_Space_Provider();
+    var spacedata;
+    print('IN Space Bloc');
+    await apiProv.deleteSpace(data).then((value) {
+      spacedata = value;
+    });
+    return spacedata;
+  }
+
+  Future updateSpace(data) async {
+    API_Space_Provider apiProv = new API_Space_Provider();
+    var spacedata;
+    print('IN Space Bloc');
+    await apiProv.updateSpace(data).then((value) {
       spacedata = value;
     });
     return spacedata;

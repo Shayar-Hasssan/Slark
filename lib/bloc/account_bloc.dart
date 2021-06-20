@@ -16,30 +16,23 @@ class AccountBloc {
   AccountBloc();
 
   Future registerAcc(userData) async {
-    print("i am in register bloc");
-    print('User Data in Bloc : $userData');
+    print("In register bloc");
+
     API_Account_Provider apiProv = new API_Account_Provider();
     var accountData;
     await apiProv.register(userData).then((value) {
-      print("/////");
-      print(value);
       accountData = value;
     });
     return accountData;
   }
 
   Future loginAcc(userData) async {
-    print("i am in login bloc");
-    print('User Data in Bloc : $userData');
+    print("In login bloc");
+
     API_Account_Provider apiProv = new API_Account_Provider();
     var accountData;
     await apiProv.login(userData).then((value) {
-      print("/////");
-      print(value);
       accountData = value;
-      print(';;;;;;;;;;;');
-
-      // print(object)
     });
 
     return accountData;
@@ -49,8 +42,6 @@ class AccountBloc {
     AccountRegister verifyData;
     API_Account_Provider apiProv = new API_Account_Provider();
     await apiProv.verify(email).then((value) {
-      print(']]]]]]]]');
-      print(value);
       verifyData = value;
     });
     return verifyData;

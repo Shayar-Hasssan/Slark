@@ -16,7 +16,7 @@ class API_Account_Provider {
 
   Future register(userData) async {
     var response;
-    print("i am in register");
+    print("In Register API");
     var request = await post(
       Uri.parse('$baseUrl$registerUrl'),
       headers: {'content-type': 'application/json'},
@@ -25,21 +25,16 @@ class API_Account_Provider {
     if (request.statusCode == 200) {
       print('200 Status Coddee if statement');
       response = accountRegisterFromJson(request.body);
-      print("*****");
-      print(response);
     } else if (request.statusCode == 401) {
       print('AN ISSUE IS HERE 401 STATUS CODEE');
       response = issueFromJson(request.body);
-      print('&&&&&&&&&&');
-      print(response);
     }
     return response;
   }
 
   Future login(userData) async {
     var response;
-    print('In the login API');
-    print('Data is : $userData');
+    print('In login API');
     var request = await post(
       Uri.parse('$baseUrl$loginUrl'),
       headers: {'content-type': 'application/json'},
@@ -48,38 +43,22 @@ class API_Account_Provider {
     print(request.body);
     if (request.statusCode == 200) {
       print('200 Status Coddee if statement');
-      var xx = jsonDecode(request.body)['user']['_roles'];
-      // var ss = jsonDecode(xx)['roles'].toString();
-      print('SSSSSS $xx');
       response = accountLoginFromJson(request.body);
-      print('*****');
-      print(response.code);
-      print('[[[[[[]]]]]]]');
-      print('ROLES ARE ${response.user.roles}');
-      print('TOKEN IS ${response.token}');
     } else if (request.statusCode == 401) {
       print('AN ISSUE IS HERE 401 STATUS CODEE');
       response = issueFromJson(request.body);
-      print('##########');
-      print(response.toString());
     } else if (request.statusCode == 409) {
       print('AN ISSUE IS HERE 409 STATUS CODEE');
       response = passwordFromJson(request.body);
-      print('##########');
-      print(response.toString());
     }
 
     return response;
   }
 
   verify(email) async {
-    print('Verify API');
+    print('In Verify API');
     var request = await get('$baseUrl$verifyUrl');
-    print(request.body);
     var response = accountRegisterFromJson(request.body);
-    print('??????????');
-    print(response.code);
-    print(response.message);
     return response;
   }
 }

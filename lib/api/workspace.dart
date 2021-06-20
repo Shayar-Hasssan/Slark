@@ -11,6 +11,7 @@ class API_Workspace_Provider {
   String baseUrl = 'https://slark-backend.herokuapp.com/';
   String wsUrl = 'workspace';
   String inviteUrl = 'workspace/invite-user';
+  String rmvuserUrl = 'workspace/remove-user';
   Map<String, String> requestHeaders = {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
@@ -26,10 +27,8 @@ class API_Workspace_Provider {
       headers: requestHeaders,
       body: "$body",
     );
-    print('///////////////');
     print(request.body);
     response = CreateworkspaceFromJson(request.body);
-    print('***********');
     return response;
   }
 
@@ -41,9 +40,9 @@ class API_Workspace_Provider {
       headers: requestHeaders,
       body: jsonEncode(email),
     );
-    print('///////////////');
+
     response = issueFromJson(request.body);
-    print('***********');
+
     return response;
   }
 
@@ -55,6 +54,26 @@ class API_Workspace_Provider {
     print('$baseUrl$wsUrl/$id');
     response = workspaceFromJson(request.body);
     print('OUT OF PROVIDER');
+    return response;
+  }
+
+  Future deleteWS(wsId) async {
+    print('IN PROVIDER');
+    var response;
+    // var body = jsonEncode(wsId);
+    var request =
+        await delete(Uri.parse('$baseUrl$wsUrl'), headers: requestHeaders);
+    response = workspaceFromJson(request.body);
+    return response;
+  }
+
+  Future removeUser(userInfo) async {
+    print('IN PROVIDER');
+    var response;
+    // var body = jsonEncode(jsonEncode(userInfo));
+    var request =
+        await delete(Uri.parse('$baseUrl$rmvuserUrl'), headers: requestHeaders);
+    response = workspaceFromJson(request.body);
     return response;
   }
 }

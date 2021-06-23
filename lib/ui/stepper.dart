@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,8 +9,6 @@ import 'package:slark/dto/dto_ws.dart';
 import 'package:slark/model/user.dart';
 import 'package:slark/model/workspace.dart';
 import 'package:slark/ui/home.dart';
-// import 'package:slark/ui/home.dart';
-import 'package:slark/ui/splashScreen.dart';
 
 class StepperScreen extends StatefulWidget {
   @override

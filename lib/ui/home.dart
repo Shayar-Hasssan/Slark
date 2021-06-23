@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:slark/model/list.dart';
 import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/space.dart';
@@ -10,7 +11,6 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
   final data;
   final bool isStepper;
-  // final userWSS; //Worskspaces and Spaces
   const HomeScreen({Key key, this.data, this.isStepper}) : super(key: key);
 }
 
@@ -19,26 +19,23 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _spaceEditController = TextEditingController();
   TextEditingController _newTaskController = TextEditingController();
   TextEditingController _newListController = TextEditingController();
+  TextEditingController _newspaceController = TextEditingController();
   int _selectedIndex = 0;
   String newTask = '';
   String newWSName = '';
   String newSpaceName = '';
-  String selectedSpace = '';
   String newList = '';
-  List<DropdownMenuItem<String>> SpacesmenuItem = [];
-
+  List<String> spacesmenuItem = [];
   List<Map<String, String>> testWS = [];
   List<Map<String, String>> testSpace = [];
-
-  List<String> workspaces = [];
-  List<String> spaces = ['sss'];
-
+  String selectedSpace = 'choose space';
   List<String> tasks = ['task1'];
   List<String> lists = ['list', 'list2', 'list3'];
-  bool isWorkspace;
-  String selectedList;
 
   String selectedWorkspace;
+  bool isWorkspace;
+  String selectedList;
+  var newspace;
   bool isExpand;
 
   final List<Widget> _widgetOptions = [
@@ -50,14 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // ignore: must_call_super
   initState() {
     print('AT HOME SCREEN');
-
-    setWS();
-    setSpace();
+    selectedWorkspace = widget.data.workspaces.first.workspacename;
     wSTest();
     setState(() {
-      selectedWorkspace = workspaces.first;
       selectedList = lists.first;
-      selectedSpace = spaces.first;
       isWorkspace = false;
       isExpand = false;
     });
@@ -94,60 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
     for (var item in widget.data.workspaces) {
       for (var item2 in item.spaces) {
         print(item.workspacename + item2.spacename);
-      }
-    }
-  }
-
-  testWSDropdown() {
-    print("************");
-    List<DropdownMenuItem<String>> menuItems = [];
-    for (var item in widget.data.workspaces) {
-      menuItems.add(DropdownMenuItem<String>(
-        child: Text(item.workspacename),
-        value: item.workspaceId,
-      ));
-    }
-
-    return DropdownButton<String>(
-      items: menuItems,
-      onChanged: (value) {
-        setState(() {
-          SpacesmenuItem = <DropdownMenuItem<String>>[];
-        });
-        for (var item in widget.data.workspaces) {
-          if (item.workspaceId == value) {
-            print('HELLO THERE');
-
-            for (var spaceitem in item.spaces) {
-              print('**********');
-              print(spaceitem.spaceId);
-              setState(() {
-                SpacesmenuItem.add(DropdownMenuItem<String>(
-                  child: Text(spaceitem.spacename),
-                  value: spaceitem.spaceId,
-                ));
-              });
-            }
-          }
-        }
-      },
-    );
-  }
-
-  setWS() async {
-    for (var item1 in widget.data.workspaces) {
-      await setState(() {
-        workspaces.add(item1.workspacename);
-      });
-    }
-  }
-
-  setSpace() async {
-    for (var item1 in widget.data.workspaces) {
-      for (var item in item1.spaces) {
-        await setState(() {
-          spaces.add(item.spacename);
-        });
       }
     }
   }
@@ -243,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   body: Container(
                     height: 200.0,
-                    child: contentList(spaces, isWorkspace),
+                    child: spaceList(),
                   ),
                   isExpanded: isExpand,
                 ),
@@ -258,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   isWorkspace = true;
                 });
 
-                showModal(workspaces);
+                showModal();
               },
               leading: Icon(
                 Icons.group_work,
@@ -298,30 +237,9 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 40.0,
             ),
-            // ListTile(
-            //   title: Text(
-            //     'Favorite',
-            //     style: TextStyle(fontSize: 16.0),
-            //   ),
-            //   leading: Icon(
-            //     Icons.favorite,
-            //     color: Colors.black,
-            //     size: 20.0,
-            //   ),
-            //   onTap: () {},
-            // ),
             SizedBox(
               height: 10.0,
             ),
-            testWSDropdown(),
-            DropdownButton<String>(
-              items: SpacesmenuItem,
-              onChanged: (value) {
-                print('HELLO THERE');
-                print(value);
-              },
-            ),
-
             ListTile(
               leading: Icon(
                 Icons.settings,
@@ -388,21 +306,159 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  contentList(List myList, bool isWorkspace) {
-    // Widget listt;
+  showModal() {
+    return showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black38,
+      backgroundColor: Colors.white,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      builder: (BuildContext context) {
+        const double height = 500;
+
+        return Container(
+          color: Color(0xff7b68ee),
+          height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(
+                height: 15.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Container(
+                  height: 350.0,
+                  color: Colors.indigo[50],
+                  child: workspaceList(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  spaceList() {
     List<Widget> buttons = [];
-    for (var item in myList) {
+    if (spacesmenuItem.length > 0) {
+      for (var item in spacesmenuItem) {
+        buttons.add(
+          Container(
+            child: ListTile(
+              onTap: () {
+                print('-==== $item');
+                selectedSpace = item;
+                Navigator.pop(context);
+              },
+              leading: Text(
+                '$item',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'AdventPro',
+                  fontSize: 18.0,
+                ),
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      if (isWorkspace) {
+                        _editNameDialog(context, _spaceEditController);
+                        setState(() {
+                          item = newSpaceName;
+                        });
+                      }
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.indigo,
+                      size: 18.0,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      // ignore: unused_local_variable
+                      final ConfirmAction action =
+                          await _asyncConfirmDialog(context);
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red[800],
+                      size: 20.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    } else {
+      buttons.add(
+        Container(
+            child: ListTile(
+          title: Text('Add new space'),
+          onTap: () {
+            createNewSpace(context);
+          },
+        )),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+      child: Container(
+        child: ListView(
+          children: buttons,
+        ),
+      ),
+    );
+  }
+
+  workspaceList() {
+    var selectedWS;
+    List<Widget> buttons = [];
+    for (var item in widget.data.workspaces) {
       buttons.add(
         Container(
           child: ListTile(
             onTap: () {
-              if (isWorkspace) {
-                setWorkspace(item);
-              } else
-                spaceNavigate(item);
+              print('------- ${item.workspaceId}');
+              setState(() {
+                selectedWS = item.workspaceId;
+                selectedWorkspace = item.workspacename;
+                spacesmenuItem = <String>[];
+              });
+              for (var item in widget.data.workspaces) {
+                if (item.workspaceId == selectedWS) {
+                  print('HELLO THERE');
+                  print(selectedWS);
+                  print(selectedWorkspace);
+                  if (item.spaces.length > 0) {
+                    for (var spaceitem in item.spaces) {
+                      print('**********');
+                      print(spaceitem.spaceId);
+                      setState(() {
+                        spacesmenuItem.add(spaceitem.spacename);
+                        selectedSpace = spacesmenuItem.first;
+                      });
+                    }
+                  } else
+                    setState(() {
+                      selectedSpace = 'No Spaces Yet';
+                    });
+                }
+              }
+              Navigator.pop(context);
             },
             leading: Text(
-              '$item',
+              '${item.workspacename}',
               style: TextStyle(
                 color: Colors.black,
                 fontFamily: 'AdventPro',
@@ -419,11 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {
                         item = newWSName;
                       });
-                    } else
-                      _editNameDialog(context, _spaceEditController);
-                    setState(() {
-                      item = newSpaceName;
-                    });
+                    }
                   },
                   icon: Icon(
                     Icons.edit,
@@ -433,6 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 IconButton(
                   onPressed: () async {
+                    // ignore: unused_local_variable
                     final ConfirmAction action =
                         await _asyncConfirmDialog(context);
                   },
@@ -456,64 +509,6 @@ class _HomeScreenState extends State<HomeScreen> {
           children: buttons,
         ),
       ),
-    );
-  }
-
-  spaceNavigate(name) {
-    setState(() {
-      selectedSpace = name;
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
-  }
-
-  setWorkspace(name) {
-    setState(() {
-      selectedWorkspace = name;
-    });
-    Navigator.pop(context);
-  }
-
-  showModal(List toView) {
-    return showModalBottomSheet(
-      context: context,
-      barrierColor: Colors.black38,
-      backgroundColor: Colors.white,
-      elevation: 10,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      builder: (BuildContext context) {
-        bool hasList = (toView == null) ? false : true;
-        const double height = 500;
-
-        return Container(
-          color: Color(0xff7b68ee),
-          height: height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              SizedBox(
-                height: 15.0,
-              ),
-              Visibility(
-                visible: hasList,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Container(
-                    height: 350.0,
-                    color: Colors.indigo[50],
-                    child: contentList(toView, isWorkspace),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -674,6 +669,44 @@ class _HomeScreenState extends State<HomeScreen> {
       title: Text("New List"),
       content: TextField(
         controller: _newListController,
+      ),
+      actions: [
+        submit,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  createNewSpace(BuildContext ctx) {
+    // ignore: deprecated_member_use
+    Widget submit = FlatButton(
+      child: Text(
+        "Submit",
+      ),
+      onPressed: () {
+        setState(() {
+          newspace = _newspaceController.text;
+        });
+        spacesmenuItem.add(newspace);
+
+        print(spacesmenuItem);
+        setState(() {
+          selectedSpace = newspace;
+        });
+        Navigator.pop(context);
+      },
+    );
+    AlertDialog alert;
+
+    alert = AlertDialog(
+      title: Text("New Space"),
+      content: TextField(
+        controller: _newspaceController,
       ),
       actions: [
         submit,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slark/bloc/space_bloc.dart';
 import 'package:slark/bloc/workspace_bloc.dart';
+import 'package:slark/dto/dto_list.dart';
 import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_user.dart';
 import 'package:slark/dto/dto_ws.dart';
@@ -21,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   var udto = new DtoUser();
   var wsdto = new DtoWS();
   var spacedto = new DtoSpace();
+  var listdto = new DtoList();
 
   @override
   void initState() {
@@ -47,21 +49,34 @@ class _SplashScreenState extends State<SplashScreen> {
         print(wsdto.workspaceId);
         wsdto.workspacename = item.name;
         // udto.workspaces.add(wsdto);
-        counter++;
       });
 
-      await _wsbloc.getWS(item.id).then((value) {
+      await _wsbloc.getWS(item.id).then((value) async {
         for (var item2 in value.workspace.spaces) {
           setState(() {
             spacedto = new DtoSpace();
             spacedto.spaceId = item2;
-            spacedto.spacename = 'Space ${item.name}';
+            spacedto.spacename = 'Space $counter';
             wsdto.spaces.add(spacedto);
             // udto.workspaces.add(wsdto);
           });
+
+          await _spacebloc.getSpace(item2).then((value) {
+            for (var listItem in value.space.lists) {
+              setState(() {
+                listdto = new DtoList();
+                listdto.id = listItem;
+                listdto.name = 'list $counter';
+                spacedto.lists.add(listdto);
+                print('--- $listItem');
+                print('==== ${listdto.name}');
+              });
+            }
+          });
+          wsdto.spaces.add(spacedto);
         }
       });
-
+      counter++;
       udto.workspaces.add(wsdto);
     }
 

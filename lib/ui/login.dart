@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slark/bloc/account_bloc.dart';
-import 'package:slark/bloc/workspace_bloc.dart';
+// import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_user.dart';
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _bloc = AccountBloc();
   String message = '';
   String name = '';
-  final _wsbloc = WorkspaceBloc();
+  // final _wsbloc = WorkspaceBloc();
   var udto = new DtoUser();
   var wsdto = new DtoWS();
   var spacedto = new DtoSpace();
@@ -237,6 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (isOK) {
           setState(() {
             accToken = data.token;
+            print('______$accToken');
           });
 
           if (data.user.workspaces.length > 0) {

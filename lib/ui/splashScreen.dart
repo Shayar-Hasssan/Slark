@@ -53,51 +53,52 @@ class _SplashScreenState extends State<SplashScreen> {
         // udto.workspaces.add(wsdto);
       });
 
-      await _wsbloc.getWS(item.id).then((value) async {
-        for (var item2 in value.workspace.spaces) {
-          setState(() {
-            spacedto = new DtoSpace();
-            spacedto.spaceId = item2;
-            spacedto.spacename = 'Space $scount$counter ${item.name}';
-            wsdto.spaces.add(spacedto);
-            scount++;
-            // udto.workspaces.add(wsdto);
-          });
+      await _wsbloc.getWS(item.id).then(
+        (value) async {
+          for (var item2 in value.workspace.spaces) {
+            setState(() {
+              spacedto = new DtoSpace();
+              spacedto.spaceId = item2;
+              spacedto.spacename = 'Space $scount $counter';
+              scount++;
+            });
 
-          await _spacebloc.getSpace(item2).then((value) {
-            for (var listItem in value.space.lists) {
-              setState(() {
-                listdto = new DtoList();
-                listdto.id = listItem;
-                listdto.name = 'list $count ${spacedto.spacename}';
-                spacedto.lists.add(listdto);
-                print('--- $listItem');
-                print('==== ${listdto.name}');
-                count++;
-              });
-            }
-          });
-          wsdto.spaces.add(spacedto);
-        }
-      });
+            await _spacebloc.getSpace(item2).then(
+              (value) {
+                for (var listItem in value.space.lists) {
+                  setState(() {
+                    listdto = new DtoList();
+                    listdto.id = listItem;
+                    listdto.name = 'list $count ${spacedto.spacename}';
+
+                    print('--- $listItem');
+                    print('==== ${listdto.name}');
+                    count++;
+                  });
+                  spacedto.lists.add(listdto);
+                }
+              },
+            );
+            wsdto.spaces.add(spacedto);
+          }
+        },
+      );
 
       counter++;
       udto.workspaces.add(wsdto);
     }
 
     for (var item in udto.workspaces) {
-      print('---- ${item.workspacename}');
+      print('workspace: ${item.workspacename}');
       for (var item2 in item.spaces) {
-        print('======');
-        print(item2.spacename);
-        print(item2.spaceId);
+        print('Space name: ${item2.spacename}');
+        print('SpaceId : ${item2.spaceId}');
         for (var item3 in item2.lists) {
-          print('======');
-          print(item3.name);
-          print(item3.id);
+          print('listname: ${item3.name}');
+          print('listId : ${item3.id}');
         }
-        print('_________');
       }
+      print('_________');
     }
 
     Navigator.push(

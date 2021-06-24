@@ -33,6 +33,7 @@ class API_Space_Provider {
     var response;
     var request =
         await get(Uri.parse('$baseUrl$spaceUrl/$id'), headers: requestHeaders);
+    print('REQUEST GET BODY : ${request.body}');
     response = spaceFromJson(request.body);
     return response;
   }

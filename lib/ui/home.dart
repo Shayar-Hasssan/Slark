@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:slark/dto/dto_list.dart';
 import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_user.dart';
+import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/setting.dart';
 
@@ -27,32 +28,61 @@ class _HomeScreenState extends State<HomeScreen> {
   String newSpaceName = '';
   String newList = '';
   List<DtoSpace> spacesmenuItem = [];
+  List<DtoList> listsItems = [];
   String selectedSpace = 'choose space';
   List<String> tasks = ['task1'];
-  List<String> lists = ['list', 'list2', 'list3'];
+  // List<String> lists = ['list', 'list2', 'list3'];
 
   String selectedWorkspace;
   bool isWorkspace;
-  String selectedList;
+  String selectedList; // new task
+  // String defaultList = '';
   var newspace;
   bool isExpand;
   var selectedWSId;
   var selectedSpaceId;
-  List<DtoList> listsItems = [];
 
   @override
   // ignore: must_call_super
   initState() {
     print('AT HOME SCREEN');
-
-    selectedWorkspace = widget.data.workspaces.first.workspacename;
-    selectedWSId = widget.data.workspaces.first.workspaceId;
+    setDefault();
+    // listsWidget();
     // selectedSpace = spacesmenuItem.first.spacename;
     setState(() {
-      selectedList = lists.first;
+      // selectedList = lists.first;
       isWorkspace = false;
       isExpand = false;
     });
+  }
+
+  setDefault() async {
+    setState(() {
+      selectedWorkspace = widget.data.workspaces.first.workspacename;
+      selectedWSId = widget.data.workspaces.first.workspaceId;
+    });
+    for (var wsItem in widget.data.workspaces) {
+      if (wsItem.workspaceId == selectedWSId) {
+        for (var item in wsItem.spaces) {
+          spacesmenuItem.add(item);
+        }
+        setState(() {
+          selectedSpace = wsItem.spaces.first.spacename;
+          selectedSpaceId = wsItem.spaces.first.spaceId;
+        });
+      }
+      for (var spaceItem in wsItem.spaces) {
+        if (spaceItem.spaceId == selectedSpaceId) {
+          for (var listItem in spaceItem.lists) {
+            setState(() {
+              listsItems.add(listItem);
+            });
+          }
+        }
+      }
+    }
+    print('DEFAULT WS: $selectedWorkspace');
+    print('DEFAULT Space: $selectedSpace');
   }
 
   @override
@@ -235,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 15.0),
             child: IconButton(
               onPressed: () {
-                _newTaskDialog(context, lists, _newTaskController);
+                _newTaskDialog(context, listsItems, _newTaskController);
               },
               icon: Icon(Icons.add),
             ),
@@ -303,7 +333,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         IconButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, "/listInfo");
+                              // DtoList dtoList
+                              print('||||| ${listItem.name}');
+                              print('||||${listItem.id}');
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ListInfo(data: listItem),
+                                  ));
                             },
                             icon: Icon(
                               Icons.info_outline,
@@ -595,7 +634,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _newTaskDialog(
-      BuildContext context, List<String> listOfLists, controller) async {
+      BuildContext context, List<DtoList> listOfLists, controller) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -611,14 +650,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             content: Container(
               height: 200.0,
-              width: 250.0,
+              width: 300.0,
               child: Column(
                 children: [
                   SizedBox(
                     height: 25.0,
                   ),
                   Container(
-                    width: 250.0,
+                    width: 350.0,
                     color: Colors.indigo[50],
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -630,7 +669,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   items: listOfLists.map(
                                     (item) {
                                       return DropdownMenuItem(
-                                          value: item, child: Text(item));
+                                          value: item,
+                                          child: Text('${item.name}'));
                                     },
                                   ).toList(),
                                   onChanged: (val) {
@@ -649,7 +689,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.pop(context);
                               createNewList(context);
                             },
-                            child: Text('Or create new list'),
+                            child: Text('Or create new'),
                           ),
                         ],
                       ),
@@ -700,14 +740,14 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           newList = _newListController.text;
         });
-        lists.add(newList);
-
-        print(lists);
+        //TODO
+        // listsItems.add(newList);
+        // print(listsItems);
         setState(() {
           selectedList = newList;
         });
         Navigator.pop(context);
-        _newTaskDialog(context, lists, _newTaskController);
+        _newTaskDialog(context, listsItems, _newTaskController);
       },
     );
     AlertDialog alert;

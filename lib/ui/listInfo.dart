@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slark/dto/dto_task.dart';
 
 class ListInfo extends StatefulWidget {
   @override
   _ListInfoState createState() => _ListInfoState();
+  final data;
+  ListInfo({Key key, this.data}) : super(key: key);
 }
 
 class _ListInfoState extends State<ListInfo> {
@@ -11,12 +14,21 @@ class _ListInfoState extends State<ListInfo> {
   TextEditingController _listController;
   TextEditingController _newTaskController = TextEditingController();
   String newTask = '';
-  String initialListName = "List Name";
+  String initialListName;
   String initialDiscription = "Add Description";
+  List<DtoTask> tasks;
   @override
   void initState() {
     super.initState();
+    initialListName = '${widget.data.name}';
     _listController = TextEditingController(text: initialListName);
+    setTasks();
+  }
+
+  setTasks() {
+    for (var item in widget.data.tasks) {
+      tasks.add(item);
+    }
   }
 
   @override
@@ -26,18 +38,18 @@ class _ListInfoState extends State<ListInfo> {
   }
 
   DateTime selectedDate = DateTime.now();
-  List<String> tasks = [
-    'task1',
-    'task2',
-    'task3',
-    'task4',
-    'task5',
-    'task6',
-    'task7',
-    'task8',
-    'task9',
-    'task10'
-  ];
+  // List<String> tasks = [
+  //   'task1',
+  //   'task2',
+  //   'task3',
+  //   'task4',
+  //   'task5',
+  //   'task6',
+  //   'task7',
+  //   'task8',
+  //   'task9',
+  //   'task10'
+  // ];
   List<String> assignees = [
     'John',
     'Rebeca',
@@ -252,7 +264,7 @@ class _ListInfoState extends State<ListInfo> {
                   Navigator.pushNamed(context, '/taskInfo');
                 },
                 child: Text(
-                  '$item',
+                  '${item.name}',
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),
@@ -366,7 +378,7 @@ class _ListInfoState extends State<ListInfo> {
 
                   print('Controller Value ${controller.text}');
                   print('New Task Name is $newTask');
-                  tasks.add(newTask);
+                  //TODO tasks.add(newTask);
                   for (var item in tasks) {
                     print('Tasks list items $item');
                   }

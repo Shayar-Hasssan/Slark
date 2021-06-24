@@ -5,59 +5,95 @@ import 'package:collection/collection.dart';
 class SpaceScreen extends StatefulWidget {
   @override
   _SpaceScreenState createState() => _SpaceScreenState();
+  final data;
+  const SpaceScreen({Key key, this.data}) : super(key: key);
 }
 
 class _SpaceScreenState extends State<SpaceScreen> {
-  List<Map<String, dynamic>> myList = [
-    // {'listName': '', 'taskName': ''}
-  ];
-  List<Map<String, dynamic>> task = [
-    {
-      'listName': 'list',
-      'taskName': 'mytask',
-    },
-    {'listName': 'list2', 'taskName': 'taskyy'},
-    {'listName': 'list', 'taskName': 'tasky'},
-    {'listName': 'list3', 'taskName': 'tttasky'},
-    {'listName': 'list3', 'taskName': 'taskkk'}
-  ];
+  // List<Map<String, dynamic>> task = [
+  //   {
+  //     'listName': 'list',
+  //     'taskName': 'mytask',
+  //   },
+  //   {'listName': 'list2', 'taskName': 'taskyy'},
+  //   {'listName': 'list', 'taskName': 'tasky'},
+  //   {'listName': 'list3', 'taskName': 'tttasky'},
+  //   {'listName': 'list3', 'taskName': 'taskkk'}
+  // ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: spaceWidget(task),
+      body: spaceWidget(),
     );
   }
 
-  spaceWidget(list) {
-    if (list.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("All your Space lists and tasks are here"),
-            SizedBox(
-              height: 15.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+  spaceWidget() {
+    for (var wsitem in widget.data.workspaces) {
+      for (var spaceitem in wsitem.spaces) {
+        for (var listItem in spaceitem.lists) {
+          print(listItem);
+          if (listItem.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("All your Space lists and tasks are here"),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Add a new task press"),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.add),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return ListView(
               children: [
-                Text("Add a new task press"),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.add),
+                Container(
+                  height: 60.0,
+                  child: Card(
+                    color: Colors.indigo[100],
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15.0, left: 25.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${listItem.name}',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, "/listInfo");
+                              },
+                              icon: Icon(
+                                Icons.info_outline,
+                                color: Colors.grey[600],
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
+                // groupingLists(list),
               ],
-            ),
-          ],
-        ),
-      );
-    } else {
-      return ListView(
-        children: [
-          groupingLists(list),
-        ],
-      );
+            );
+          }
+        }
+      }
     }
   }
 

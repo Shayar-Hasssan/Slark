@@ -37,8 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
     int counter = 0;
     int count = 0;
     udto.username = widget.data.user.name;
+    udto.email = widget.data.user.email;
     print(udto.username);
-
+    print(udto.email);
     for (var item in widget.data.user.workspaces) {
       print('Round $counter ');
       print('Printing the workspaces names');

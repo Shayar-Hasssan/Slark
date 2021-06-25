@@ -47,6 +47,15 @@ class AccountBloc {
     return verifyData;
   }
 
+  Future deleteAcc(userdata) async {
+    var deletionData;
+    API_Account_Provider apiProv = new API_Account_Provider();
+    await apiProv.deleteAcc(userdata).then((value) {
+      deletionData = value;
+    });
+    return deletionData;
+  }
+
   void dispose() {
     _accountStateController.close();
     _accountEventController.close();

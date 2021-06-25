@@ -53,6 +53,7 @@ class API_Space_Provider {
     var request = await put(Uri.parse('$baseUrl$spaceUrl'),
         headers: requestHeaders, body: spacedata);
     response = spaceFromJson(request.body);
+    print('Out of provider');
     return response;
   }
 }

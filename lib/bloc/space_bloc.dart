@@ -42,6 +42,7 @@ class SpaceBloc {
     await apiProv.updateSpace(data).then((value) {
       spacedata = value;
     });
+    print('out of Bloc');
     return spacedata;
   }
 }

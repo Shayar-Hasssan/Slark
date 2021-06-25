@@ -16,13 +16,14 @@ class _ListInfoState extends State<ListInfo> {
   String newTask = '';
   String initialListName;
   String initialDiscription = "Add Description";
-  List<DtoTask> tasks;
+  // List<DtoTask> tasks;
+  // List<String> tasks = ['1', '2', '3', '4'];
   @override
   void initState() {
     super.initState();
     initialListName = '${widget.data.name}';
     _listController = TextEditingController(text: initialListName);
-    setTasks();
+    // setTasks();
   }
 
   setTasks() {
@@ -38,18 +39,18 @@ class _ListInfoState extends State<ListInfo> {
   }
 
   DateTime selectedDate = DateTime.now();
-  // List<String> tasks = [
-  //   'task1',
-  //   'task2',
-  //   'task3',
-  //   'task4',
-  //   'task5',
-  //   'task6',
-  //   'task7',
-  //   'task8',
-  //   'task9',
-  //   'task10'
-  // ];
+  List<String> tasks = [
+    'task1',
+    'task2',
+    'task3',
+    'task4',
+    'task5',
+    'task6',
+    'task7',
+    'task8',
+    'task9',
+    'task10'
+  ];
   List<String> assignees = [
     'John',
     'Rebeca',
@@ -264,7 +265,7 @@ class _ListInfoState extends State<ListInfo> {
                   Navigator.pushNamed(context, '/taskInfo');
                 },
                 child: Text(
-                  '${item.name}',
+                  '${item}',
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),

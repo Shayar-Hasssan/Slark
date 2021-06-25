@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:slark/globals.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/account_register.dart';
 import 'package:slark/model/issue.dart';
@@ -12,7 +13,7 @@ class API_Account_Provider {
   String registerUrl = 'account/signup';
   String loginUrl = 'account/login';
   String verifyUrl = 'account/reactivate/:email';
-  // Map<String, String> headers = {'content-type': 'application/json'};
+  String deleteUser = 'user';
 
   Future register(userData) async {
     var response;
@@ -60,5 +61,18 @@ class API_Account_Provider {
     var request = await get('$baseUrl$verifyUrl');
     var response = accountRegisterFromJson(request.body);
     return response;
+  }
+
+  Future deleteAcc(userdata) async {
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json",
+      'Authorization': '$accToken'
+    };
+    var response;
+    print('In Delete account API');
+    var request =
+        await delete(Uri.parse('$baseUrl$deleteUser'), headers: requestHeaders);
+    // TODO
+    return request.body;
   }
 }

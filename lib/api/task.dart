@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/task.dart';
@@ -30,10 +30,18 @@ class API_Task_Provider {
   }
 
   Future deleteTask(taskId) async {
-    var response;
-    var request =
-        await delete(Uri.parse('$baseUrl$taskUrl'), headers: requestHeaders);
-    response = taskFromJson(request.body);
-    return response;
+    print('In Provider');
+    final url = Uri.parse('$baseUrl$taskUrl');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(taskId);
+    final resp = await req.send();
+    return await resp.stream.bytesToString();
+
+    // var response;
+    // var request =
+    //     await delete(Uri.parse('$baseUrl$taskUrl'), headers: requestHeaders);
+    // response = taskFromJson(request.body);
+    // return response;
   }
 }

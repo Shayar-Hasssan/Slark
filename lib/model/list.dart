@@ -50,7 +50,7 @@ class ListClass {
   int v;
 
   factory ListClass.fromJson(Map<String, dynamic> json) => ListClass(
-        tasks: List<dynamic>.from(json["_tasks"].map((x) => x)),
+        tasks: List<Task>.from(json["_tasks"].map((x) => x)),
         id: json["_id"],
         name: json["name"],
         space: json["_space"],
@@ -58,7 +58,7 @@ class ListClass {
       );
 
   Map<String, dynamic> toJson() => {
-        "_tasks": List<dynamic>.from(tasks.map((x) => x)),
+        "_tasks": List<Task>.from(tasks.map((x) => x)),
         "_id": id,
         "name": name,
         "_space": space,

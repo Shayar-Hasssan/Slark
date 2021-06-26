@@ -7,6 +7,7 @@ import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/dto/dto_list.dart';
 import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_user.dart';
+import 'package:slark/dto/dto_ws.dart';
 import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/setting.dart';
@@ -25,16 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _newTaskController = TextEditingController();
   TextEditingController _newListController = TextEditingController();
   TextEditingController _newspaceController = TextEditingController();
-  var udto = new DtoUser();
+  TextEditingController _newWSpaceController = TextEditingController();
+
   final _wsbloc = WorkspaceBloc();
   final _spacebloc = SpaceBloc();
   final _listbloc = ListBloc();
   final _taskbloc = TaskBloc();
+  var wsdto = new DtoWS();
+  var spacedto = new DtoSpace();
+  var listdto = new DtoList();
+  var udto = new DtoUser();
 
   String newTask = '';
   String newWSName = '';
   String newSpaceName = '';
-  String newList = '';
+  // String newList = '';
   List<DtoSpace> spacesmenuItem = [];
   List<DtoList> listsItems = [];
   String selectedSpace = 'choose space';
@@ -389,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: _workspaceEditController,
                           wsId: item.workspaceId);
                       setState(() {
-                        item = newWSName;
+                        item.workspacename = newWSName;
                       });
                     }
                   },
@@ -402,8 +408,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 IconButton(
                   onPressed: () async {
                     // ignore: unused_local_variable
-                    final ConfirmAction action =
-                        await _asyncConfirmDialog(context);
+                    var deldata = {
+                      'id': item.workspaceId,
+                    };
+                    await _asyncConfirmDialog(
+                        context: context,
+                        action: DeleteAction.Workspace,
+                        reqdata: deldata);
                   },
                   icon: Icon(
                     Icons.delete,
@@ -470,7 +481,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 18.0,
                 ),
                 overflow: TextOverflow.ellipsis,
-                maxLines: 1,
                 softWrap: true,
               ),
               title: Row(
@@ -479,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     onPressed: () async {
                       if (isWorkspace) {
-                        _editNameDialog(
+                        await _editNameDialog(
                             context: context,
                             controller: _spaceEditController,
                             spaceId: item.spaceId,
@@ -498,8 +508,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     onPressed: () async {
                       // ignore: unused_local_variable
-                      final ConfirmAction action =
-                          await _asyncConfirmDialog(context);
+                      var deldata = {
+                        'id': item.spaceId,
+                      };
+                      await _asyncConfirmDialog(
+                          context: context,
+                          action: DeleteAction.Space,
+                          reqdata: deldata);
                     },
                     icon: Icon(
                       Icons.delete,
@@ -563,10 +578,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text("Add a new task press"),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     //TODO Edit;
-                    // createNewList(context);
-                    // _newTaskDialog(context, listsItems, controller)
+                    await _newTaskDialog(
+                        context, listsItems, _newTaskController);
                   },
                   icon: Icon(Icons.add),
                 ),
@@ -651,13 +666,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: new Text('SUBMIT'),
                 onPressed: () async {
                   // var updateWS = {};
-                  var updateSpace = {
-                    "id": spaceId,
-                    "workspaceId": wsId,
-                    "data": {"name": controller.text}
-                  };
-                  print(updateSpace);
-                  if (isWorkspace) {
+                  if (!isWorkspace) {
                     setState(() {
                       newWSName = controller.text;
                     });
@@ -667,14 +676,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       newSpaceName = controller.text;
                     });
-                    print('NEW Space NAME IS $newSpaceName');
-                    print("Controller Value is ${controller.text}");
-
+                    var updateSpace = {
+                      "id": spaceId,
+                      "workspaceId": wsId,
+                      "data": {"name": newSpaceName}
+                    };
+                    print(updateSpace);
                     await _spacebloc.updateSpace(updateSpace).then((value) {
                       print(value.code);
                       print(value.message);
                       Navigator.of(context).pop();
                     });
+                    print('NEW Space NAME IS $newSpaceName');
+                    print("Controller Value is ${controller.text}");
+                    for (var witem in widget.data.workspaces) {
+                      if (witem.workspaceId == wsId) {
+                        for (var sitem in witem.spaces) {
+                          if (sitem.spaceId == spaceId) {
+                            setState(() {
+                              sitem.spacename = newSpaceName;
+                            });
+                          }
+                        }
+                      }
+                    }
                   }
                 },
               )
@@ -723,7 +748,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Text(
                                             '${item.name}',
                                             overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
                                             softWrap: true,
                                           ));
                                     },
@@ -747,7 +771,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               'Or create new',
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
                               softWrap: true,
                             ),
                           ),
@@ -771,8 +794,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(color: Colors.indigo, fontSize: 16),
                 ),
                 onPressed: () async {
-                  // ignore: await_only_futures
-                  await setState(() {
+                  setState(() {
                     newTask = controller.text;
                   });
 
@@ -791,22 +813,61 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   createNewList(BuildContext ctx) {
+    var newList;
     // ignore: deprecated_member_use
     Widget submit = FlatButton(
       child: Text(
         "Submit",
       ),
-      onPressed: () {
-        setState(() {
-          newList = _newListController.text;
+      onPressed: () async {
+        newList = _newListController.text;
+        Map<String, dynamic> listnew = {
+          "name": newList,
+          "_space": selectedSpaceId,
+        };
+        print(listnew);
+        await _listbloc.createList(listnew).then((value) {
+          print('++++++++');
+          print(value.message);
+          final snackBar = SnackBar(
+            content: Text('${value.message}'),
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            behavior: SnackBarBehavior.floating,
+            width: 300,
+          );
+          if (value.code == 711) {
+            listdto = new DtoList();
+            listdto.id = value.list.id;
+            listdto.name = value.list.name;
+            for (var ws in widget.data.workspaces) {
+              if (ws.workspaceId == selectedWSId) {
+                for (var space in ws.spaces) {
+                  if (space.spaceId == selectedSpaceId) {
+                    space.lists.add(listdto);
+                  }
+                }
+              }
+            }
+            listsItems.add(listdto);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          Navigator.pop(context);
         });
-        //TODO
-        // listsItems.add(newList);
-        // print(listsItems);
-        setState(() {
-          selectedList = newList;
-        });
-        Navigator.pop(context);
+
+        // setState(() {
+        //   newList = _newListController.text;
+        // });
+        // //TODO
+        // // listsItems.add(newList);
+
+        // setState(() {
+        //   selectedList = newList;
+        // });
+
         _newTaskDialog(context, listsItems, _newTaskController);
       },
     );
@@ -830,22 +891,46 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   createNewSpace(BuildContext ctx) {
+    var newSpace;
     // ignore: deprecated_member_use
     Widget submit = FlatButton(
       child: Text(
         "Submit",
       ),
-      onPressed: () {
-        setState(() {
-          newspace = _newspaceController.text;
+      onPressed: () async {
+        newSpace = _newspaceController.text;
+        Map<String, dynamic> spacenew = {
+          "_workspace": selectedWSId,
+          "name": newSpace
+        };
+        print(spacenew);
+        await _spacebloc.createSpace(spacenew).then((value) {
+          print('++++++++');
+          print(value.message);
+          final snackBar = SnackBar(
+            content: Text('${value.message}'),
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            behavior: SnackBarBehavior.floating,
+            width: 300,
+          );
+          if (value.code == 711) {
+            spacedto = new DtoSpace();
+            spacedto.spaceId = value.id;
+            spacedto.spacename = value.name;
+            for (var ws in widget.data.workspaces) {
+              if (ws.workspaceId == selectedWSId) {
+                ws.spaces.add(spacedto);
+              }
+            }
+            spacesmenuItem.add(spacedto);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          Navigator.pop(context);
         });
-        spacesmenuItem.add(newspace);
-
-        print(spacesmenuItem);
-        setState(() {
-          selectedSpace = newspace;
-        });
-        Navigator.pop(context);
       },
     );
     AlertDialog alert;
@@ -867,24 +952,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-//TODO
   createNewWorkspace(BuildContext ctx) {
+    var newWS;
     // ignore: deprecated_member_use
     Widget submit = FlatButton(
       child: Text(
         "Submit",
       ),
-      onPressed: () {
-        setState(() {
-          newspace = _newspaceController.text;
+      onPressed: () async {
+        newWS = _newWSpaceController.text;
+        Map<String, dynamic> wsNew = {
+          "name": newWS,
+        };
+        print(wsNew);
+        await _wsbloc.createWorkspace(wsNew).then((value) {
+          print('_=_=_=_');
+          print(value.message);
+          final snackBar = SnackBar(
+            content: Text('${value.message}'),
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            behavior: SnackBarBehavior.floating,
+            width: 300,
+          );
+          if (value.code == 711) {
+            wsdto = new DtoWS();
+            wsdto.workspaceId = value.id;
+            wsdto.workspacename = value.name;
+            widget.data.workspaces.add(wsdto);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          Navigator.pop(context);
         });
-        spacesmenuItem.add(newspace);
-
-        print(spacesmenuItem);
-        setState(() {
-          selectedSpace = newspace;
-        });
-        Navigator.pop(context);
       },
     );
     AlertDialog alert;
@@ -892,7 +994,7 @@ class _HomeScreenState extends State<HomeScreen> {
     alert = AlertDialog(
       title: Text("New Workspace"),
       content: TextField(
-        controller: _newspaceController,
+        controller: _newWSpaceController,
       ),
       actions: [
         submit,
@@ -905,34 +1007,43 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  Future _asyncConfirmDialog(
+      {BuildContext context, DeleteAction action, reqdata}) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion:'),
+          content: const Text('Are you sure you want to delete this?'),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                // Navigator.of(context).pop(ConfirmAction.Cancel);
+              },
+            ),
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: const Text('Delete'),
+              onPressed: () async {
+                //TODO continue
+                if (action == DeleteAction.Space) {
+                  await _spacebloc.deleteSpace(reqdata).then((value) {});
+                } else if (action == DeleteAction.Workspace) {
+                  await _wsbloc.deleteWS(reqdata).then((value) {});
+                }
+                Navigator.pop(context);
+                // Navigator.of(context).pop(ConfirmAction.Accept);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 }
 
-enum ConfirmAction { Cancel, Accept }
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
-  return showDialog<ConfirmAction>(
-    context: context,
-    barrierDismissible: false, // user must tap button for close dialog!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Confirm Deletion:'),
-        content: const Text('Are you sure you want to delete this?'),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop(ConfirmAction.Cancel);
-            },
-          ),
-          // ignore: deprecated_member_use
-          FlatButton(
-            child: const Text('Delete'),
-            onPressed: () {
-              Navigator.of(context).pop(ConfirmAction.Accept);
-            },
-          )
-        ],
-      );
-    },
-  );
-}
+enum DeleteAction { Workspace, Space, List, Task }

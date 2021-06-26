@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/create_space.dart';
@@ -40,18 +40,26 @@ class API_Space_Provider {
 
   Future deleteSpace(spacedata) async {
     print('In Provider');
-    var response;
-    var request =
-        await delete(Uri.parse('$baseUrl$spaceUrl'), headers: requestHeaders);
-    response = spaceFromJson(request.body);
-    return response;
+    final url = Uri.parse('$baseUrl$spaceUrl');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(spacedata);
+    final resp = await req.send();
+    return await resp.stream.bytesToString();
+
+    // print('In Provider');
+    // var response;
+    // var request =
+    //     await delete(Uri.parse('$baseUrl$spaceUrl'), headers: requestHeaders);
+    // response = spaceFromJson(request.body);
+    // return response;
   }
 
   Future updateSpace(spacedata) async {
     print('In Provider');
     var response;
     var request = await put(Uri.parse('$baseUrl$spaceUrl'),
-        headers: requestHeaders, body: spacedata);
+        headers: requestHeaders, body: jsonEncode(spacedata));
     response = spaceFromJson(request.body);
     print('Out of provider');
     return response;

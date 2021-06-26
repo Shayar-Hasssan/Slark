@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/issue.dart';
@@ -58,13 +58,21 @@ class API_Workspace_Provider {
   }
 
   Future deleteWS(wsId) async {
-    print('IN PROVIDER');
-    var response;
-    // var body = jsonEncode(wsId);
-    var request =
-        await delete(Uri.parse('$baseUrl$wsUrl'), headers: requestHeaders);
-    response = workspaceFromJson(request.body);
-    return response;
+    print('In Provider');
+    final url = Uri.parse('$baseUrl$wsUrl');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(wsId);
+    final resp = await req.send();
+    return await resp.stream.bytesToString();
+
+    // print('IN PROVIDER');
+    // var response;
+    // // var body = jsonEncode(wsId);
+    // var request =
+    //     await delete(Uri.parse('$baseUrl$wsUrl'), headers: requestHeaders);
+    // response = workspaceFromJson(request.body);
+    // return response;
   }
 
   Future removeUser(userInfo) async {

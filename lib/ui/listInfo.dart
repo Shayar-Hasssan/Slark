@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slark/bloc/list_bloc.dart';
 import 'package:slark/dto/dto_task.dart';
 
 class ListInfo extends StatefulWidget {
@@ -11,6 +12,7 @@ class ListInfo extends StatefulWidget {
 
 class _ListInfoState extends State<ListInfo> {
   bool _isEditingText = false;
+  final _listbloc = ListBloc();
   TextEditingController _listController;
   TextEditingController _newTaskController = TextEditingController();
   String newTask = '';
@@ -115,9 +117,9 @@ class _ListInfoState extends State<ListInfo> {
                           IconButton(
                             //delete list
                             onPressed: () async {
-                              final ConfirmAction action =
-                                  await _asyncConfirmDialog(context);
-                              print(action);
+                              var deldata = {'id': widget.data.id};
+                              print(deldata);
+                              await _asyncConfirmDialog(context, deldata);
                             },
                             icon: Icon(
                               Icons.delete,
@@ -411,35 +413,38 @@ class _ListInfoState extends State<ListInfo> {
       children: aList,
     );
   }
-}
 
-enum ConfirmAction { Cancel, Accept }
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
-  return showDialog<ConfirmAction>(
-    context: context,
-    barrierDismissible: false, // user must tap button for close dialog!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Delete This List?'),
-        content: const Text(
-            'This will delete your list and its task from the Space, confirm deletion?.'),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop(ConfirmAction.Cancel);
-            },
-          ),
-          // ignore: deprecated_member_use
-          FlatButton(
-            child: const Text('Delete'),
-            onPressed: () {
-              Navigator.of(context).pop(ConfirmAction.Accept);
-            },
-          )
-        ],
-      );
-    },
-  );
+  Future _asyncConfirmDialog(BuildContext context, deldata) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete This List?'),
+          content: const Text(
+              'This will delete your list and its task from the Space, confirm deletion?.'),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: const Text('Delete'),
+              onPressed: () async {
+                //TODO Continue
+                await _listbloc.deleteList(deldata).then((value) {
+                  print(value.message);
+                });
+                // Navigator.of(context).pop(ConfirmAction.Accept);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 }

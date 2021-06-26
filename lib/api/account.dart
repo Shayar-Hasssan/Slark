@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:slark/globals.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/account_register.dart';
@@ -68,11 +68,20 @@ class API_Account_Provider {
       "Content-Type": "application/json",
       'Authorization': '$accToken'
     };
-    var response;
-    print('In Delete account API');
-    var request =
-        await delete(Uri.parse('$baseUrl$deleteUser'), headers: requestHeaders);
-    // TODO
-    return request.body;
+
+    print('In Provider');
+    final url = Uri.parse('$baseUrl$deleteUser');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(userdata);
+    final resp = await req.send();
+    return await resp.stream.bytesToString();
+
+    // var response;
+    // print('In Delete account API');
+    // var request =
+    //     await delete(Uri.parse('$baseUrl$deleteUser'), headers: requestHeaders);
+    // // TODO
+    // return request.body;
   }
 }

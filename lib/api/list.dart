@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:slark/globals.dart';
 import 'package:slark/model/list.dart';
 
@@ -32,10 +32,16 @@ class API_List_Provider {
 
   Future deletList(listId) async {
     print('In Provider');
-    var response;
-    var request =
-        await delete(Uri.parse('$baseUrl$listUrl'), headers: requestHeaders);
-    response = listtFromJson(request.body);
-    return response;
+    final url = Uri.parse('$baseUrl$listUrl');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(listId);
+    final resp = await req.send();
+    return await resp.stream.bytesToString();
+    // var response;
+    // var request =
+    //     await delete(Uri.parse('$baseUrl$listUrl'), headers: requestHeaders);
+    // response = listtFromJson(resp.body);
+    // return response;
   }
 }

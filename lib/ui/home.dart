@@ -1031,9 +1031,13 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 //TODO continue
                 if (action == DeleteAction.Space) {
-                  await _spacebloc.deleteSpace(reqdata).then((value) {});
+                  await _spacebloc.deleteSpace(reqdata).then((value) {
+                    print(value);
+                  });
                 } else if (action == DeleteAction.Workspace) {
-                  await _wsbloc.deleteWS(reqdata).then((value) {});
+                  await _wsbloc.deleteWS(reqdata).then((value) {
+                    print(value);
+                  });
                 }
                 Navigator.pop(context);
                 // Navigator.of(context).pop(ConfirmAction.Accept);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
@@ -43,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // String newList = '';
   List<DtoSpace> spacesmenuItem = [];
   List<DtoList> listsItems = [];
+  List<DropdownMenuItem<String>> listsmenuItem = [];
   String selectedSpace = 'choose space';
   List<String> tasks = ['task1'];
 
@@ -79,6 +82,30 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedSpace = wsItem.spaces.first.spacename;
           selectedSpaceId = wsItem.spaces.first.spaceId;
         });
+
+        print('^^^^^^^^^' + wsItem.spaces.length.toString());
+        print('>>>>>>> ' + wsItem.spaces.first.lists.length.toString());
+        // if (wsItem.spaces.first.lists != null) {
+        //   if (wsItem.spaces.first.lists.length > 0) {
+        if (wsItem.spaces.first.lists != null) {
+          if (wsItem.spaces.first.lists.length > 0) {
+            for (var listitem in wsItem.spaces.first.lists) {
+              setState(() {
+                listsmenuItem.add(DropdownMenuItem<String>(
+                  child: Text(listitem.name),
+                  value: listitem.id,
+                ));
+              });
+            }
+          }
+        } else {
+          setState(() {
+            listsmenuItem.add(DropdownMenuItem<String>(
+              child: Text('No Lists'),
+              value: '0',
+            ));
+          });
+        }
       }
       for (var spaceItem in wsItem.spaces) {
         if (spaceItem.spaceId == selectedSpaceId) {
@@ -278,7 +305,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 15.0),
             child: IconButton(
               onPressed: () {
-                _newTaskDialog(context, listsItems, _newTaskController);
+                print("anas was here");
+                print(listsmenuItem.length);
+
+                _newTaskDialog(context, listsmenuItem, _newTaskController);
               },
               icon: Icon(Icons.add),
             ),
@@ -359,17 +389,37 @@ class _HomeScreenState extends State<HomeScreen> {
                         selectedSpaceId = spacesmenuItem.first.spaceId;
                       });
                       if (spaceitem.spaceId == selectedSpaceId) {
-                        for (var listItem in spaceitem.lists) {
+                        if (spaceitem.lists.length > 0) {
+                          listsmenuItem.clear();
+                          for (var listItem in spaceitem.lists) {
+                            setState(() {
+                              listsItems.add(listItem);
+                              listsmenuItem.add(DropdownMenuItem<String>(
+                                child: Text(listItem.name),
+                                value: listItem.id,
+                              ));
+                            });
+                          }
+                        } else {
                           setState(() {
-                            listsItems.add(listItem);
+                            listsmenuItem.add(DropdownMenuItem<String>(
+                              child: Text('No Lists'),
+                              value: '0',
+                            ));
                           });
                         }
                       }
                     }
-                  } else
+                  } else {
+                    listsmenuItem.clear();
                     setState(() {
+                      listsmenuItem.add(DropdownMenuItem<String>(
+                        child: Text('No Lists'),
+                        value: '0',
+                      ));
                       selectedSpace = 'No Spaces Yet';
                     });
+                  }
                 }
               }
               Navigator.pop(context);
@@ -453,20 +503,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedSpace = item.spacename;
                   selectedSpaceId = item.spaceId;
                   listsItems = <DtoList>[];
+                  // listsItems.add(new )
+                  // listsItems.clear();
                 });
                 for (var sitem in spacesmenuItem) {
                   if (selectedSpaceId == sitem.spaceId) {
                     print('HELLO From listsWidget');
                     print(selectedSpaceId);
                     print(selectedSpace);
+                    listsmenuItem.clear();
+
                     if (sitem.lists.length > 0) {
                       for (var listitem in sitem.lists) {
                         print('**********');
                         print(listitem.id);
                         setState(() {
                           listsItems.add(listitem);
+                          listsmenuItem.add(DropdownMenuItem<String>(
+                            child: Text(listitem.name),
+                            value: listitem.id,
+                          ));
                         });
+                        print(listsmenuItem.length);
                       }
+                    } else {
+                      setState(() {
+                        listsmenuItem.add(DropdownMenuItem<String>(
+                          child: Text('No Lists'),
+                          value: '0',
+                        ));
+                      });
                     }
                   }
                 }
@@ -510,6 +576,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // ignore: unused_local_variable
                       var deldata = {
                         'id': item.spaceId,
+                        'workspaceId': selectedWSId
                       };
                       await _asyncConfirmDialog(
                           context: context,
@@ -563,11 +630,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   listsWidget() {
+    // print('dddddddd' + listsItems.length.toString());
     List<Widget> myWidget = [];
-    if (listsItems.length <= 0) {
-      myWidget.add(Center(
+    if (listsItems.length == 0) {
+      // print('List empty');
+      myWidget.add(Container(
+        color: Colors.red,
+        height: 300,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("All your Space lists and tasks are here"),
             SizedBox(
@@ -581,7 +653,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     //TODO Edit;
                     await _newTaskDialog(
-                        context, listsItems, _newTaskController);
+                        context, listsmenuItem, _newTaskController);
                   },
                   icon: Icon(Icons.add),
                 ),
@@ -708,8 +780,8 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  _newTaskDialog(
-      BuildContext context, List<DtoList> listOfLists, controller) async {
+  _newTaskDialog(BuildContext context,
+      List<DropdownMenuItem<String>> listOfLists, controller) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -724,58 +796,51 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             content: Container(
-              height: 200.0,
-              width: 350.0,
+              height: MediaQuery.of(context).size.height * 0.33,
               child: Column(
                 children: [
                   SizedBox(
                     height: 25.0,
                   ),
-                  Container(
-                    width: 400.0,
-                    color: Colors.indigo[50],
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          listOfLists.isNotEmpty
-                              ? DropdownButton(
-                                  items: listOfLists.map(
-                                    (item) {
-                                      return DropdownMenuItem(
-                                          value: item,
-                                          child: Text(
-                                            '${item.name}',
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: true,
-                                          ));
-                                    },
-                                  ).toList(),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedList = val;
-                                    });
-                                  },
-                                  value: selectedList,
-                                )
-                              : IconButton(
-                                  onPressed: createNewList(context),
-                                  icon: Icon(Icons.add),
-                                ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              createNewList(context);
-                            },
-                            child: Text(
-                              'Or create new',
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                            ),
-                          ),
-                        ],
-                      ),
+                  listsmenuItem.length > 0
+                      ? DropdownButton(
+                          items: listsmenuItem,
+                          value: listsmenuItem.first.key,
+                          // items: listOfLists.map(
+                          //   (item) {
+                          //     return DropdownMenuItem(
+                          //         value: item,
+                          //         child: Text(
+                          //           // '${item.name}',
+                          //           'shero',
+                          //           overflow: TextOverflow.ellipsis,
+                          //           softWrap: true,
+                          //         ));
+                          //   },
+                          // ).toList(),
+
+                          onChanged: (val) {
+                            setState(() {
+                              selectedList = val;
+                            });
+                            print('uuuuuuu' + selectedList);
+                          },
+                          // value: selectedList,
+                        )
+                      : IconButton(
+                          onPressed: createNewList(context),
+                          icon: Icon(Icons.add),
+                        ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      createNewList(context);
+                      setState(() {});
+                    },
+                    child: Text(
+                      'Or create new',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
                     ),
                   ),
                   SizedBox(height: 30),
@@ -794,17 +859,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(color: Colors.indigo, fontSize: 16),
                 ),
                 onPressed: () async {
-                  setState(() {
-                    newTask = controller.text;
-                  });
-
-                  print('Controller Value ${controller.text}');
-                  print('New Task Name is $newTask');
-                  tasks.add(newTask);
-                  for (var item in tasks) {
-                    print('Tasks list items $item');
+                  if (selectedList != '0') {
+                    setState(() {
+                      newTask = controller.text;
+                    });
+                    print('Controller Value ${controller.text}');
+                    print('New Task Name is $newTask');
+                    tasks.add(newTask);
+                    for (var item in tasks) {
+                      print('Tasks list items $item');
+                    }
+                    Navigator.pop(context);
                   }
-                  Navigator.pop(context);
                 },
               )
             ],
@@ -851,6 +917,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             }
             listsItems.add(listdto);
+            setState(() {});
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -867,8 +934,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // setState(() {
         //   selectedList = newList;
         // });
-
-        _newTaskDialog(context, listsItems, _newTaskController);
+        _newTaskDialog(context, listsmenuItem, _newTaskController);
       },
     );
     AlertDialog alert;
@@ -1033,10 +1099,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (action == DeleteAction.Space) {
                   await _spacebloc.deleteSpace(reqdata).then((value) {
                     print(value);
+                    Map<String, dynamic> result = json.decode(value);
+                    print('---- ${result['message']}');
                   });
                 } else if (action == DeleteAction.Workspace) {
                   await _wsbloc.deleteWS(reqdata).then((value) {
                     print(value);
+                    Map<String, dynamic> result = json.decode(value);
+                    print('---- ${result['message']}');
                   });
                 }
                 Navigator.pop(context);

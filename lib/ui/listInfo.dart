@@ -255,9 +255,9 @@ class _ListInfoState extends State<ListInfo> {
     );
   }
 
-  tasksList(List list) {
+  tasksList(List tasklist) {
     List<Widget> mytasks = [];
-    for (var item in list) {
+    for (var titem in tasklist) {
       mytasks.add(
         Column(
           children: [
@@ -267,7 +267,7 @@ class _ListInfoState extends State<ListInfo> {
                   Navigator.pushNamed(context, '/taskInfo');
                 },
                 child: Text(
-                  '${item}',
+                  '$titem',
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),

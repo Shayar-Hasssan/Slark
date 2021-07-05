@@ -19,7 +19,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // SpaceBloc spaceBloc;
   // ignore: unused_field
   final _wsbloc = WorkspaceBloc();
   final _spacebloc = SpaceBloc();
@@ -39,10 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   getData() async {
-    // int scount = 0;
     print('In getdata function');
     int counter = 0;
-    // int count = 0;
     udto.username = widget.data.user.name;
     udto.email = widget.data.user.email;
     print(udto.username);
@@ -57,7 +54,13 @@ class _SplashScreenState extends State<SplashScreen> {
         wsdto.workspaceId = wsItem.id;
         print(wsdto.workspaceId);
         wsdto.workspacename = wsItem.name;
-        // udto.workspaces.add(wsdto);
+        for (var role in widget.data.user.roles) {
+          if (wsItem.id == role.targetId) {
+            wsdto.roleName = role.name;
+            wsdto.roleNum = role.number;
+            print(role.name);
+          }
+        }
       });
 
       await _spacebloc.getAllSpaces(wsItem.id).then(
@@ -68,7 +71,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 spacedto = new DtoSpace();
                 spacedto.spaceId = spaceItem.id;
                 spacedto.spacename = spaceItem.name;
-                // scount++;
               });
 
               await _listbloc.getAllLists(spaceItem.id).then(
@@ -82,18 +84,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
                         print('--- $listItem');
                         print('==== ${listdto.name}');
-                        // count++;
                       });
                       await _taskbloc.getAllTasks(listItem.id).then((value) {
                         if (value.length > 0) {
                           // ignore: deprecated_member_use
                           listdto.tasks = new List<DtoTask>();
                           for (var taskitem in value) {
-                            // if (taskitem.list == listItem) {
                             setState(() {
                               taskdto = new DtoTask();
                               taskdto.id = taskitem.id;
                               taskdto.name = taskitem.name;
+                              taskdto.assets = taskitem.assets;
+                              taskdto.assignedUsers = taskitem.assignedUsers;
+                              taskdto.comments = taskitem.comments;
+                              taskdto.subtasks = taskitem.subtasks;
                             });
                             listdto.tasks.add(taskdto);
                             // }

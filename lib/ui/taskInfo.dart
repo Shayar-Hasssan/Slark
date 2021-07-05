@@ -110,87 +110,98 @@ class _TaskInfoState extends State<TaskInfo> {
                   height: 20.0,
                 ),
                 Container(
-                  height: 800,
-                  width: 400.0,
+                  height: MediaQuery.of(context).size.height,
+                  width: 450.0,
                   // color: Colors.amber,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              color: Colors.indigo[300],
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "Status",
-                                      style: TextStyle(
-                                        letterSpacing: 2.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-
-                                    // ignore: deprecated_member_use
-                                    RaisedButton.icon(
-                                      color: Colors.indigo[200],
-                                      onPressed: () {
-                                        setState(() {
-                                          taskStatus = !taskStatus;
-                                          statusColor();
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.done,
-                                        color: color,
-                                        size: 25.0,
-                                      ),
-                                      label: Text(
-                                        'Mark as Completed',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                        Center(
+                            child: Container(
+                          width: 450,
+                          height: 250,
+                          padding: new EdgeInsets.all(10.0),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
-                            Container(
-                              color: Colors.indigo[300],
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "Created AT:",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                            color: Colors.indigo[300],
+                            elevation: 10,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  title: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Status",
+                                        style: TextStyle(
+                                          letterSpacing: 2.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
-                                    SizedBox(
-                                      height: 7.0,
+                                  ),
+                                  // ignore: deprecated_member_use
+                                  subtitle: RaisedButton.icon(
+                                    color: Colors.indigo[200],
+                                    onPressed: () {
+                                      setState(() {
+                                        taskStatus = !taskStatus;
+                                        statusColor();
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.done,
+                                      color: color,
+                                      size: 25.0,
                                     ),
-                                    Text(
-                                      'April, 12 9:00 am',
+                                    label: Text(
+                                      'Mark as Completed',
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 2.2),
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    Divider(
-                                      color: Colors.amber,
-                                      thickness: 30.0,
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                Divider(
+                                  indent: 100.0,
+                                  endIndent: 100.0,
+                                  color: Colors.indigo[100],
+                                  thickness: 1.0,
+                                ),
+                                Container(
+                                  color: Colors.indigo[300],
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Created AT:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 7.0,
+                                        ),
+                                        Text(
+                                          'April, 12 9:00 am',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 2.2),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        )),
                         SizedBox(height: 50.0),
                         Container(
                           child: Column(
@@ -214,7 +225,7 @@ class _TaskInfoState extends State<TaskInfo> {
                         ),
                         SizedBox(height: 20.0),
                         Text(
-                          'Description:',
+                          'Comments:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
@@ -225,22 +236,28 @@ class _TaskInfoState extends State<TaskInfo> {
                           color: Colors.indigo[50],
                           child: Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: TextFormField(
-                              controller: _descrptionController,
-                              onChanged: (val) {
-                                setState(() {
-                                  initialDesc = val;
-                                });
-                              },
-                              maxLines: 4,
-                              decoration: InputDecoration(
-                                hintText: '$initialDesc',
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color(0xff7b68ee),
-                                  ),
-                                ),
-                              ),
+                            //   child: TextFormField(
+                            //     controller: _descrptionController,
+                            //     onChanged: (val) {
+                            //       setState(() {
+                            //         initialDesc = val;
+                            //       });
+                            //     },
+                            //     maxLines: 4,
+                            //     decoration: InputDecoration(
+                            //       hintText: '$initialDesc',
+                            //       border: OutlineInputBorder(
+                            //         borderSide: BorderSide(
+                            //           color: Color(0xff7b68ee),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            child: Column(
+                              children: [
+                                //  comment.length>0?:
+                              ],
                             ),
                           ),
                         ),

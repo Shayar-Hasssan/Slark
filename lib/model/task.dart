@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:slark/model/create_list.dart';
 import 'package:slark/model/file.dart';
-import 'package:slark/model/list.dart';
+// import 'package:slark/model/list.dart';
 
 Task taskFromJson(String str) => Task.fromJson(json.decode(str));
 

@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String newTask = '';
   String newWSName = '';
   String newSpaceName = '';
+  String role = '';
   // String newList = '';
   List<DtoSpace> spacesmenuItem = [];
   List<DtoList> listsItems = [];
@@ -74,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
   setDefault() async {
     setState(() {
       selectedWorkspace = widget.data.workspaces.first.workspacename;
-      selectedWSId = widget.data.workspaces.first.workspaceId;
+      role = widget.data.workspaces.first.roleName;
+      print('ROLE IS $role');
     });
     for (var wsItem in widget.data.workspaces) {
       if (wsItem.workspaceId == selectedWSId) {
@@ -168,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 8.0,
                           ),
                           Text(
-                            '${widget.data.role}',
+                            '$role',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15.0,
@@ -378,6 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 selectedWSId = item.workspaceId;
                 selectedWorkspace = item.workspacename;
+                role = item.roleName;
                 spacesmenuItem = <DtoSpace>[];
                 listsItems = <DtoList>[];
               });
@@ -386,6 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print('HELLO THERE');
                   print(selectedWSId);
                   print(selectedWorkspace);
+                  print('[[[ROLE : $role]]]');
                   if (item.spaces.length > 0) {
                     for (var spaceitem in item.spaces) {
                       print('**********');

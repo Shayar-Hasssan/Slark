@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
-import 'package:slark/dto/dto_task.dart';
+// import 'package:slark/dto/dto_task.dart';
 
 class ListInfo extends StatefulWidget {
   @override

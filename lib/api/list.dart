@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:slark/globals.dart';
+import 'package:slark/model/create_list.dart';
 import 'package:slark/model/list.dart';
 
 // ignore: camel_case_types
 class API_List_Provider {
-  Map<String, String> token = {'bearer': accToken};
-  String baseUrl = 'https://slark-backend.herokuapp.com/';
-  String listUrl = 'list';
+  String baseUrl = 'https://api-slark.herokuapp.com/';
+  String listUrl = 'lists';
   Map<String, String> requestHeaders = {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
@@ -21,27 +21,63 @@ class API_List_Provider {
       headers: requestHeaders,
       body: jsonEncode(listdata),
     );
-    print('///////////////');
     print(request.body);
-    print('^^^^^^');
-    response = listtFromJson(request.body);
+    response = createlistFromJson(request.body);
     print(response);
-    print('***********');
+    print('Out of provider');
     return response;
   }
 
   Future deletList(listId) async {
     print('In Provider');
-    final url = Uri.parse('$baseUrl$listUrl');
-    final req = http.Request("DELETE", url);
-    req.headers.addAll(requestHeaders);
-    req.body = jsonEncode(listId);
-    final resp = await req.send();
-    return await resp.stream.bytesToString();
-    // var response;
-    // var request =
-    //     await delete(Uri.parse('$baseUrl$listUrl'), headers: requestHeaders);
-    // response = listtFromJson(resp.body);
-    // return response;
+    var response;
+    var request = await delete(Uri.parse('$baseUrl$listUrl/$listId'),
+        headers: requestHeaders);
+    response = listtFromJson(request.body);
+    print('Out of provider');
+    return response;
+  }
+
+  Future getList(listId) async {
+    print('IN PROVIDER');
+    var response;
+    var request = await get(
+      Uri.parse('$baseUrl$listUrl/$listId'),
+      headers: requestHeaders,
+    );
+    print(request.body);
+    response = listtFromJson(request.body);
+    print(response);
+    print('Out of provider');
+    return response;
+  }
+
+  Future getAllLists(spaceId) async {
+    print('IN PROVIDER');
+    var response;
+    var request = await get(
+      Uri.parse('$baseUrl$listUrl/?_space=$spaceId'),
+      headers: requestHeaders,
+    );
+    print(request.body);
+    response = listFromJson(request.body);
+    print(response);
+    print('Out of provider');
+    return response;
+  }
+
+  Future updateList(listId, newdata) async {
+    print('IN PROVIDER');
+    var response;
+    var request = await post(
+      Uri.parse('$baseUrl$listUrl/$listId'),
+      headers: requestHeaders,
+      body: jsonEncode(newdata),
+    );
+    print(request.body);
+    response = listtFromJson(request.body);
+    print(response);
+    print('Out of provider');
+    return response;
   }
 }

@@ -7,39 +7,50 @@ class SpaceBloc {
     API_Space_Provider apiProv = new API_Space_Provider();
     var spaceData;
     await apiProv.createSpace(spacedata).then((value) {
-      print('PRINTING THE MESSAGE');
-      print(value.message);
       spaceData = value;
     });
+    print('out of Bloc');
     return spaceData;
   }
 
-  Future getSpace(id) async {
+  Future getSpace(spaceid) async {
     API_Space_Provider apiProv = new API_Space_Provider();
     var spacedata;
     print('IN  Space BLOC');
-    await apiProv.getSpace(id).then((value) {
-      print('THE MESSAGE IS ${value.message}');
+    await apiProv.getSpace(spaceid).then((value) {
       spacedata = value;
     });
+    print('out of Bloc');
     return spacedata;
   }
 
-  Future deleteSpace(data) async {
+  Future getAllSpaces(wsid) async {
     API_Space_Provider apiProv = new API_Space_Provider();
     var spacedata;
-    print('IN Space Bloc');
-    await apiProv.deleteSpace(data).then((value) {
+    print('IN  Space BLOC');
+    await apiProv.getAllSpaces(wsid).then((value) {
       spacedata = value;
     });
+    print('out of Bloc');
     return spacedata;
   }
 
-  Future updateSpace(data) async {
+  Future deleteSpace(spaceId, wsId) async {
     API_Space_Provider apiProv = new API_Space_Provider();
     var spacedata;
     print('IN Space Bloc');
-    await apiProv.updateSpace(data).then((value) {
+    await apiProv.deleteSpace(spaceId, wsId).then((value) {
+      spacedata = value;
+    });
+    print('out of Bloc');
+    return spacedata;
+  }
+
+  Future updateSpace(spaceId, spacedata) async {
+    API_Space_Provider apiProv = new API_Space_Provider();
+    var spacedata;
+    print('IN Space Bloc');
+    await apiProv.updateSpace(spaceId, spacedata).then((value) {
       spacedata = value;
     });
     print('out of Bloc');

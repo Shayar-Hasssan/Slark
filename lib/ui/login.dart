@@ -157,13 +157,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             login = {'email': email, 'password': password};
 
-                            int code;
+                            // int code;
                             await _bloc.loginAcc(login).then((value) {
-                              setState(() {
-                                message = value.message;
-                                code = value.code;
-                              });
-                              showAlertDialog(context, message, code, value);
+                              // setState(() {
+                              //   message = value.message;
+                              //   code = value.code;
+                              // });
+                              // showAlertDialog(context, message, code, value);
+                              showAlertDialog(context, value);
                             });
                           },
                           color: Color(0xff7b68ee),
@@ -228,7 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  showAlertDialog(BuildContext ctx, String message, int code, data) {
+  // showAlertDialog(BuildContext ctx, String message, int code, data) {
+  showAlertDialog(BuildContext ctx, data) {
     bool isOK = false;
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
@@ -256,49 +258,50 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
     // ignore: deprecated_member_use
-    Widget signButton = FlatButton(
-      child: Text("Sign up"),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RegisterScreen()),
-        );
-      },
-    );
+    // Widget signButton = FlatButton(
+    //   child: Text("Sign up"),
+    //   onPressed: () {
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => RegisterScreen()),
+    //     );
+    //   },
+    // );
     // ignore: deprecated_member_use
-    Widget cancel = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
+    // Widget cancel = FlatButton(
+    //   child: Text("Cancel"),
+    //   onPressed: () {
+    //     Navigator.pop(context);
+    //   },
+    // );
     AlertDialog alert;
-    if (code == 711) {
-      setState(() {
-        isOK = true;
-      });
-      alert = AlertDialog(
-        content: Text("$message"),
-        actions: [
-          okButton,
-        ],
-      );
-    } else if (code == 812) {
-      alert = AlertDialog(
-        content: Text("$message"),
-        actions: [
-          cancel,
-          signButton,
-        ],
-      );
-    } else if (code == 901) {
-      alert = AlertDialog(
-        content: Text("$message"),
-        actions: [
-          okButton,
-        ],
-      );
-    }
+    // if (code == 711) {
+    setState(() {
+      isOK = true;
+    });
+    alert = AlertDialog(
+      content: Text("Logged in Successfully"),
+      actions: [
+        okButton,
+      ],
+    );
+    // }
+    // else if (code == 812) {
+    //   alert = AlertDialog(
+    //     content: Text("$message"),
+    //     actions: [
+    //       cancel,
+    //       signButton,
+    //     ],
+    //   );
+    // } else if (code == 901) {
+    //   alert = AlertDialog(
+    //     content: Text("$message"),
+    //     actions: [
+    //       okButton,
+    //     ],
+    //   );
+    // }
 
     // show the dialog
     showDialog(

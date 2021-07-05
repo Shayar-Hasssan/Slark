@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:slark/model/CreateWorkSpeace.dart';
+List<AllSpace> allSpaceFromJson(String str) =>
+    List<AllSpace>.from(json.decode(str).map((x) => AllSpace.fromJson(x)));
 
-Space spaceFromJson(String str) => Space.fromJson(json.decode(str));
+String allSpaceToJson(List<AllSpace> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-String spaceToJson(Space data) => json.encode(data.toJson());
-
-class Space {
-  Space({
+class AllSpace {
+  AllSpace({
     this.id,
     this.workspace,
     this.name,
@@ -17,17 +17,15 @@ class Space {
   });
 
   String id;
-  CreateWorkspace workspace;
+  String workspace;
   String name;
   DateTime createdAt;
   DateTime updatedAt;
   int v;
 
-  factory Space.fromJson(Map<String, dynamic> json) => Space(
+  factory AllSpace.fromJson(Map<String, dynamic> json) => AllSpace(
         id: json["_id"],
-        workspace: json["_workspace"] == null
-            ? null
-            : CreateWorkspace.fromJson(json["_workspace"]),
+        workspace: json["_workspace"],
         name: json["name"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
@@ -36,7 +34,7 @@ class Space {
 
   Map<String, dynamic> toJson() => {
         "_id": id,
-        "_workspace": workspace == null ? null : workspace.toJson(),
+        "_workspace": workspace,
         "name": name,
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),

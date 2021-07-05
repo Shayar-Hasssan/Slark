@@ -23,7 +23,6 @@ class AccountBloc {
     await apiProv.register(userData).then((value) {
       accountData = value;
     });
-    print('out of Bloc');
     return accountData;
   }
 
@@ -32,15 +31,10 @@ class AccountBloc {
 
     API_Account_Provider apiProv = new API_Account_Provider();
     var accountData;
-    try {
-      await apiProv.login(userData).then((value) {
-        accountData = value;
-      });
-    } catch (e) {
-      print('Error' + e.toString());
-    }
+    await apiProv.login(userData).then((value) {
+      accountData = value;
+    });
 
-    print('out of Bloc');
     return accountData;
   }
 
@@ -50,17 +44,15 @@ class AccountBloc {
     await apiProv.verify(email).then((value) {
       verifyData = value;
     });
-    print('out of Bloc');
     return verifyData;
   }
 
-  Future deleteAcc(userid) async {
+  Future deleteAcc(userdata) async {
     var deletionData;
     API_Account_Provider apiProv = new API_Account_Provider();
-    await apiProv.deleteAcc(userid).then((value) {
+    await apiProv.deleteAcc(userdata).then((value) {
       deletionData = value;
     });
-    print('out of Bloc');
     return deletionData;
   }
 

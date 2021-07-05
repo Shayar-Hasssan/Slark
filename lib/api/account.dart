@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/account_register.dart';
@@ -47,7 +48,9 @@ class API_Account_Provider {
     if (request.statusCode == 201) {
       print('201 Status Coddee if statement');
       response = accountLoginFromJson(request.body);
-
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("token", response.token);
+      await prefs.setString("userId", response.user.id);
       // print('AN ISSUE IS HERE ');
       // response = passwordFromJson(request.body);
     } else {

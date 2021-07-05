@@ -8,12 +8,14 @@ import 'package:slark/ui/register.dart';
 
 import 'globals.dart';
 
-void main() {
+Future<void> main() async {
   LicenseRegistry.addLicense(() async* {
     final license = await rootBundle.loadString('fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['fonts'], license);
   });
-  GetuserId().then((value) {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetuserId().then((value) {
+    print("sheroooo" + value);
     accToken = value;
     runApp(MyApp());
   });
@@ -28,13 +30,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/register',
+      initialRoute: '/landing',
       routes: {
         //   '/splash': (ctx) => SplashScreen(),
         '/register': (ctx) => RegisterScreen(),
         '/login': (ctx) => LoginScreen(),
         '/landing': (ctx) =>
-            accToken.isEmpty ? InitialSplashScreen(userId) : LandingUi(),
+            accToken.isNotEmpty ? InitialSplashScreen(userId) : LandingUi(),
         //   '/home': (ctx) => HomeScreen(),
         //   '/space': (ctx) => SpaceScreen(),
         //   '/uTasks': (ctx) => UserTasksScreen(),

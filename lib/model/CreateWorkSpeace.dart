@@ -1,38 +1,44 @@
 import 'dart:convert';
 
-// ignore: non_constant_identifier_names
-CreateWorkspace CreateworkspaceFromJson(String str) =>
+CreateWorkspace createWorkspaceFromJson(String str) =>
     CreateWorkspace.fromJson(json.decode(str));
 
-// ignore: non_constant_identifier_names
-String CreateworkspaceToJson(CreateWorkspace data) =>
+String createWorkspaceToJson(CreateWorkspace data) =>
     json.encode(data.toJson());
 
 class CreateWorkspace {
   CreateWorkspace({
-    this.message,
     this.id,
     this.name,
-    this.code,
+    this.image,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
   });
 
-  String message;
-  String name;
   String id;
-  int code;
+  String name;
+  String image;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int v;
 
   factory CreateWorkspace.fromJson(Map<String, dynamic> json) =>
       CreateWorkspace(
-        message: json["message"],
+        id: json["_id"],
         name: json["name"],
-        id: json["id"],
-        code: json["code"],
+        image: json["image"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        v: json["__v"],
       );
 
   Map<String, dynamic> toJson() => {
-        "message": message,
-        "id": message,
-        "name": message,
-        "code": code,
+        "_id": id,
+        "name": name,
+        "image": image,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+        "__v": v,
       };
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slark/ui/login.dart';
+import 'package:slark/ui/register.dart';
 
 void main() {
   LicenseRegistry.addLicense(() async* {
@@ -12,12 +13,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // String route = '';
-  // @override
-  // void initState() async {
-  //   await navRoute();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,10 +21,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: "AdventPro",
       ),
-      initialRoute: '/login',
+      initialRoute: '/register',
       routes: {
         //   '/splash': (ctx) => SplashScreen(),
-        //   '/register': (ctx) => RegisterScreen(),
+        '/register': (ctx) => RegisterScreen(),
         '/login': (ctx) => LoginScreen(),
         //   '/landing': (ctx) => LandingUi(),
         //   '/home': (ctx) => HomeScreen(),
@@ -44,13 +39,4 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-
-  // navRoute() {
-  //   bool loggedIn = false;
-  //   if (loggedIn) {
-  //     Navigator.pushReplacementNamed(ctx, '/splash');
-  //   } else {
-  //     Navigator.pushReplacementNamed(ctx, '/home');
-  //   }
-  // }
 }

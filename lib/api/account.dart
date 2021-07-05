@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 import 'package:slark/globals.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/account_register.dart';
 import 'package:slark/model/issue.dart';
 import 'package:slark/model/password.dart';
+import 'package:slark/model/user.dart';
 
 // ignore: camel_case_types
 class API_Account_Provider {
-  String baseUrl = 'https://slark-backend.herokuapp.com/';
-  String registerUrl = 'account/signup';
-  String loginUrl = 'account/login';
-  String verifyUrl = 'account/reactivate/:email';
-  String deleteUser = 'user';
+  String baseUrl = 'https://api-slark.herokuapp.com/';
+  String registerUrl = 'accounts/signup';
+  String loginUrl = 'accounts/login';
+  String verifyUrl = 'accounts/reactivate/:';
+  String deleteUser = 'users/';
 
   Future register(userData) async {
     var response;
@@ -23,13 +23,15 @@ class API_Account_Provider {
       headers: {'content-type': 'application/json'},
       body: jsonEncode(userData),
     );
-    if (request.statusCode == 200) {
-      print('200 Status Coddee if statement');
-      response = accountRegisterFromJson(request.body);
-    } else if (request.statusCode == 401) {
-      print('AN ISSUE IS HERE 401 STATUS CODEE');
-      response = issueFromJson(request.body);
+    if (request.statusCode == 201) {
+      print('201 Status Coddee if statement');
+      try {
+        response = accountRegisterFromJson(request.body);
+      } catch (e) {
+        response = issueFromJson(request.body);
+      }
     }
+    print('Out of provider');
     return response;
   }
 
@@ -42,46 +44,48 @@ class API_Account_Provider {
       body: jsonEncode(userData),
     );
     print(request.body);
-    if (request.statusCode == 200) {
-      print('200 Status Coddee if statement');
+    if (request.statusCode == 201) {
+      print('201 Status Coddee if statement');
       response = accountLoginFromJson(request.body);
-    } else if (request.statusCode == 401) {
+
+      // print('AN ISSUE IS HERE ');
+      // response = passwordFromJson(request.body);
+    } else {
       print('AN ISSUE IS HERE 401 STATUS CODEE');
       response = issueFromJson(request.body);
-    } else if (request.statusCode == 409) {
-      print('AN ISSUE IS HERE 409 STATUS CODEE');
-      response = passwordFromJson(request.body);
     }
-
+    //  else if (request.statusCode == 200) {
+    //   print('200 Status Coddee if statement');
+    //   response = accountLoginFromJson(request.body);
+    // } else if (request.statusCode == 401) {
+    //   print('AN ISSUE IS HERE 401 STATUS CODEE');
+    //   response = issueFromJson(request.body);
+    // } else if (request.statusCode == 409) {
+    //   print('AN ISSUE IS HERE 409 STATUS CODEE');
+    //   response = passwordFromJson(request.body);
+    // }
+    print('Out of provider');
     return response;
   }
 
   verify(email) async {
     print('In Verify API');
-    var request = await get('$baseUrl$verifyUrl');
+    var request = await get('$baseUrl$verifyUrl/:$email');
     var response = accountRegisterFromJson(request.body);
     return response;
   }
 
-  Future deleteAcc(userdata) async {
+  Future deleteAcc(userid) async {
     Map<String, String> requestHeaders = {
       "Content-Type": "application/json",
       'Authorization': '$accToken'
     };
-
     print('In Provider');
-    final url = Uri.parse('$baseUrl$deleteUser');
-    final req = http.Request("DELETE", url);
-    req.headers.addAll(requestHeaders);
-    req.body = jsonEncode(userdata);
-    final resp = await req.send();
-    return await resp.stream.bytesToString();
-
-    // var response;
-    // print('In Delete account API');
-    // var request =
-    //     await delete(Uri.parse('$baseUrl$deleteUser'), headers: requestHeaders);
-    // // TODO
-    // return request.body;
+    var response;
+    var request = await delete(Uri.parse('$baseUrl$deleteUser$userid'),
+        headers: requestHeaders);
+    response = userFromJson(request.body);
+    print('Out of provider');
+    return response;
   }
 }

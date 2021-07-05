@@ -1,47 +1,74 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/task.dart';
+import 'package:slark/model/create_task.dart';
 
 // ignore: camel_case_types
 class API_Task_Provider {
   Map<String, String> token = {'bearer': accToken};
-  String baseUrl = 'https://slark-backend.herokuapp.com/';
-  String taskUrl = 'task';
+  String baseUrl = 'https://api-slark.herokuapp.com/';
+  String taskUrl = 'tasks';
   Map<String, String> requestHeaders = {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
   };
   Future createTask(taskdata) async {
+    print('IN API PROVIDER');
     var response;
     var request = await post(Uri.parse('$baseUrl$taskUrl'),
         headers: requestHeaders, body: jsonEncode(taskdata));
-    response = taskFromJson(request.body);
+    response = createtaskFromJson(request.body);
+    print('Out of provider');
     return response;
   }
 
-  Future updateTask(taskdata) async {
-    var response;
-    var request = await put(Uri.parse('$baseUrl$taskUrl'),
+  Future updateTask(taskid, taskdata) async {
+    print('IN API PROVIDER');
+    // var response;
+    var request = await put(Uri.parse('$baseUrl$taskUrl/$taskid'),
         headers: requestHeaders, body: jsonEncode(taskdata));
-    response = taskFromJson(request.body);
-    return response;
+    // response = taskFromJson(request.body);
+    print('Out of provider');
+    return jsonDecode(request.body);
   }
 
   Future deleteTask(taskId) async {
     print('In Provider');
-    final url = Uri.parse('$baseUrl$taskUrl');
-    final req = http.Request("DELETE", url);
-    req.headers.addAll(requestHeaders);
-    req.body = jsonEncode(taskId);
-    final resp = await req.send();
-    return await resp.stream.bytesToString();
+    var response;
+    var request = await delete(Uri.parse('$baseUrl$taskUrl/$taskId'),
+        headers: requestHeaders);
+    response = taskFromJson(request.body);
+    print('Out of provider');
+    return response;
+  }
 
-    // var response;
-    // var request =
-    //     await delete(Uri.parse('$baseUrl$taskUrl'), headers: requestHeaders);
-    // response = taskFromJson(request.body);
-    // return response;
+  Future getTask(taskId) async {
+    print('IN PROVIDER');
+    var response;
+    var request = await get(
+      Uri.parse('$baseUrl$taskUrl/taskId'),
+      headers: requestHeaders,
+    );
+    print(request.body);
+    response = taskFromJson(request.body);
+    print(response);
+    print('Out of provider');
+    return response;
+  }
+
+  Future getAllTasks(listId) async {
+    print('IN PROVIDER');
+    var response;
+    var request = await get(
+      Uri.parse('$baseUrl$taskUrl?listId=$listId'),
+      headers: requestHeaders,
+    );
+    print(request.body);
+    response = tasksFromJson(request.body);
+    print(response);
+    print('Out of provider');
+    return response;
   }
 }

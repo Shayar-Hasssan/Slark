@@ -1,23 +1,24 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
-import 'package:slark/model/issue.dart';
 import 'package:slark/model/CreateWorkSpeace.dart';
+// import 'package:slark/model/issue.dart';
+import 'package:slark/model/user.dart';
 import 'package:slark/model/workspace.dart';
 
 // ignore: camel_case_types
 class API_Workspace_Provider {
-  String baseUrl = 'https://slark-backend.herokuapp.com/';
-  String wsUrl = 'workspace';
-  String inviteUrl = 'workspace/invite-user';
-  String rmvuserUrl = 'workspace/remove-user';
+  String baseUrl = 'https://api-slark.herokuapp.com/';
+  String wsUrl = 'workspaces';
+  String inviteUrl = '/invite-user';
+  String rmvuserUrl = '/remove-user';
+  String allUsersUrl = '/all-users?workspace=';
   Map<String, String> requestHeaders = {
     "Content-Type": "application/json",
     'Authorization': '$accToken'
   };
-  Future createWorkspace(name) async {
-    var body = jsonEncode(name);
+  Future createWorkspace(wsdata) async {
+    var body = jsonEncode(wsdata);
     print('IN PROVIDER');
     var response;
     print(requestHeaders);
@@ -28,7 +29,8 @@ class API_Workspace_Provider {
       body: "$body",
     );
     print(request.body);
-    response = CreateworkspaceFromJson(request.body);
+    response = createWorkspaceFromJson(request.body);
+    print('Out of provider');
     return response;
   }
 
@@ -36,52 +38,59 @@ class API_Workspace_Provider {
     print('IN PROVIDER');
     var response;
     var request = await post(
-      Uri.parse('$baseUrl$inviteUrl'),
+      Uri.parse('$baseUrl$wsUrl$inviteUrl'),
       headers: requestHeaders,
       body: jsonEncode(email),
     );
-
-    response = issueFromJson(request.body);
-
+    if (request.statusCode == 201) {
+      print(request.body);
+      print('invited');
+    } else {
+      print('Please invite your friend to join us to send him an invitation');
+    }
+    response = jsonDecode(request.body);
+    // response = issueFromJson(request.body);
+    print('Out of provider');
     return response;
   }
 
-  Future getWS(id) async {
+  Future getWS(wsid) async {
     print('IN PROVIDER');
     var response;
     var request =
-        await get(Uri.parse('$baseUrl$wsUrl/$id'), headers: requestHeaders);
-    print('$baseUrl$wsUrl/$id');
+        await get(Uri.parse('$baseUrl$wsUrl/$wsid'), headers: requestHeaders);
     response = workspaceFromJson(request.body);
     print('OUT OF PROVIDER');
     return response;
   }
 
   Future deleteWS(wsId) async {
-    print('In Provider');
-    final url = Uri.parse('$baseUrl$wsUrl');
-    final req = http.Request("DELETE", url);
-    req.headers.addAll(requestHeaders);
-    req.body = jsonEncode(wsId);
-    final resp = await req.send();
-    return await resp.stream.bytesToString();
-
-    // print('IN PROVIDER');
-    // var response;
-    // // var body = jsonEncode(wsId);
-    // var request =
-    //     await delete(Uri.parse('$baseUrl$wsUrl'), headers: requestHeaders);
-    // response = workspaceFromJson(request.body);
-    // return response;
+    print('IN PROVIDER');
+    var response;
+    var request = await delete(Uri.parse('$baseUrl$wsUrl/$wsId'),
+        headers: requestHeaders);
+    response = workspaceFromJson(request.body);
+    print('Out of provider');
+    return response;
   }
 
   Future removeUser(userInfo) async {
     print('IN PROVIDER');
     var response;
-    // var body = jsonEncode(jsonEncode(userInfo));
-    var request =
-        await delete(Uri.parse('$baseUrl$rmvuserUrl'), headers: requestHeaders);
+    var request = await delete(Uri.parse('$baseUrl$wsUrl$rmvuserUrl'),
+        headers: requestHeaders);
     response = workspaceFromJson(request.body);
+    print('Out of provider');
+    return response;
+  }
+
+  Future getAllUserInWs(wsId) async {
+    print('IN PROVIDER');
+    var response;
+    var request =
+        await get(Uri.parse('$baseUrl$wsUrl/$wsId'), headers: requestHeaders);
+    response = allUserFromJson(request.body);
+    print('OUT OF PROVIDER');
     return response;
   }
 }

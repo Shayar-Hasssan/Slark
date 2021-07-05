@@ -1,21 +1,12 @@
 import 'dart:convert';
 
-import 'package:slark/model/create_list.dart';
-import 'package:slark/model/file.dart';
-import 'package:slark/model/list.dart';
+CreateTask createtaskFromJson(String str) =>
+    CreateTask.fromJson(json.decode(str));
 
-Task taskFromJson(String str) => Task.fromJson(json.decode(str));
+String createtaskToJson(CreateTask data) => json.encode(data.toJson());
 
-String taskToJson(Task data) => json.encode(data.toJson());
-
-List<Task> tasksFromJson(String str) =>
-    List<Task>.from(json.decode(str).map((x) => Task.fromJson(x)));
-
-String tasksToJson(List<Task> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-class Task {
-  Task({
+class CreateTask {
+  CreateTask({
     this.assets,
     this.assignedUsers,
     this.subtasks,
@@ -27,36 +18,36 @@ class Task {
     this.v,
   });
 
-  List<Files> assets;
+  List<dynamic> assets;
   List<dynamic> assignedUsers;
   List<dynamic> subtasks;
   List<dynamic> comments;
   String id;
   String name;
-  Createlist list;
+  String list;
   int priority;
   int v;
 
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
-        assets: List<Files>.from(json["assets"].map((x) => Files.fromJson(x))),
+  factory CreateTask.fromJson(Map<String, dynamic> json) => CreateTask(
+        assets: List<dynamic>.from(json["assets"].map((x) => x)),
         assignedUsers: List<dynamic>.from(json["_assignedUsers"].map((x) => x)),
         subtasks: List<dynamic>.from(json["_subtasks"].map((x) => x)),
         comments: List<dynamic>.from(json["comments"].map((x) => x)),
         id: json["_id"],
         name: json["name"],
-        list: Createlist.fromJson(json["_list"]),
+        list: json["_list"],
         priority: json["priority"],
         v: json["__v"],
       );
 
   Map<String, dynamic> toJson() => {
-        "assets": List<dynamic>.from(assets.map((x) => x.toJson())),
+        "assets": List<dynamic>.from(assets.map((x) => x)),
         "_assignedUsers": List<dynamic>.from(assignedUsers.map((x) => x)),
         "_subtasks": List<dynamic>.from(subtasks.map((x) => x)),
         "comments": List<dynamic>.from(comments.map((x) => x)),
         "_id": id,
         "name": name,
-        "_list": list.toJson(),
+        "_list": list,
         "priority": priority,
         "__v": v,
       };

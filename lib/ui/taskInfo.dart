@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 class TaskInfo extends StatefulWidget {
   @override
   _TaskInfoState createState() => _TaskInfoState();
+  final data;
+  TaskInfo({Key key, this.data}) : super(key: key);
 }
 
 class _TaskInfoState extends State<TaskInfo> {
@@ -77,7 +79,7 @@ class _TaskInfoState extends State<TaskInfo> {
                         width: MediaQuery.of(context).size.width - 200,
                         child: ListTile(
                             title: _editTitleTextField(),
-                            subtitle: Text('SpaceName'))),
+                            subtitle: Text('ListName'))),
                     Row(
                       children: [
                         IconButton(

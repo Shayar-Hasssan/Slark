@@ -2,39 +2,39 @@ import 'package:slark/api/workspace.dart';
 
 class WorkspaceBloc {
   WorkspaceBloc();
-  Future createWorkspace(name) async {
+  Future createWorkspace(wsdata) async {
     print("IN WS bloc");
 
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
     var workspaceData;
-    await apiProv.createWorkspace(name).then((value) {
-      print('PRINTING THE MESSAGE');
-      print(value.message);
+    await apiProv.createWorkspace(wsdata).then((value) {
       workspaceData = value;
     });
+    print('Out of Bloc');
     return workspaceData;
   }
 
   Future invite(email) async {
+    //user email must be signedup in SLARK :))
     print("IN WS Bloc");
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
     var workspaceData;
     await apiProv.invite(email).then((value) {
-      print('PRINTING THE MESSAGE');
-      print(value.message);
       workspaceData = value;
     });
+    print('Out of Bloc');
     return workspaceData;
   }
 
-  Future getWS(id) async {
+  Future getWS(wsid) async {
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
     var wsdata;
     print('IN WS BLOC');
-    await apiProv.getWS(id).then((value) {
+    await apiProv.getWS(wsid).then((value) {
       print('THE MESSAGE IS ${value.message}');
       wsdata = value;
     });
+    print('Out of Bloc');
     return wsdata;
   }
 
@@ -45,16 +45,29 @@ class WorkspaceBloc {
     await apiProv.deleteWS(wsId).then((value) {
       wsdata = value;
     });
+    print('Out of Bloc');
     return wsdata;
   }
 
-  Future removeUser(info) async {
+  Future removeUser(userInfo) async {
     API_Workspace_Provider apiProv = new API_Workspace_Provider();
-    var wsdata;
+    var rmvdata;
     print('IN WS BLOC');
-    await apiProv.removeUser(info).then((value) {
-      wsdata = value;
+    await apiProv.removeUser(userInfo).then((value) {
+      rmvdata = value;
     });
-    return wsdata;
+    print('Out of Bloc');
+    return rmvdata;
+  }
+
+  Future getAllUserInWs(wsId) async {
+    API_Workspace_Provider apiProv = new API_Workspace_Provider();
+    var wsUserdata;
+    print('IN WS BLOC');
+    await apiProv.getAllUserInWs(wsId).then((value) {
+      wsUserdata = value;
+    });
+    print('Out of Bloc');
+    return wsUserdata;
   }
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:slark/bloc/file_bloc.dart';
 import 'package:slark/bloc/space_bloc.dart';
 import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_user.dart';
 import 'package:slark/dto/dto_ws.dart';
-import 'package:slark/model/user.dart';
 import 'package:slark/model/workspace.dart';
 import 'package:slark/ui/home.dart';
 
@@ -24,6 +24,7 @@ class _StepperScreenState extends State<StepperScreen> {
   static TextEditingController _wsController = new TextEditingController();
   final WorkspaceBloc wkbloc = new WorkspaceBloc();
   final SpaceBloc spacebloc = new SpaceBloc();
+  final FileBloc filebloc = new FileBloc();
 
   String emails = '';
   String workspace = '';
@@ -34,8 +35,8 @@ class _StepperScreenState extends State<StepperScreen> {
   var workspaceData;
   var spaceData;
   var invitaionData;
-  var addWorkspace = new Workspaces();
-  var addSpace = new WorkspaceClass();
+  var addWorkspace = new Workspace();
+  var addSpace = new Workspace();
   var udto = new DtoUser();
   var wsdto = new DtoWS();
   var spacedto = new DtoSpace();
@@ -63,6 +64,7 @@ class _StepperScreenState extends State<StepperScreen> {
   }
 
   next() async {
+    // ignore: unused_local_variable
     String workspaceId = '';
     List<String> email = [];
 
@@ -70,21 +72,20 @@ class _StepperScreenState extends State<StepperScreen> {
       if (currentStep == 0) {
         if (workspace.isNotEmpty) {
           print('//STARTING CREATION REQUEST FROM UI');
+          //TODO file creation!
           Map<String, dynamic> ws = {
             "name": workspace,
+            "image": '' //TODO
           };
           await wkbloc.createWorkspace(ws).then((value) {
             setState(() {
               workspaceId = value.id;
               workspaceData = value; // the response object
               wsdto.workspaceId = value.id;
-
               wsdto.workspacename = value.name;
-
               udto.workspaces.add(wsdto);
-
               Fluttertoast.showToast(
-                  msg: value.message,
+                  msg: 'Your Workspace Created',
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
@@ -110,7 +111,7 @@ class _StepperScreenState extends State<StepperScreen> {
               setState(() {
                 invitaionData = value;
                 Fluttertoast.showToast(
-                    msg: value.message,
+                    msg: 'Invitation is Sent',
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.CENTER,
                     timeInSecForIosWeb: 1,
@@ -129,19 +130,16 @@ class _StepperScreenState extends State<StepperScreen> {
             'name': space,
             '_workspace': workspaceData.id,
           };
-
           await spacebloc.createSpace(newspace).then((value) {
             print(value.message);
             setState(() {
               spaceData = value;
               spacedto.spaceId = value.id;
-
               spacedto.spacename = value.name;
-
               wsdto.spaces.add(spacedto);
 
               Fluttertoast.showToast(
-                  msg: value.message,
+                  msg: 'Space Created',
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,

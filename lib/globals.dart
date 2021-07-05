@@ -17,7 +17,7 @@ Future<String> GetuserId() async {
   String userid = prefs.getString('userId');
   String token = prefs.getString('token');
   token != null ? accToken = token : "";
-  userid != null ? userid = userId : "";
+  userid != null ? userId = userid : "";
   if (accToken.isNotEmpty)
     return accToken;
   else

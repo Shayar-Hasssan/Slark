@@ -15,6 +15,7 @@ class API_Account_Provider {
   String loginUrl = 'accounts/login';
   String verifyUrl = 'accounts/reactivate/:';
   String deleteUser = 'users/';
+  String getUser = 'users/';
 
   Future register(userData) async {
     var response;
@@ -87,6 +88,23 @@ class API_Account_Provider {
     var response;
     var request = await delete(Uri.parse('$baseUrl$deleteUser$userid'),
         headers: requestHeaders);
+    response = userFromJson(request.body);
+    print('Out of provider');
+    return response;
+  }
+
+  Future getUserdata(userid) async {
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json",
+      'Authorization': '$accToken'
+    };
+    print('In Provider');
+    var response;
+    print(requestHeaders);
+    print("$baseUrl$getUser$userid");
+    var request = await get(Uri.parse('$baseUrl$getUser$userid'),
+        headers: requestHeaders);
+
     response = userFromJson(request.body);
     print('Out of provider');
     return response;

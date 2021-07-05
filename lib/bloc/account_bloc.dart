@@ -56,6 +56,16 @@ class AccountBloc {
     return deletionData;
   }
 
+  Future getUserData(userId) async {
+    print('IN BLOC ');
+    var userData;
+    API_Account_Provider apiProv = new API_Account_Provider();
+    await apiProv.getUserdata(userId).then((value) {
+      userData = value;
+    });
+    return userData;
+  }
+
   void dispose() {
     _accountStateController.close();
     _accountEventController.close();

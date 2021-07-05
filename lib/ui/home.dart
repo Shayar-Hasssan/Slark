@@ -75,10 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
   setDefault() async {
     setState(() {
       selectedWorkspace = widget.data.workspaces.first.workspacename;
+      selectedWSId = widget.data.workspaces.first.workspaceId;
       role = widget.data.workspaces.first.roleName;
       print('ROLE IS $role');
     });
     for (var wsItem in widget.data.workspaces) {
+      print('*****************');
       if (wsItem.workspaceId == selectedWSId) {
         for (var item in wsItem.spaces) {
           spacesmenuItem.add(item);
@@ -92,6 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
         print('>>>>>>> ' + wsItem.spaces.first.lists.length.toString());
 
         if (wsItem.spaces.first.lists != null) {
+          print("***********************");
+          print(wsItem.spaces.first.lists.length.toString());
           if (wsItem.spaces.first.lists.length > 0) {
             for (var listitem in wsItem.spaces.first.lists) {
               setState(() {

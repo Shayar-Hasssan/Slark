@@ -29,8 +29,12 @@ class Space {
             ? null
             : CreateWorkspace.fromJson(json["_workspace"]),
         name: json["name"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
         v: json["__v"],
       );
 

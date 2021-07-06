@@ -17,6 +17,7 @@ class API_Space_Provider {
 
   Future createSpace(spacedata) async {
     print('IN PROVIDER');
+    print(spacedata);
     var response;
     var request = await post(
       Uri.parse('$baseUrl$spaceUrl'),
@@ -65,9 +66,13 @@ class API_Space_Provider {
   Future updateSpace(spaceId, spacedata) async {
     print('In Provider');
     var response;
-    var request = await put(Uri.parse('$baseUrl$spaceUrl$spaceId'),
+    print(spaceId);
+    print(spacedata);
+    var request = await put(Uri.parse('$baseUrl$spaceUrl/$spaceId'),
         headers: requestHeaders, body: jsonEncode(spacedata));
+    print(request.body);
     response = spaceFromJson(request.body);
+    print(response.name);
     print('Out of provider');
     return response;
   }

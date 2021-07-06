@@ -30,15 +30,19 @@ class Files {
   int v;
 
   factory Files.fromJson(Map<String, dynamic> json) => Files(
-        id: json["_id"],
-        url: json["url"],
-        thumbnail: json["thumbnail"],
-        name: json["name"],
-        size: json["size"],
-        height: json["height"],
-        width: json["width"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        id: json["_id"] == null ? null : json["_id"],
+        url: json["url"] == null ? null : json["url"],
+        thumbnail: json["thumbnail"] == null ? null : json["thumbnail"],
+        name: json["name"] == null ? null : json["name"],
+        size: json["size"] == null ? null : json["size"],
+        height: json["height"] == null ? null : json["height"],
+        width: json["width"] == null ? null : json["width"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
         v: json["__v"],
       );
 

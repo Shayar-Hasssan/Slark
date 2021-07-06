@@ -4,13 +4,13 @@ class ListBloc {
   ListBloc();
   Future createList(listdata) async {
     API_List_Provider apiProv = new API_List_Provider();
-    var listdata;
+    var listData;
     print('IN List Bloc');
     await apiProv.createList(listdata).then((value) {
-      listdata = value;
+      listData = value;
     });
     print('out of Bloc');
-    return listdata;
+    return listData;
   }
 
   Future deleteList(listId) async {

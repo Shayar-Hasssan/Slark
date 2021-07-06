@@ -4,6 +4,7 @@ class SpaceBloc {
   SpaceBloc();
   Future createSpace(spacedata) async {
     print("IN Space bloc");
+    print(spacedata);
     API_Space_Provider apiProv = new API_Space_Provider();
     var spaceData;
     await apiProv.createSpace(spacedata).then((value) {
@@ -48,12 +49,12 @@ class SpaceBloc {
 
   Future updateSpace(spaceId, spacedata) async {
     API_Space_Provider apiProv = new API_Space_Provider();
-    var spacedata;
+    var spdata;
     print('IN Space Bloc');
     await apiProv.updateSpace(spaceId, spacedata).then((value) {
-      spacedata = value;
+      spdata = value;
     });
     print('out of Bloc');
-    return spacedata;
+    return spdata;
   }
 }

@@ -69,6 +69,7 @@ class API_Workspace_Provider {
     var response;
     var request = await delete(Uri.parse('$baseUrl$wsUrl/$wsId'),
         headers: requestHeaders);
+    print(request.body);
     response = workspaceFromJson(request.body);
     print('Out of provider');
     return response;

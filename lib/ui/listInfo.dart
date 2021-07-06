@@ -242,7 +242,6 @@ class _ListInfoState extends State<ListInfo> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => TaskInfo(
-                              //TODO
                               data: titem,
                               listname: widget.data.name,
                             )),

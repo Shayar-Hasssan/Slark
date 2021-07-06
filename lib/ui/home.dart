@@ -485,9 +485,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 IconButton(
                   onPressed: () async {
                     // ignore: unused_local_variable
-                    var deldata = {
-                      'id': item.workspaceId,
-                    };
+                    var deldata = item.workspaceId;
+
                     await _asyncConfirmDialog(
                         context: context,
                         action: DeleteAction.Workspace,
@@ -876,34 +875,54 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       newWSName = controller.text;
                     });
+                    // var updateSpace = {"name": controller.text};
+                    // print(updateSpace);
+                    // print(spaceId);
+                    // await _wsbloc
+                    //     .updateWS(spaceId, updateSpace)
+                    //     .then((value) {
+                    //   // newSpaceName = value.name;
+                    //   for (var witem in widget.data.workspaces) {
+                    //     if (witem.workspaceId == wsId) {
+                    //       setState(() {
+                    //         witem.spacename = value.name;
+                    //       });
+                    //     }
+                    //   }
+                    //   Navigator.of(context).pop();
+                    // });
                     print('NEW WS NAME IS $newWSName');
                     print("Controller Value is ${controller.text}");
                   } else {
                     setState(() {
                       newSpaceName = controller.text;
                     });
-                    var updateSpace = {"name": newSpaceName};
+                    var updateSpace = {"name": controller.text};
                     print(updateSpace);
+                    print(spaceId);
                     await _spacebloc
                         .updateSpace(spaceId, updateSpace)
                         .then((value) {
+                      // newSpaceName = value.name;
+                      for (var witem in widget.data.workspaces) {
+                        if (witem.workspaceId == wsId) {
+                          for (var sitem in witem.spaces) {
+                            if (sitem.spaceId == spaceId) {
+                              setState(() {
+                                sitem.spacename = value.name;
+                                selectedSpace = value.name;
+                                selectedSpaceId = value.id;
+                              });
+                            }
+                          }
+                        }
+                      }
                       // print(value.code);
                       // print(value.message);
                       Navigator.of(context).pop();
                     });
                     print('NEW Space NAME IS $newSpaceName');
                     print("Controller Value is ${controller.text}");
-                    for (var witem in widget.data.workspaces) {
-                      if (witem.workspaceId == wsId) {
-                        for (var sitem in witem.spaces) {
-                          if (sitem.spaceId == spaceId) {
-                            setState(() {
-                              sitem.spacename = newSpaceName;
-                            });
-                          }
-                        }
-                      }
-                    }
                   }
                 },
               )
@@ -1228,7 +1247,9 @@ class _HomeScreenState extends State<HomeScreen> {
             // ignore: deprecated_member_use
             FlatButton(
               child: const Text('Cancel'),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
             // ignore: deprecated_member_use
             FlatButton(
@@ -1240,15 +1261,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       .then((value) {
                     //TODO
                     print(value);
-                    // Map<String, dynamic> result = json.decode(value);
-                    // // print('---- ${result['message']}');
                   });
                 } else if (action == DeleteAction.Workspace) {
                   //TODO
                   await _wsbloc.deleteWS(reqdata).then((value) {
-                    print(value);
-                    // Map<String, dynamic> result = json.decode(value);
-                    // print('---- ${result['message']}');
+                    print(value.name);
                   });
                 }
                 Navigator.pop(context);

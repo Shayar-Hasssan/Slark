@@ -29,10 +29,18 @@ class CreateTask {
   int v;
 
   factory CreateTask.fromJson(Map<String, dynamic> json) => CreateTask(
-        assets: List<dynamic>.from(json["assets"].map((x) => x)),
-        assignedUsers: List<dynamic>.from(json["_assignedUsers"].map((x) => x)),
-        subtasks: List<dynamic>.from(json["_subtasks"].map((x) => x)),
-        comments: List<dynamic>.from(json["comments"].map((x) => x)),
+        assets: json["assets"] == null
+            ? null
+            : List<dynamic>.from(json["assets"].map((x) => x)),
+        assignedUsers: json["_assignedUsers"] == null
+            ? null
+            : List<dynamic>.from(json["_assignedUsers"].map((x) => x)),
+        subtasks: json["_subtasks"] == null
+            ? null
+            : List<dynamic>.from(json["_subtasks"].map((x) => x)),
+        comments: json["comments"] == null
+            ? null
+            : List<dynamic>.from(json["comments"].map((x) => x)),
         id: json["_id"],
         name: json["name"],
         list: json["_list"],

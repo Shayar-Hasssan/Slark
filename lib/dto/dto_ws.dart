@@ -6,7 +6,7 @@ class DtoWS {
   String workspacename = '';
   List<DtoSpace> spaces = [];
   DtoFile image;
-  String roleName = 'user';
+  String roleName = '';
   int roleNum = 1;
   DtoWS() {
     print('ROLE IN $workspacename WS is $roleName');

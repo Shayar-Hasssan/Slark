@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
+import 'package:slark/dto/dto_task.dart';
+import 'package:slark/ui/taskInfo.dart';
 // import 'package:slark/dto/dto_task.dart';
 
 class ListInfo extends StatefulWidget {
@@ -19,13 +21,13 @@ class _ListInfoState extends State<ListInfo> {
   String initialListName;
   String initialDiscription = "Add Description";
   // List<DtoTask> tasks;
-  // List<String> tasks = ['1', '2', '3', '4'];
+  List<DtoTask> tasks = [];
   @override
   void initState() {
     super.initState();
     initialListName = '${widget.data.name}';
     _listController = TextEditingController(text: initialListName);
-    // setTasks();
+    setTasks();
   }
 
   setTasks() {
@@ -41,18 +43,18 @@ class _ListInfoState extends State<ListInfo> {
   }
 
   DateTime selectedDate = DateTime.now();
-  List<String> tasks = [
-    'task1',
-    'task2',
-    'task3',
-    'task4',
-    'task5',
-    'task6',
-    'task7',
-    'task8',
-    'task9',
-    'task10'
-  ];
+
+  //   'task1',
+  //   'task2',
+  //   'task3',
+  //   'task4',
+  //   'task5',
+  //   'task6',
+  //   'task7',
+  //   'task8',
+  //   'task9',
+  //   'task10'
+  // ];
   List<String> assignees = [
     'John',
     'Rebeca',
@@ -131,7 +133,7 @@ class _ListInfoState extends State<ListInfo> {
                     ],
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 15.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -174,35 +176,7 @@ class _ListInfoState extends State<ListInfo> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 30.0),
-                  Row(
-                    children: [
-                      Text(
-                        "Assignees",
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.indigo,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      IconButton(
-                        //Add Assignee
-                        onPressed: () {},
-                        icon: Icon(Icons.person_add_alt),
-                        color: Colors.indigo,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    // child: Row(
-                    //   children: [showAssignees()],
-                    // ),
-                    height: 100.0,
-                    color: Colors.indigo[50],
-                  ),
+                  SizedBox(height: 25.0),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -235,9 +209,9 @@ class _ListInfoState extends State<ListInfo> {
                   ),
                   Container(
                     color: Colors.indigo[50],
-                    height: 150,
+                    height: 200,
                     child: Container(
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.height * 0.1,
                       child: ListView(
                         children: [tasksList(tasks)],
                       ),
@@ -264,10 +238,18 @@ class _ListInfoState extends State<ListInfo> {
             ListTile(
               title: TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/taskInfo');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskInfo(
+                              //TODO
+                              data: titem,
+                              listname: widget.data.name,
+                            )),
+                  );
                 },
                 child: Text(
-                  '$titem',
+                  '${titem.name}',
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),
@@ -393,27 +375,6 @@ class _ListInfoState extends State<ListInfo> {
         });
   }
 
-  Widget showAssignees() {
-    List<Widget> aList = [];
-    // ignore: unused_local_variable
-    for (var item in assignees) {
-      aList.add(
-        ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            CircleAvatar(
-              child: Icon(Icons.person),
-            ),
-            Text('$item'),
-          ],
-        ),
-      );
-    }
-    return Column(
-      children: aList,
-    );
-  }
-
   Future _asyncConfirmDialog(BuildContext context, deldata) async {
     return showDialog(
       context: context,
@@ -428,6 +389,7 @@ class _ListInfoState extends State<ListInfo> {
             FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
+                print(widget.data.id);
                 Navigator.pop(context);
               },
             ),
@@ -437,7 +399,9 @@ class _ListInfoState extends State<ListInfo> {
               onPressed: () async {
                 //TODO Continue
                 await _listbloc.deleteList(deldata).then((value) {
-                  print(value.message);
+                  // print(value.message);
+                  print('List ${widget.data.name} deleted');
+                  Navigator.of(context).pop();
                 });
                 // Navigator.of(context).pop(ConfirmAction.Accept);
               },

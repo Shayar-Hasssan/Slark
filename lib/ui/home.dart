@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
 import 'package:slark/bloc/space_bloc.dart';
+import 'package:slark/bloc/task_bloc.dart';
 // import 'package:slark/bloc/task_bloc.dart';
 import 'package:slark/bloc/workspace_bloc.dart';
 import 'package:slark/dto/dto_list.dart';
@@ -35,10 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final _wsbloc = WorkspaceBloc();
   final _spacebloc = SpaceBloc();
   final _listbloc = ListBloc();
-  // final _taskbloc = TaskBloc();
+  final _taskbloc = TaskBloc();
   var wsdto = new DtoWS();
   var spacedto = new DtoSpace();
   var listdto = new DtoList();
+  var taskdto = new DtoTask();
   var udto = new DtoUser();
 
   String newTask = '';
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<DtoTask> tasksItems = [];
   List<DropdownMenuItem<String>> listsmenuItem = [];
   String selectedSpace = 'choose space';
-  List<String> tasks = ['task1'];
+  // List<String> tasks = ['task1'];
 
   String selectedWorkspace;
   bool isWorkspace;
@@ -346,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(30.0),
       ),
       builder: (BuildContext context) {
-        const double height = 500;
+        double height = MediaQuery.of(context).size.height;
 
         return Container(
           color: Color(0xff7b68ee),
@@ -361,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Container(
-                  height: 350.0,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   color: Colors.indigo[50],
                   child: workspaceList(),
                 ),
@@ -385,8 +387,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 selectedWSId = item.workspaceId;
                 selectedWorkspace = item.workspacename;
                 role = item.roleName;
+                print('ppppp $role');
                 spacesmenuItem = <DtoSpace>[];
                 listsItems = <DtoList>[];
+                tasksItems = <DtoTask>[];
               });
               for (var item in widget.data.workspaces) {
                 if (item.workspaceId == selectedWSId) {
@@ -414,6 +418,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 value: listItem.id,
                               ));
                             });
+                            if (listItem.tasks !=
+                                null) if (listItem.tasks.length > 0) {
+                              for (var taskItem in listItem.tasks) {
+                                setState(() {
+                                  tasksItems.add(taskItem);
+                                });
+                              }
+                            }
                           }
                         } else {
                           setState(() {
@@ -518,6 +530,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedSpace = item.spacename;
                   selectedSpaceId = item.spaceId;
                   listsItems = <DtoList>[];
+                  tasksItems = <DtoTask>[];
                 });
                 for (var sitem in spacesmenuItem) {
                   if (selectedSpaceId == sitem.spaceId) {
@@ -538,6 +551,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ));
                         });
                         print(listsmenuItem.length);
+                        if (listitem.tasks != null) if (listitem.tasks.length >
+                            0) {
+                          for (var taskItem in listitem.tasks) {
+                            setState(() {
+                              tasksItems.add(taskItem);
+                            });
+                          }
+                        }
                       }
                     } else {
                       setState(() {
@@ -718,8 +739,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Container(
                 height: 300,
-                color: Colors.amber,
-                child: tasksWidget(),
+                // color: Colors.amber,
+                child: tasksWidget(listItem.name),
               )
             ]));
       }
@@ -736,7 +757,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  tasksWidget() {
+  tasksWidget(String listname) {
     List<Widget> myWidget = [];
     if (tasksItems.length == 0) {
       myWidget.add(Container(
@@ -773,37 +794,52 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Container(
                 height: 60.0,
-                child: Card(
-                  color: Colors.indigo[100],
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15.0, left: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          child: Text(
-                            '${taskItem.name}',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                          onTap: () {
-                            print('||||| ${taskItem.name}');
-                            print('||||${taskItem.id}');
+                child: ListView(
+                  children: [
+                    Card(
+                      elevation: 0.0,
+                      color: Colors.indigo[50],
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 15.0, left: 25.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              child: Text(
+                                '${taskItem.name}',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                              onTap: () {
+                                print('||||| ${taskItem.name}');
+                                print('||||${taskItem.id}');
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      TaskInfo(data: taskItem),
-                                ));
-                          },
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TaskInfo(
+                                        data: taskItem,
+                                        listname: listname,
+                                      ),
+                                    ));
+                              },
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Divider(
+                      indent: 30.0,
+                      endIndent: 30.0,
+                      color: Colors.indigo[100],
+                    )
+                  ],
                 ),
               ),
             ]));
@@ -881,83 +917,112 @@ class _HomeScreenState extends State<HomeScreen> {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.only(left: 60, right: 60.0),
-            title: Text(
-              'Create Task',
-              style: TextStyle(
-                color: Colors.indigo,
-                fontSize: 24.0,
-                letterSpacing: 3.0,
-              ),
-            ),
-            content: Container(
-              height: MediaQuery.of(context).size.height * 0.33,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  listsmenuItem.length > 0
-                      ? DropdownButton(
-                          items: listsmenuItem,
-                          value: listsmenuItem.first.key,
-
-                          onChanged: (val) {
-                            setState(() {
-                              selectedList = val;
-                            });
-                            print('uuuuuuu' + selectedList);
-                          },
-                          // value: selectedList,
-                        )
-                      : IconButton(
-                          onPressed: createNewList(context),
-                          icon: Icon(Icons.add),
-                        ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      createNewList(context);
-                      setState(() {});
-                    },
-                    child: Text(
-                      'Or create new',
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  TextField(
-                    controller: controller,
-                    decoration: InputDecoration(hintText: "Enter Task name"),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              new FlatButton(
-                child: new Text(
-                  'SUBMIT',
-                  style: TextStyle(color: Colors.indigo, fontSize: 16),
+          return SingleChildScrollView(
+            child: AlertDialog(
+              contentPadding: EdgeInsets.only(left: 40, right: 40.0),
+              title: Text(
+                'Create Task',
+                style: TextStyle(
+                  color: Colors.indigo,
+                  fontSize: 24.0,
+                  letterSpacing: 3.0,
                 ),
-                onPressed: () async {
-                  if (selectedList != '0') {
-                    setState(() {
-                      newTask = controller.text;
-                    });
-                    print('Controller Value ${controller.text}');
-                    print('New Task Name is $newTask');
-                    tasks.add(newTask);
-                    for (var item in tasks) {
-                      print('Tasks list items $item');
+              ),
+              content: Container(
+                width: MediaQuery.of(context).size.width * 0.1,
+                height: MediaQuery.of(context).size.height * 0.4,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    listsmenuItem.length > 0
+                        ? DropdownButton(
+                            items: listsmenuItem,
+                            value: listsmenuItem.first.key,
+
+                            onChanged: (val) {
+                              setState(() {
+                                selectedList = val;
+                              });
+                              print('uuuuuuu' + selectedList);
+                            },
+                            // value: selectedList,
+                          )
+                        : IconButton(
+                            onPressed: createNewList(context),
+                            icon: Icon(Icons.add),
+                          ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        createNewList(context);
+                        setState(() {});
+                      },
+                      child: Text(
+                        'Or create new',
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    TextField(
+                      controller: controller,
+                      decoration: InputDecoration(hintText: "Enter Task name"),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                // ignore: deprecated_member_use
+                new FlatButton(
+                  child: new Text(
+                    'SUBMIT',
+                    style: TextStyle(color: Colors.indigo, fontSize: 16),
+                  ),
+                  onPressed: () async {
+                    if (selectedList != '0') {
+                      setState(() {
+                        newTask = controller.text;
+                      });
+                      var taskdata = {
+                        "name": newTask,
+                        "_list": selectedList,
+                        "priority": 1
+                      };
+                      await _taskbloc.createTask(taskdata).then((value) {
+                        setState(() {
+                          taskdto = new DtoTask();
+                          taskdto.id = value.id;
+                          taskdto.name = value.name;
+                          taskdto.assets = value.assets;
+                        });
+                        for (var ws in widget.data.workspaces) {
+                          if (ws.workspaceId == selectedWSId) {
+                            for (var space in ws.spaces) {
+                              if (space.spaceId == selectedSpaceId) {
+                                for (var list in space.lists) {
+                                  if (list.id == selectedList) {
+                                    list.tasks.add(taskdto);
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                        tasksItems.add(taskdto);
+                      });
+                      print('New Task Name is $newTask');
+                      // tasksItems.add(newTask);
+                      // for (var item in tasks) {
+                      //   print('Tasks list items $item');
+                      // }
+                      Navigator.pop(context);
                     }
-                    Navigator.pop(context);
-                  }
-                },
-              )
-            ],
+                  },
+                )
+              ],
+            ),
           );
         });
   }
@@ -989,8 +1054,8 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           // if (value.code == 711) {
           listdto = new DtoList();
-          listdto.id = value.list.id;
-          listdto.name = value.list.name;
+          listdto.id = value.id;
+          listdto.name = value.name;
           for (var ws in widget.data.workspaces) {
             if (ws.workspaceId == selectedWSId) {
               for (var space in ws.spaces) {
@@ -1059,6 +1124,8 @@ class _HomeScreenState extends State<HomeScreen> {
           spacedto = new DtoSpace();
           spacedto.spaceId = value.id;
           spacedto.spacename = value.name;
+          selectedSpace = value.name;
+          selectedSpaceId = value.id;
           for (var ws in widget.data.workspaces) {
             if (ws.workspaceId == selectedWSId) {
               ws.spaces.add(spacedto);

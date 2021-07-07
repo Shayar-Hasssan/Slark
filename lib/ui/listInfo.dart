@@ -12,8 +12,8 @@ class ListInfo extends StatefulWidget {
   @override
   _ListInfoState createState() => _ListInfoState();
   final data;
-  final VoidCall rmvList;
-  final VoidCall updateList;
+  final void Function(String id) rmvList;
+  final void Function(String name) updateList;
   final VoidCall addTask;
   ListInfo({Key key, this.data, this.rmvList, this.addTask, this.updateList})
       : super(key: key);
@@ -71,7 +71,7 @@ class _ListInfoState extends State<ListInfo> {
                     .then((value) {
                   print(value.name);
                   print(value.id);
-                  widget.updateList();
+                  widget.updateList(_listController.text);
                 });
                 Navigator.pop(context);
               },
@@ -404,7 +404,7 @@ class _ListInfoState extends State<ListInfo> {
                 await _listbloc.deleteList(deldata).then((value) {
                   print(value.name);
                   print(value.id);
-                  widget.rmvList();
+                  widget.rmvList(value.id);
                   print('List ${value.name} deleted');
                   print('List ${widget.data.name} deleted');
                   Navigator.of(context).pop();

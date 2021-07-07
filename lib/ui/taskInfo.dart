@@ -10,7 +10,7 @@ class TaskInfo extends StatefulWidget {
   _TaskInfoState createState() => _TaskInfoState();
   final data;
   final VoidCall rmvTask;
-  final VoidCall updateTask;
+  final void Function(String name) updateTask;
 
   final listname;
   TaskInfo({Key key, this.data, this.rmvTask, this.updateTask, this.listname})
@@ -72,7 +72,7 @@ class _TaskInfoState extends State<TaskInfo> {
                   .then((value) {
                 print(value.name);
                 print(value.id);
-                widget.updateTask();
+                widget.updateTask(_taskController.text);
               });
               Navigator.pop(context);
             },

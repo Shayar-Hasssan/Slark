@@ -777,10 +777,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => ListInfo(
                                           data: listItem,
-                                          updateList: () {
+                                          updateList: (String name) {
+                                            setState(() {
+                                              listItem.name = name;
+                                            });
                                             print('updated');
                                           },
-                                          rmvList: () {
+                                          rmvList: (String id) {
+                                            for (var ws
+                                                in widget.data.workspaces) {
+                                              if (ws.workspaceId ==
+                                                  selectedWSId) {
+                                                for (var space in ws.spaces) {
+                                                  if (space.spaceId ==
+                                                      selectedSpaceId) {
+                                                    for (var list
+                                                        in space.lists) {
+                                                      if (list.id ==
+                                                          listItem.id) {
+                                                        setState(() {
+                                                          space.lists
+                                                              .removeWhere(
+                                                                  (item) =>
+                                                                      item.id ==
+                                                                      listItem
+                                                                          .id);
+                                                        });
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
                                             print('removed');
                                           },
                                           addTask: () {
@@ -801,7 +829,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Container(
                         height: 250,
                         // color: Colors.amber,
-                        child: tasksWidget(listItem.tasks))
+                        child: tasksWidget(listItem))
                     : Text("no data")
               ]),
         ));
@@ -819,9 +847,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  tasksWidget(List<DtoTask> listname) {
+  tasksWidget(DtoList listname) {
     List<Widget> myWidget = [];
-    if (listname.length == 0) {
+    if (listname.tasks.length == 0) {
       myWidget.add(Container(
         color: Colors.red,
         height: 300,
@@ -849,7 +877,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ));
     } else {
-      for (var taskItem in listname) {
+      for (var taskItem in listname.tasks) {
         myWidget.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -881,9 +909,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => TaskInfo(
                                         data: taskItem,
-                                        listname: listname,
-                                        updateTask: () {
-                                          print('TaskUpdated');
+                                        listname: listname.name,
+                                        updateTask: (String name) {
+                                          setState(() {
+                                            taskItem.name = name;
+                                          });
+                                        },
+                                        rmvTask: () {
+                                          for (var ws
+                                              in widget.data.workspaces) {
+                                            if (ws.workspaceId ==
+                                                selectedWSId) {
+                                              for (var space in ws.spaces) {
+                                                if (space.spaceId ==
+                                                    selectedSpaceId) {
+                                                  for (var list
+                                                      in space.lists) {
+                                                    if (list.id ==
+                                                        listname.id) {
+                                                      for (var task
+                                                          in list.tasks) {
+                                                        if (task.id ==
+                                                            taskItem.id)
+                                                          setState(() {
+                                                            list.tasks.removeWhere(
+                                                                (item) =>
+                                                                    item.id ==
+                                                                    taskItem
+                                                                        .id);
+                                                          });
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                          print('removed');
                                         },
                                       ),
                                     ));

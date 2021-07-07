@@ -17,9 +17,7 @@ class AccountLogin {
   String token;
 
   factory AccountLogin.fromJson(Map<String, dynamic> json) => AccountLogin(
-        user: json[""] == null
-            ? null
-            : User.fromJson(json["user"]),
+        user: User.fromJson(json["user"]),
         token: json["token"],
       );
 

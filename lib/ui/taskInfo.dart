@@ -16,7 +16,7 @@ class _TaskInfoState extends State<TaskInfo> {
   String taskLink = 'https://pub.dev/';
   bool _isEditingText = false;
   TextEditingController _taskController;
-  TextEditingController _descrptionController;
+  // TextEditingController _descrptionController;
   String initialTask;
   List comments = ['This is your description'];
   bool taskStatus = false; //Not Completed task yet
@@ -401,6 +401,7 @@ class _TaskInfoState extends State<TaskInfo> {
             FlatButton(
               child: const Text('Delete'),
               onPressed: () async {
+                //TODO continue
                 print(taskid);
                 await _taskbloc.deleteTask(taskid).then((value) {
                   print('task ${value.name} deleted');

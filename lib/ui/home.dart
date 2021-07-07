@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<DtoTask> tasksItems = [];
   List<DropdownMenuItem<String>> listsmenuItem = [];
   String selectedSpace = 'choose space';
+  List<DtoUser> usersList = [];
   // List<String> tasks = ['task1'];
 
   String selectedWorkspace;
@@ -79,11 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedWorkspace = widget.data.workspaces.first.workspacename;
       selectedWSId = widget.data.workspaces.first.workspaceId;
       role = widget.data.workspaces.first.roleName;
+
       print('ROLE IS $role');
     });
     for (var wsItem in widget.data.workspaces) {
       print('*****************');
       if (wsItem.workspaceId == selectedWSId) {
+        for (var uitem in wsItem.users) {
+          usersList.add(uitem);
+        }
         for (var item in wsItem.spaces) {
           spacesmenuItem.add(item);
         }
@@ -119,16 +124,20 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       for (var spaceItem in wsItem.spaces) {
         if (spaceItem.spaceId == selectedSpaceId) {
-          for (var listItem in spaceItem.lists) {
-            setState(() {
-              listsItems.add(listItem);
-            });
+          if (spaceItem.lists != null) if (spaceItem.lists.length > 0) {
+            for (var listItem in spaceItem.lists) {
+              if (listItem.tasks != null) if (listItem.tasks.length > 0) {
+                setState(() {
+                  listsItems.add(listItem);
+                });
 
-            for (var taskItem in listItem.tasks) {
-              print('LLLLLLL ${listItem.tasks.length.toString()}');
-              setState(() {
-                tasksItems.add(taskItem);
-              });
+                for (var taskItem in listItem.tasks) {
+                  print('LLLLLLL ${listItem.tasks.length.toString()}');
+                  setState(() {
+                    tasksItems.add(taskItem);
+                  });
+                }
+              }
             }
           }
         }
@@ -320,6 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               //TODO
+              showUsersModal();
             },
             icon: Icon(
               Icons.people_alt_outlined,
@@ -398,6 +408,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 role = item.roleName;
                 print('ppppp $role');
                 spacesmenuItem = <DtoSpace>[];
+                usersList = <DtoUser>[];
                 listsItems = <DtoList>[];
                 tasksItems = <DtoTask>[];
               });
@@ -407,6 +418,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(selectedWSId);
                   print(selectedWorkspace);
                   print('[[[ROLE : $role]]]');
+                  if (item.users.length > 0) {
+                    for (var uitem in item.users) {
+                      setState(() {
+                        usersList.add(uitem);
+                      });
+                    }
+                  }
                   if (item.spaces.length > 0) {
                     for (var spaceitem in item.spaces) {
                       print('**********');
@@ -521,6 +539,43 @@ class _HomeScreenState extends State<HomeScreen> {
           children: buttons,
         ),
       ),
+    );
+  }
+
+  showUsersModal() {
+    return showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black38,
+      backgroundColor: Colors.white,
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      builder: (BuildContext context) {
+        double height = MediaQuery.of(context).size.height;
+
+        return Container(
+          color: Color(0xff7b68ee),
+          height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(
+                height: 15.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  color: Colors.indigo[50],
+                  child: usersWidget(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -705,54 +760,55 @@ class _HomeScreenState extends State<HomeScreen> {
       ));
     } else {
       for (var listItem in listsItems) {
-        myWidget.add(Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                height: 60.0,
-                child: Card(
-                  color: Colors.indigo[100],
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15.0, left: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${listItem.name}',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+        myWidget.add(SingleChildScrollView(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: 60.0,
+                  child: Card(
+                    color: Colors.indigo[100],
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15.0, left: 25.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${listItem.name}',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
                           ),
-                          textAlign: TextAlign.start,
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              print('||||| ${listItem.name}');
-                              print('||||${listItem.id}');
+                          IconButton(
+                              onPressed: () {
+                                print('||||| ${listItem.name}');
+                                print('||||${listItem.id}');
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ListInfo(data: listItem),
-                                  ));
-                            },
-                            icon: Icon(
-                              Icons.info_outline,
-                              color: Colors.grey[600],
-                            )),
-                      ],
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ListInfo(data: listItem),
+                                    ));
+                              },
+                              icon: Icon(
+                                Icons.info_outline,
+                                color: Colors.grey[600],
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                height: 300,
-                // color: Colors.amber,
-                child: tasksWidget(listItem.name),
-              )
-            ]));
+                Container(
+                    height: 250,
+                    // color: Colors.amber,
+                    child: tasksWidget(listItem.name))
+              ]),
+        ));
       }
       return Padding(
         padding: EdgeInsets.all(8.0),
@@ -1020,27 +1076,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         "_list": selectedList,
                         "priority": 1
                       };
+                      print(taskdata);
                       await _taskbloc.createTask(taskdata).then((value) {
-                        setState(() {
-                          taskdto = new DtoTask();
-                          taskdto.id = value.id;
-                          taskdto.name = value.name;
-                          taskdto.assets = value.assets;
-                        });
                         for (var ws in widget.data.workspaces) {
                           if (ws.workspaceId == selectedWSId) {
                             for (var space in ws.spaces) {
                               if (space.spaceId == selectedSpaceId) {
                                 for (var list in space.lists) {
+                                  print(list.id);
+                                  print(value.list);
                                   if (list.id == value.list) {
-                                    list.tasks.add(taskdto);
+                                    setState(() {
+                                      taskdto = new DtoTask();
+                                      taskdto.id = value.id;
+                                      taskdto.name = value.name;
+                                      taskdto.assets = value.assets;
+                                    });
                                   }
+                                  list.tasks.add(taskdto);
                                 }
+
+                                tasksItems.add(taskdto);
                               }
                             }
                           }
                         }
-                        tasksItems.add(taskdto);
                       });
                       print('New Task Name is $newTask');
                       // tasksItems.add(newTask);
@@ -1084,6 +1144,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           // if (value.code == 711) {
           listdto = new DtoList();
+          listsItems = <DtoList>[];
           listdto.id = value.id;
           listdto.name = value.name;
           for (var ws in widget.data.workspaces) {
@@ -1091,16 +1152,20 @@ class _HomeScreenState extends State<HomeScreen> {
               for (var space in ws.spaces) {
                 if (space.spaceId == value.space) {
                   space.lists.add(listdto);
+                  listsmenuItem.clear();
+                  setState(() {
+                    listsItems.add(listdto);
+                    listsmenuItem.add(DropdownMenuItem<String>(
+                      child: Text(value.name),
+                      value: value.id,
+                    ));
+                    selectedList = value.id;
+                  });
                 }
               }
             }
           }
-          listsItems.add(listdto);
-          // listsmenuItem.clear();
-          // listsmenuItem.add(DropdownMenuItem<String>(
-          //   child: Text(value.name),
-          //   value: value.id,
-          // ));
+
           setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           // } else {
@@ -1302,6 +1367,43 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  usersWidget() {
+    List<Widget> buttons = [];
+
+    if (usersList.length > 0) {
+      for (var uitem in usersList) {
+        buttons.add(
+          Container(
+            child: ListTile(
+                onTap: () {
+                  print(uitem.username);
+                  print(uitem.email);
+                },
+                title: Text(
+                  '${uitem.username}',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'AdventPro',
+                    fontSize: 18.0,
+                  ),
+                ),
+                subtitle: Text('${uitem.email}')),
+          ),
+        );
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+      child: Container(
+        child: ListView(
+          children: buttons,
+        ),
+      ),
+    );
+  }
 }
 
-enum DeleteAction { Workspace, Space, List, Task }
+enum DeleteAction { Workspace, Space, List, Task, RmvUser }

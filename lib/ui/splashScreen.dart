@@ -48,6 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print('Round $counter ');
       print('Printing the workspaces names');
       print(wsItem.name);
+
       // ignore: await_only_futures
       await setState(() {
         wsdto = new DtoWS();
@@ -59,6 +60,19 @@ class _SplashScreenState extends State<SplashScreen> {
             wsdto.roleName = role.name;
             wsdto.roleNum = role.number;
             print(role.name);
+          }
+        }
+      });
+      await _wsbloc.getAllUserInWs(wsItem.id).then((value) {
+        if (value.length > 0) {
+          for (var user in value) {
+            setState(() {
+              udto = new DtoUser();
+              udto.email = user.email;
+              udto.username = user.name;
+              print(user.name);
+            });
+            wsdto.users.add(udto);
           }
         }
       });

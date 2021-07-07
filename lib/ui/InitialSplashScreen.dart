@@ -52,17 +52,32 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
         print('Round $counter ');
         print('Printing the workspaces names');
         print(wsItem.name);
+
         // ignore: await_only_futures
         await setState(() {
           wsdto = new DtoWS();
           wsdto.workspaceId = wsItem.id;
           print(wsdto.workspaceId);
           wsdto.workspacename = wsItem.name;
+
           for (var role in value.roles) {
             if (wsItem.id == role.targetId) {
               wsdto.roleName = role.name;
               wsdto.roleNum = role.number;
               print(role.name);
+            }
+          }
+        });
+        await _wsbloc.getAllUserInWs(wsItem.id).then((value) {
+          if (value.length > 0) {
+            for (var user in value) {
+              setState(() {
+                udto = new DtoUser();
+                udto.email = user.email;
+                udto.username = user.name;
+                print(user.name);
+              });
+              wsdto.users.add(udto);
             }
           }
         });
@@ -100,6 +115,10 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
                                 taskdto = new DtoTask();
                                 taskdto.id = taskitem.id;
                                 taskdto.name = taskitem.name;
+                                taskdto.assets = taskitem.assets;
+                                taskdto.assignedUsers = taskitem.assignedUsers;
+                                taskdto.comments = taskitem.comments;
+                                taskdto.subtasks = taskitem.subtasks;
                               });
                               listdto.tasks.add(taskdto);
                             }

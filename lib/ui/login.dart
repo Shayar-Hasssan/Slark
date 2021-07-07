@@ -159,11 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // int code;
                             await _bloc.loginAcc(login).then((value) {
-                              // setState(() {
-                              //   message = value.message;
-                              //   code = value.code;
-                              // });
-                              // showAlertDialog(context, message, code, value);
+                              print(value);
+                              print(value.runtimeType);
                               showAlertDialog(context, value);
                             });
                           },
@@ -234,7 +231,12 @@ class _LoginScreenState extends State<LoginScreen> {
     bool isOK = false;
     // ignore: deprecated_member_use
     Widget okButton = FlatButton(
-      child: Text("OK"),
+      child: isOK
+          ? Text(
+              'Try again',
+              style: TextStyle(color: Colors.indigo),
+            )
+          : Text("OK"),
       onPressed: () {
         if (isOK) {
           setState(() {
@@ -253,20 +255,22 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => StepperScreen(data)),
             );
           }
-        } else
+        } else {
+          print('ERROR');
           Navigator.pop(context);
+        }
       },
     );
     // ignore: deprecated_member_use
-    // Widget signButton = FlatButton(
-    //   child: Text("Sign up"),
-    //   onPressed: () {
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => RegisterScreen()),
-    //     );
-    //   },
-    // );
+    Widget signButton = FlatButton(
+      child: Text("Sign up"),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegisterScreen()),
+        );
+      },
+    );
     // ignore: deprecated_member_use
     // Widget cancel = FlatButton(
     //   child: Text("Cancel"),
@@ -275,33 +279,26 @@ class _LoginScreenState extends State<LoginScreen> {
     //   },
     // );
     AlertDialog alert;
-    // if (code == 711) {
-    setState(() {
-      isOK = true;
-    });
-    alert = AlertDialog(
-      content: Text("Logged in Successfully"),
-      actions: [
-        okButton,
-      ],
-    );
-    // }
-    // else if (code == 812) {
-    //   alert = AlertDialog(
-    //     content: Text("$message"),
-    //     actions: [
-    //       cancel,
-    //       signButton,
-    //     ],
-    //   );
-    // } else if (code == 901) {
-    //   alert = AlertDialog(
-    //     content: Text("$message"),
-    //     actions: [
-    //       okButton,
-    //     ],
-    //   );
-    // }
+    if (data.runtimeType == String) {
+      alert = AlertDialog(
+        content: Text("$data"),
+        actions: [
+          signButton,
+          okButton,
+        ],
+      );
+    } else if (data.runtimeType != String) {
+      print('HIIIII');
+      setState(() {
+        isOK = true;
+      });
+      alert = AlertDialog(
+        content: Text("Logged in Successfully"),
+        actions: [
+          okButton,
+        ],
+      );
+    }
 
     // show the dialog
     showDialog(

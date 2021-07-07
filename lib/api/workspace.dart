@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:slark/globals.dart';
 import 'package:slark/model/CreateWorkSpeace.dart';
+import 'package:slark/model/allusers.dart';
 // import 'package:slark/model/issue.dart';
 import 'package:slark/model/user.dart';
 import 'package:slark/model/workspace.dart';
@@ -88,9 +89,10 @@ class API_Workspace_Provider {
   Future getAllUserInWs(wsId) async {
     print('IN PROVIDER');
     var response;
-    var request =
-        await get(Uri.parse('$baseUrl$wsUrl/$wsId'), headers: requestHeaders);
-    response = allUserFromJson(request.body);
+    var request = await get(Uri.parse('$baseUrl$wsUrl$allUsersUrl$wsId'),
+        headers: requestHeaders);
+    print(request.body);
+    response = allUsersFromJson(request.body);
     print('OUT OF PROVIDER');
     return response;
   }

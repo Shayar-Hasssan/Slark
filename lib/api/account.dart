@@ -5,7 +5,7 @@ import 'package:slark/globals.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/account_register.dart';
 import 'package:slark/model/issue.dart';
-import 'package:slark/model/password.dart';
+// import 'package:slark/model/password.dart';
 import 'package:slark/model/user.dart';
 
 // ignore: camel_case_types
@@ -40,39 +40,25 @@ class API_Account_Provider {
   Future login(userData) async {
     var response;
     print('In login API');
-    try {
-      var request = await post(
-        Uri.parse('$baseUrl$loginUrl'),
-        headers: {'content-type': 'application/json'},
-        body: jsonEncode(userData),
-      );
-      print(request.body);
-      // if (request.statusCode == 201) {
+
+    var request = await post(
+      Uri.parse('$baseUrl$loginUrl'),
+      headers: {'content-type': 'application/json'},
+      body: jsonEncode(userData),
+    );
+    print(request.body);
+    // if (request.statusCode == 201) {
+    if (jsonDecode(request.body)["token"] != null) {
       print('201 Status Coddee if statement');
       response = accountLoginFromJson(request.body);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("token", response.token);
       await prefs.setString("userId", response.user.id);
-      // print('AN ISSUE IS HERE ');
-      // response = passwordFromJson(request.body);
-      // } else {
-      // print('AN ISSUE IS HERE 401 STATUS CODEE');
-      // response = issueFromJson(request.body);
-      // }
-    } catch (e) {
-      response = e.toString();
-      print(response);
+    } else if (jsonDecode(request.body)["error"] != null) {
+      response = jsonDecode(request.body)["error"]["error"];
+    } else if (jsonDecode(request.body)["message"] != null) {
+      response = jsonDecode(request.body)["message"];
     }
-    //  else if (request.statusCode == 200) {
-    //   print('200 Status Coddee if statement');
-    //   response = accountLoginFromJson(request.body);
-    // } else if (request.statusCode == 401) {
-    //   print('AN ISSUE IS HERE 401 STATUS CODEE');
-    //   response = issueFromJson(request.body);
-    // } else if (request.statusCode == 409) {
-    //   print('AN ISSUE IS HERE 409 STATUS CODEE');
-    //   response = passwordFromJson(request.body);
-    // }
     print('Out of provider');
     return response;
   }

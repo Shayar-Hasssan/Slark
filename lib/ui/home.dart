@@ -1076,7 +1076,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       taskdto.assets = value.assets;
                                     });
                                   }
-                                  list.tasks.add(taskdto);
+                                  if (list.tasks == null) {
+                                    list.tasks = new List<DtoTask>();
+                                    list.tasks.add(taskdto);
+                                  } else {
+                                    list.tasks.add(taskdto);
+                                  }
                                 }
                               }
                             }

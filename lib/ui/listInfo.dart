@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
+import 'package:slark/bloc/task_bloc.dart';
 import 'package:slark/dto/dto_task.dart';
 import 'package:slark/ui/taskInfo.dart';
 // import 'package:slark/dto/dto_task.dart';
+
+typedef VoidCall = void Function();
 
 class ListInfo extends StatefulWidget {
   @override
   _ListInfoState createState() => _ListInfoState();
   final data;
-  ListInfo({Key key, this.data}) : super(key: key);
+  final VoidCall rmvList;
+  final VoidCall updateList;
+  final VoidCall addTask;
+  ListInfo({Key key, this.data, this.rmvList, this.addTask, this.updateList})
+      : super(key: key);
 }
 
 class _ListInfoState extends State<ListInfo> {
   bool _isEditingText = false;
   final _listbloc = ListBloc();
+  final taskbloc = TaskBloc();
   TextEditingController _listController;
   TextEditingController _newTaskController = TextEditingController();
   String newTask = '';
   String initialListName;
   String initialDiscription = "Add Description";
-  // List<DtoTask> tasks;
+
   List<DtoTask> tasks = [];
   @override
   void initState() {
@@ -44,26 +52,6 @@ class _ListInfoState extends State<ListInfo> {
 
   DateTime selectedDate = DateTime.now();
 
-  //   'task1',
-  //   'task2',
-  //   'task3',
-  //   'task4',
-  //   'task5',
-  //   'task6',
-  //   'task7',
-  //   'task8',
-  //   'task9',
-  //   'task10'
-  // ];
-  List<String> assignees = [
-    'John',
-    'Rebeca',
-    'Semi',
-    'Danny',
-    'Serra',
-    'Loriece',
-    'Chris'
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +63,16 @@ class _ListInfoState extends State<ListInfo> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              onPressed: () {
+              onPressed: () async {
+                print(_listController.text);
+                var listdata = {"name": _listController.text};
+                await _listbloc
+                    .updateList(widget.data.id, listdata)
+                    .then((value) {
+                  print(value.name);
+                  print(value.id);
+                  widget.updateList();
+                });
                 Navigator.pop(context);
               },
               icon: Icon(
@@ -356,16 +353,22 @@ class _ListInfoState extends State<ListInfo> {
                 ),
                 onPressed: () async {
                   // ignore: await_only_futures
-                  await setState(() {
+                  setState(() {
                     newTask = controller.text;
                   });
-
                   print('Controller Value ${controller.text}');
                   print('New Task Name is $newTask');
-                  //TODO tasks.add(newTask);
-                  for (var item in tasks) {
-                    print('Tasks list items $item');
-                  }
+                  //TODO
+                  var taskdata = {
+                    'name': controller.text,
+                    '_list': widget.data.id,
+                    'priority': 1
+                  };
+                  await taskbloc.createTask(taskdata).then((value) {
+                    print(value.name);
+                    print(value.id);
+                    widget.addTask();
+                  });
                   Navigator.of(context).pop();
                 },
               )
@@ -389,6 +392,7 @@ class _ListInfoState extends State<ListInfo> {
               child: const Text('Cancel'),
               onPressed: () {
                 print(widget.data.id);
+
                 Navigator.pop(context);
               },
             ),
@@ -396,9 +400,11 @@ class _ListInfoState extends State<ListInfo> {
             FlatButton(
               child: const Text('Delete'),
               onPressed: () async {
-                //TODO Continue
+                //TODO Check if correct
                 await _listbloc.deleteList(deldata).then((value) {
-                  // print(value.message);
+                  print(value.name);
+                  print(value.id);
+                  widget.rmvList();
                   print('List ${value.name} deleted');
                   print('List ${widget.data.name} deleted');
                   Navigator.of(context).pop();

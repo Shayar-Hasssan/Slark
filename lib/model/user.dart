@@ -7,11 +7,6 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toJson());
 
-// List<User> allUserFromJson(String str) =>
-//     List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
-// String allUserToJson(List<User> data) =>
-//     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class User {
   User({
     this.roles,

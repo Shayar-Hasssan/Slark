@@ -133,22 +133,28 @@ class _SplashScreenState extends State<SplashScreen> {
       udto.workspaces.add(wsdto);
     }
 
-    // for (var item in udto.workspaces) {
-    //   print('workspace: ${item.workspacename}');
-    //   for (var item2 in item.spaces) {
-    //     print('Space name: ${item2.spacename}');
-    //     print('SpaceId : ${item2.spaceId}');
-    //     for (var item3 in item2.lists) {
-    //       print('listname: ${item3.name}');
-    //       print('listId : ${item3.id}');
-    //       for (var item4 in item3.tasks) {
-    //         print('taskname: ${item4.name}');
-    //         print('taskId : ${item4.id}');
-    //       }
-    //     }
-    //   }
-    //   print('_________');
-    // }
+    for (var item in udto.workspaces) {
+      print('&&&&&&workspace: ${item.workspacename}');
+      if (item.spaces != null) if (item.spaces.length > 0) {
+        for (var item2 in item.spaces) {
+          print('Space name: ${item2.spacename}');
+          print('SpaceId : ${item2.spaceId}');
+          if (item2.lists != null) if (item2.lists.length > 0) {
+            for (var item3 in item2.lists) {
+              print('listname: ${item3.name}');
+              print('listId : ${item3.id}');
+              if (item3.tasks != null) if (item3.tasks.length > 0) {
+                for (var item4 in item3.tasks) {
+                  print('taskname: ${item4.name}');
+                  print('taskId : ${item4.id}');
+                }
+              }
+            }
+          }
+        }
+      }
+      print('_________');
+    }
 
     Navigator.push(
       context,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:slark/bloc/account_bloc.dart';
@@ -10,7 +12,9 @@ import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_task.dart';
 import 'package:slark/dto/dto_user.dart';
 import 'package:slark/dto/dto_ws.dart';
+import 'package:slark/globals.dart';
 import 'package:slark/ui/home.dart';
+import 'package:slark/ui/landing.dart';
 
 class InitialSplashScreen extends StatefulWidget {
   @override
@@ -44,102 +48,114 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
     print('In getdata function');
     int counter = 0;
     await _bloc.getUserData(widget.data).then((value) async {
-      udto.username = value.name;
-      udto.email = value.email;
-      print(udto.username);
-      print(udto.email);
-      for (var wsItem in value.workspaces) {
-        print('Round $counter ');
-        print('Printing the workspaces names');
-        print(wsItem.name);
+      print("****************");
+      if (value != null) {
+        print("numbers" + value.workspaces.length.toString());
+        udto.username = value.name;
+        udto.email = value.email;
+        print(udto.username);
+        print(udto.email);
+        for (var wsItem in value.workspaces) {
+          print('Round $counter ');
+          print('Printing the workspaces names');
+          print(wsItem.name);
+          // ignore: await_only_futures
+          await setState(() {
+            wsdto = new DtoWS();
+            wsdto.workspaceId = wsItem.id;
+            print(wsdto.workspaceId);
+            wsdto.workspacename = wsItem.name;
 
-        // ignore: await_only_futures
-        await setState(() {
-          wsdto = new DtoWS();
-          wsdto.workspaceId = wsItem.id;
-          print(wsdto.workspaceId);
-          wsdto.workspacename = wsItem.name;
-
-          for (var role in value.roles) {
-            if (wsItem.id == role.targetId) {
-              wsdto.roleName = role.name;
-              wsdto.roleNum = role.number;
-              print(role.name);
-            }
-          }
-        });
-        await _wsbloc.getAllUserInWs(wsItem.id).then((value) {
-          if (value.length > 0) {
-            for (var user in value) {
-              setState(() {
-                udto = new DtoUser();
-                udto.email = user.email;
-                udto.username = user.name;
-                print(user.name);
-              });
-              wsdto.users.add(udto);
-            }
-          }
-        });
-
-        await _spacebloc.getAllSpaces(wsItem.id).then(
-          (value) async {
-            if (value.length > 0) {
-              for (var spaceItem in value) {
-                setState(() {
-                  spacedto = new DtoSpace();
-                  spacedto.spaceId = spaceItem.id;
-                  spacedto.spacename = spaceItem.name;
-                });
-
-                await _listbloc.getAllLists(spaceItem.id).then(
-                  (value) async {
-                    if (value.length > 0) {
-                      for (var listItem in value) {
-                        setState(() {
-                          listdto = new DtoList();
-                          listdto.id = listItem.id;
-                          listdto.name = listItem.name;
-
-                          print('--- $listItem');
-                          print('==== ${listdto.name}');
-                        });
-                        await _taskbloc.getAllTasks(listItem.id).then((value) {
-                          print(
-                              "the taskblocklength" + value.length.toString());
-                          if (value != null) if (value.length > 0) {
-                            // ignore: deprecated_member_use
-                            listdto.tasks = new List<DtoTask>();
-                            for (var taskitem in value) {
-                              setState(() {
-                                taskdto = new DtoTask();
-                                taskdto.id = taskitem.id;
-                                taskdto.name = taskitem.name;
-                                taskdto.assets = taskitem.assets;
-                                taskdto.assignedUsers = taskitem.assignedUsers;
-                                taskdto.comments = taskitem.comments;
-                                taskdto.subtasks = taskitem.subtasks;
-                              });
-                              listdto.tasks.add(taskdto);
-                            }
-                          }
-                        });
-                        spacedto.lists.add(listdto);
-                      }
-                    }
-                  },
-                );
-                wsdto.spaces.add(spacedto);
+            for (var role in value.roles) {
+              if (wsItem.id == role.targetId) {
+                wsdto.roleName = role.name;
+                wsdto.roleNum = role.number;
+                print(role.name);
               }
             }
-          },
-        );
+          });
+          await _wsbloc.getAllUserInWs(wsItem.id).then((value) {
+            if (value.length > 0) {
+              for (var user in value) {
+                setState(() {
+                  var wkspudto = new DtoUser();
+                  wkspudto.email = user.email;
+                  wkspudto.username = user.name;
+                  print(user.name);
+                  wsdto.users.add(wkspudto);
+                });
+              }
+            }
+          });
+          await _spacebloc.getAllSpaces(wsItem.id).then(
+            (value) async {
+              if (value.length > 0) {
+                for (var spaceItem in value) {
+                  setState(() {
+                    spacedto = new DtoSpace();
+                    spacedto.spaceId = spaceItem.id;
+                    spacedto.spacename = spaceItem.name;
+                  });
+                  await _listbloc.getAllLists(spaceItem.id).then(
+                    (value) async {
+                      if (value.length > 0) {
+                        for (var listItem in value) {
+                          setState(() {
+                            listdto = new DtoList();
+                            listdto.id = listItem.id;
+                            listdto.name = listItem.name;
 
-        counter++;
-        udto.workspaces.add(wsdto);
+                            print('--- $listItem');
+                            print('==== ${listdto.name}');
+                          });
+                          await _taskbloc
+                              .getAllTasks(listItem.id)
+                              .then((value) {
+                            print("the taskblocklength" +
+                                value.length.toString());
+                            if (value != null) if (value.length > 0) {
+                              // ignore: deprecated_member_use
+                              listdto.tasks = new List<DtoTask>();
+                              for (var taskitem in value) {
+                                setState(() {
+                                  taskdto = new DtoTask();
+                                  taskdto.id = taskitem.id;
+                                  taskdto.name = taskitem.name;
+                                  taskdto.assets = taskitem.assets;
+                                  taskdto.assignedUsers =
+                                      taskitem.assignedUsers;
+                                  taskdto.comments = taskitem.comments;
+                                  taskdto.subtasks = taskitem.subtasks;
+                                  listdto.tasks.add(taskdto);
+                                });
+                              }
+                            }
+                          });
+                          setState(() {
+                            spacedto.lists.add(listdto);
+                          });
+                        }
+                      }
+                    },
+                  );
+                  setState(() {
+                    wsdto.spaces.add(spacedto);
+                  });
+                }
+              }
+            },
+          );
+          counter++;
+          setState(() {
+            udto.workspaces.add(wsdto);
+          });
+        }
+      } else {
+        print("****************shero");
       }
     });
-
+    print("numbers1");
+    print(udto.workspaces.length.toString());
     Navigator.push(
       context,
       MaterialPageRoute(

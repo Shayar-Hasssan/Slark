@@ -95,6 +95,12 @@ class API_Account_Provider {
     print("$baseUrl$getUser$userid");
     var request = await get(Uri.parse('$baseUrl$getUser$userid'),
         headers: requestHeaders);
+    print("Response:" + request.body.toString());
+    if (request.statusCode == 401) {
+      print("******************");
+      print(request.statusCode);
+      return "401";
+    }
 
     response = userFromJson(request.body);
     print('Out of provider');

@@ -61,7 +61,12 @@ class AccountBloc {
     var userData;
     API_Account_Provider apiProv = new API_Account_Provider();
     await apiProv.getUserdata(userId).then((value) {
-      userData = value;
+      if (value != "401") {
+        userData = value;
+      } else {
+        print("**************anas");
+        return value;
+      }
     });
     return userData;
   }

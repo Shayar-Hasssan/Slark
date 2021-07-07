@@ -67,12 +67,12 @@ class _SplashScreenState extends State<SplashScreen> {
         if (value.length > 0) {
           for (var user in value) {
             setState(() {
-              udto = new DtoUser();
-              udto.email = user.email;
-              udto.username = user.name;
+              DtoUser wsudto = new DtoUser();
+              wsudto.email = user.email;
+              wsudto.username = user.name;
               print(user.name);
+              wsdto.users.add(wsudto);
             });
-            wsdto.users.add(udto);
           }
         }
       });

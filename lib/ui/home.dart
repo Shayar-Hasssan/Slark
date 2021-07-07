@@ -1,7 +1,11 @@
 // import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slark/bloc/list_bloc.dart';
 import 'package:slark/bloc/space_bloc.dart';
 import 'package:slark/bloc/task_bloc.dart';
@@ -12,10 +16,13 @@ import 'package:slark/dto/dto_space.dart';
 import 'package:slark/dto/dto_task.dart';
 import 'package:slark/dto/dto_user.dart';
 import 'package:slark/dto/dto_ws.dart';
+import 'package:slark/ui/landing.dart';
 import 'package:slark/ui/listInfo.dart';
 import 'package:slark/ui/profile.dart';
 import 'package:slark/ui/setting.dart';
 import 'package:slark/ui/taskInfo.dart';
+
+import '../globals.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -50,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // String newList = '';
   List<DtoSpace> spacesmenuItem = [];
   List<DtoList> listsItems = [];
-  List<DtoTask> tasksItems = [];
   List<DropdownMenuItem<String>> listsmenuItem = [];
   String selectedSpace = 'choose space';
   List<DtoUser> usersList = [];
@@ -67,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   // ignore: must_call_super
   initState() {
-    print('AT HOME SCREEN');
     setDefault();
     setState(() {
       isWorkspace = false;
@@ -80,11 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedWorkspace = widget.data.workspaces.first.workspacename;
       selectedWSId = widget.data.workspaces.first.workspaceId;
       role = widget.data.workspaces.first.roleName;
-
-      print('ROLE IS $role');
     });
     for (var wsItem in widget.data.workspaces) {
-      print('*****************');
       if (wsItem.workspaceId == selectedWSId) {
         for (var uitem in wsItem.users) {
           usersList.add(uitem);
@@ -97,12 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedSpaceId = wsItem.spaces.first.spaceId;
         });
 
-        print('^^^^^^^^^' + wsItem.spaces.length.toString());
-        print('>>>>>>> ' + wsItem.spaces.first.lists.length.toString());
-
         if (wsItem.spaces.first.lists != null) {
-          print("***********************");
-          print(wsItem.spaces.first.lists.length.toString());
           if (wsItem.spaces.first.lists.length > 0) {
             for (var listitem in wsItem.spaces.first.lists) {
               setState(() {
@@ -130,21 +127,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   listsItems.add(listItem);
                 });
-
-                for (var taskItem in listItem.tasks) {
-                  print('LLLLLLL ${listItem.tasks.length.toString()}');
-                  setState(() {
-                    tasksItems.add(taskItem);
-                  });
-                }
+                // for (var taskItem in listItem.tasks) {
+                //   setState(() {
+                //     tasksItems.add(taskItem);
+                //   });
+                // }
               }
             }
           }
         }
       }
     }
-    print('DEFAULT WS: $selectedWorkspace');
-    print('DEFAULT Space: $selectedSpace');
   }
 
   @override
@@ -310,6 +303,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(
+                Icons.logout,
+                color: Colors.black,
+                size: 20.0,
+              ),
+              title: Text(
+                'LoggOut',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              onTap: () async {
+                userId = "";
+                accToken = "";
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                await preferences.clear();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LandingUi()),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -340,8 +355,6 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 3.0),
             child: IconButton(
               onPressed: () {
-                print(listsmenuItem.length);
-
                 _newTaskDialog(context, listsmenuItem, _newTaskController);
               },
               icon: Icon(Icons.add),
@@ -401,23 +414,16 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           child: ListTile(
             onTap: () {
-              print('------- ${item.workspaceId}');
               setState(() {
                 selectedWSId = item.workspaceId;
                 selectedWorkspace = item.workspacename;
                 role = item.roleName;
-                print('ppppp $role');
                 spacesmenuItem = <DtoSpace>[];
                 usersList = <DtoUser>[];
                 listsItems = <DtoList>[];
-                tasksItems = <DtoTask>[];
               });
               for (var item in widget.data.workspaces) {
                 if (item.workspaceId == selectedWSId) {
-                  print('HELLO THERE');
-                  print(selectedWSId);
-                  print(selectedWorkspace);
-                  print('[[[ROLE : $role]]]');
                   if (item.users.length > 0) {
                     for (var uitem in item.users) {
                       setState(() {
@@ -427,8 +433,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                   if (item.spaces.length > 0) {
                     for (var spaceitem in item.spaces) {
-                      print('**********');
-                      print(spaceitem.spaceId);
                       setState(() {
                         spacesmenuItem.add(spaceitem);
                         selectedSpace = spacesmenuItem.first.spacename;
@@ -445,12 +449,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 value: listItem.id,
                               ));
                             });
+
                             if (listItem.tasks !=
                                 null) if (listItem.tasks.length > 0) {
                               for (var taskItem in listItem.tasks) {
-                                setState(() {
-                                  tasksItems.add(taskItem);
-                                });
+                                setState(() {});
                               }
                             }
                           }
@@ -492,8 +495,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 IconButton(
                   onPressed: () async {
                     if (isWorkspace) {
-                      print(item.workspacename);
-                      print(item.workspaceId);
                       _editNameDialog(
                           context: context,
                           controller: _workspaceEditController,
@@ -587,25 +588,24 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             child: ListTile(
               onTap: () {
-                print('-==== ${item.spaceId}');
-                print('-==== ${item.spacename}');
                 setState(() {
                   selectedSpace = item.spacename;
                   selectedSpaceId = item.spaceId;
                   listsItems = <DtoList>[];
-                  tasksItems = <DtoTask>[];
                 });
                 for (var sitem in spacesmenuItem) {
                   if (selectedSpaceId == sitem.spaceId) {
-                    print('HELLO From listsWidget');
-                    print(selectedSpaceId);
-                    print(selectedSpace);
                     listsmenuItem.clear();
-
                     if (sitem.lists.length > 0) {
                       for (var listitem in sitem.lists) {
-                        print('**********');
-                        print(listitem.id);
+                        // if (listitem.tasks != null) if (listitem.tasks.length >
+                        //     0) {
+                        //   for (var taskItem in listitem.tasks) {
+                        //     setState(() {
+                        //       listsItems.tasks.add(taskItem);
+                        //     });
+                        //   }
+                        // }
                         setState(() {
                           listsItems.add(listitem);
                           listsmenuItem.add(DropdownMenuItem<String>(
@@ -613,15 +613,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             value: listitem.id,
                           ));
                         });
-                        print(listsmenuItem.length);
-                        if (listitem.tasks != null) if (listitem.tasks.length >
-                            0) {
-                          for (var taskItem in listitem.tasks) {
-                            setState(() {
-                              tasksItems.add(taskItem);
-                            });
-                          }
-                        }
                       }
                     } else {
                       setState(() {
@@ -675,8 +666,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         'spaceid': item.spaceId,
                         'wsId': selectedWSId
                       };
-                      print(item.spacename);
-                      print(deldata);
                       await _asyncConfirmDialog(
                           context: context,
                           action: DeleteAction.Space,
@@ -784,9 +773,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           IconButton(
                               onPressed: () {
-                                print('||||| ${listItem.name}');
-                                print('||||${listItem.id}');
-
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -803,10 +789,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Container(
-                    height: 250,
-                    // color: Colors.amber,
-                    child: tasksWidget(listItem.name))
+                listItem.tasks != null
+                    ? Container(
+                        height: 250,
+                        // color: Colors.amber,
+                        child: tasksWidget(listItem.tasks))
+                    : Text("no data")
               ]),
         ));
       }
@@ -823,9 +811,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  tasksWidget(String listname) {
+  tasksWidget(List<DtoTask> listname) {
     List<Widget> myWidget = [];
-    if (tasksItems.length == 0) {
+    if (listname.length == 0) {
       myWidget.add(Container(
         color: Colors.red,
         height: 300,
@@ -853,7 +841,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ));
     } else {
-      for (var taskItem in tasksItems) {
+      for (var taskItem in listname) {
         myWidget.add(Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -880,9 +868,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 textAlign: TextAlign.start,
                               ),
                               onTap: () {
-                                print('||||| ${taskItem.name}');
-                                print('||||${taskItem.id}');
-
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -958,15 +943,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     //   }
                     //   Navigator.of(context).pop();
                     // });
-                    print('NEW WS NAME IS $newWSName');
-                    print("Controller Value is ${controller.text}");
                   } else {
                     setState(() {
                       newSpaceName = controller.text;
                     });
                     var updateSpace = {"name": controller.text};
-                    print(updateSpace);
-                    print(spaceId);
                     await _spacebloc
                         .updateSpace(spaceId, updateSpace)
                         .then((value) {
@@ -988,8 +969,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       // print(value.message);
                       Navigator.of(context).pop();
                     });
-                    print('NEW Space NAME IS $newSpaceName');
-                    print("Controller Value is ${controller.text}");
                   }
                 },
               )
@@ -1031,7 +1010,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               setState(() {
                                 selectedList = val;
                               });
-                              print('uuuuuuu' + selectedList);
                             },
                             // value: selectedList,
                           )
@@ -1083,8 +1061,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             for (var space in ws.spaces) {
                               if (space.spaceId == selectedSpaceId) {
                                 for (var list in space.lists) {
-                                  print(list.id);
-                                  print(value.list);
                                   if (list.id == value.list) {
                                     setState(() {
                                       taskdto = new DtoTask();
@@ -1095,18 +1071,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                   list.tasks.add(taskdto);
                                 }
-
-                                tasksItems.add(taskdto);
                               }
                             }
                           }
                         }
                       });
-                      print('New Task Name is $newTask');
-                      // tasksItems.add(newTask);
-                      // for (var item in tasks) {
-                      //   print('Tasks list items $item');
-                      // }
                       Navigator.pop(context);
                     }
                   },
@@ -1130,9 +1099,7 @@ class _HomeScreenState extends State<HomeScreen> {
           "name": newList,
           "_space": selectedSpaceId,
         };
-        print(listnew);
         await _listbloc.createList(listnew).then((value) {
-          print('++++++++');
           // print(value.message);
           final snackBar = SnackBar(
             content: Text('Created Successfully'),
@@ -1208,9 +1175,7 @@ class _HomeScreenState extends State<HomeScreen> {
           "_workspace": selectedWSId,
           "name": newSpace
         };
-        print(spacenew);
         await _spacebloc.createSpace(spacenew).then((value) {
-          print('++++++++');
           // print(value.message);
           final snackBar = SnackBar(
             content: Text('Created Successfully'),
@@ -1244,8 +1209,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     alert = AlertDialog(
       title: Text("New Space"),
-      content: TextField(
-        controller: _newspaceController,
+      content: Column(
+        children: [
+          TextField(
+            controller: _newspaceController,
+          ),
+        ],
       ),
       actions: [
         submit,
@@ -1271,9 +1240,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Map<String, dynamic> wsNew = {
           "name": newWS,
         };
-        print(wsNew);
         await _wsbloc.createWorkspace(wsNew).then((value) {
-          print('_=_=_=_');
           // print(value.message);
           final snackBar = SnackBar(
             content: Text('Created successfully'),
@@ -1340,7 +1307,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   await _spacebloc
                       .deleteSpace(reqdata['spaceid'], reqdata['wsId'])
                       .then((value) {
-                    print(value.name);
                     setState(() {
                       for (var item in spacesmenuItem) {
                         if (item.spaceId == value.id) {
@@ -1351,7 +1317,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
                 } else if (action == DeleteAction.Workspace) {
                   await _wsbloc.deleteWS(reqdata).then((value) {
-                    print(value.name);
                     for (var item in widget.data.workspaces) {
                       if (item.workspaceId == value.id) {
                         widget.data.workspaces.remove(item);
@@ -1376,10 +1341,7 @@ class _HomeScreenState extends State<HomeScreen> {
         buttons.add(
           Container(
             child: ListTile(
-                onTap: () {
-                  print(uitem.username);
-                  print(uitem.email);
-                },
+                onTap: () {},
                 title: Text(
                   '${uitem.username}',
                   style: TextStyle(

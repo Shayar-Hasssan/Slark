@@ -317,8 +317,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              //TODO
+            },
+            icon: Icon(
+              Icons.people_alt_outlined,
+              size: 18.0,
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.only(right: 15.0),
+            padding: const EdgeInsets.only(right: 3.0),
             child: IconButton(
               onPressed: () {
                 print(listsmenuItem.length);
@@ -611,6 +620,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         'spaceid': item.spaceId,
                         'wsId': selectedWSId
                       };
+                      print(item.spacename);
+                      print(deldata);
                       await _asyncConfirmDialog(
                           context: context,
                           action: DeleteAction.Space,
@@ -1021,7 +1032,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             for (var space in ws.spaces) {
                               if (space.spaceId == selectedSpaceId) {
                                 for (var list in space.lists) {
-                                  if (list.id == selectedList) {
+                                  if (list.id == value.list) {
                                     list.tasks.add(taskdto);
                                   }
                                 }
@@ -1078,13 +1089,18 @@ class _HomeScreenState extends State<HomeScreen> {
           for (var ws in widget.data.workspaces) {
             if (ws.workspaceId == selectedWSId) {
               for (var space in ws.spaces) {
-                if (space.spaceId == selectedSpaceId) {
+                if (space.spaceId == value.space) {
                   space.lists.add(listdto);
                 }
               }
             }
           }
           listsItems.add(listdto);
+          // listsmenuItem.clear();
+          // listsmenuItem.add(DropdownMenuItem<String>(
+          //   child: Text(value.name),
+          //   value: value.id,
+          // ));
           setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           // } else {
@@ -1259,13 +1275,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   await _spacebloc
                       .deleteSpace(reqdata['spaceid'], reqdata['wsId'])
                       .then((value) {
-                    //TODO
-                    print(value);
+                    print(value.name);
+                    setState(() {
+                      for (var item in spacesmenuItem) {
+                        if (item.spaceId == value.id) {
+                          spacesmenuItem.remove(item);
+                        }
+                      }
+                    });
                   });
                 } else if (action == DeleteAction.Workspace) {
-                  //TODO
                   await _wsbloc.deleteWS(reqdata).then((value) {
                     print(value.name);
+                    for (var item in widget.data.workspaces) {
+                      if (item.workspaceId == value.id) {
+                        widget.data.workspaces.remove(item);
+                      }
+                    }
                   });
                 }
                 Navigator.pop(context);

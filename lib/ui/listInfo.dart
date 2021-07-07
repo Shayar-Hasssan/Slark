@@ -119,7 +119,7 @@ class _ListInfoState extends State<ListInfo> {
                           IconButton(
                             //delete list
                             onPressed: () async {
-                              var deldata = {'id': widget.data.id};
+                              var deldata = widget.data.id;
                               print(deldata);
                               await _asyncConfirmDialog(context, deldata);
                             },
@@ -399,10 +399,10 @@ class _ListInfoState extends State<ListInfo> {
                 //TODO Continue
                 await _listbloc.deleteList(deldata).then((value) {
                   // print(value.message);
+                  print('List ${value.name} deleted');
                   print('List ${widget.data.name} deleted');
                   Navigator.of(context).pop();
                 });
-                // Navigator.of(context).pop(ConfirmAction.Accept);
               },
             )
           ],

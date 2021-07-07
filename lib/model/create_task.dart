@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:slark/model/file.dart';
+
 CreateTask createtaskFromJson(String str) =>
     CreateTask.fromJson(json.decode(str));
 
@@ -18,7 +20,7 @@ class CreateTask {
     this.v,
   });
 
-  List<dynamic> assets;
+  List<Files> assets;
   List<dynamic> assignedUsers;
   List<dynamic> subtasks;
   List<dynamic> comments;
@@ -31,7 +33,7 @@ class CreateTask {
   factory CreateTask.fromJson(Map<String, dynamic> json) => CreateTask(
         assets: json["assets"] == null
             ? null
-            : List<dynamic>.from(json["assets"].map((x) => x)),
+            : List<Files>.from(json["assets"].map((x) => x)),
         assignedUsers: json["_assignedUsers"] == null
             ? null
             : List<dynamic>.from(json["_assignedUsers"].map((x) => x)),

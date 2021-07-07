@@ -7,7 +7,7 @@ class DtoWS {
   List<DtoSpace> spaces = [];
   DtoFile image;
   String roleName = '';
-  int roleNum = 1;
+  int roleNum;
   DtoWS() {
     print('ROLE IN $workspacename WS is $roleName');
   }

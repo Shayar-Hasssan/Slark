@@ -27,7 +27,7 @@ class CreateWorkspace {
       CreateWorkspace(
         id: json["_id"],
         name: json["name"],
-        image: json["image"],
+        image: json["image"] == null ? null : json["image"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"],

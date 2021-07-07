@@ -41,10 +41,8 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
   }
 
   getData() async {
-    // int scount = 0;
     print('In getdata function');
     int counter = 0;
-    // int count = 0;
     await _bloc.getUserData(widget.data).then((value) async {
       udto.username = value.name;
       udto.email = value.email;
@@ -60,7 +58,13 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
           wsdto.workspaceId = wsItem.id;
           print(wsdto.workspaceId);
           wsdto.workspacename = wsItem.name;
-          // udto.workspaces.add(wsdto);
+          for (var role in value.roles) {
+            if (wsItem.id == role.targetId) {
+              wsdto.roleName = role.name;
+              wsdto.roleNum = role.number;
+              print(role.name);
+            }
+          }
         });
 
         await _spacebloc.getAllSpaces(wsItem.id).then(
@@ -71,7 +75,6 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
                   spacedto = new DtoSpace();
                   spacedto.spaceId = spaceItem.id;
                   spacedto.spacename = spaceItem.name;
-                  // scount++;
                 });
 
                 await _listbloc.getAllLists(spaceItem.id).then(
@@ -85,7 +88,6 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
 
                           print('--- $listItem');
                           print('==== ${listdto.name}');
-                          // count++;
                         });
                         await _taskbloc.getAllTasks(listItem.id).then((value) {
                           print(
@@ -94,14 +96,12 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
                             // ignore: deprecated_member_use
                             listdto.tasks = new List<DtoTask>();
                             for (var taskitem in value) {
-                              // if (taskitem.list == listItem) {
                               setState(() {
                                 taskdto = new DtoTask();
                                 taskdto.id = taskitem.id;
                                 taskdto.name = taskitem.name;
                               });
                               listdto.tasks.add(taskdto);
-                              // }
                             }
                           }
                         });
@@ -120,30 +120,6 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
         udto.workspaces.add(wsdto);
       }
     });
-
-    // for (var item in udto.workspaces) {
-    //   print('workspace: ${item.workspacename}');
-    //   if (item.spaces.length > 0) {
-    //     for (var item2 in item.spaces) {
-    //       print('Space name: ${item2.spacename}');
-    //       print('SpaceId : ${item2.spaceId}');
-    //       if (item2.lists.length > 0) {
-    //         for (var item3 in item2.lists) {
-    //           print('listname: ${item3.name}');
-    //           print('listId : ${item3.id}');
-    //           if (item3.tasks.length > 0) {
-    //             for (var item4 in item3.tasks) {
-    //               print('taskname: ${item4.name}');
-    //               print('taskId : ${item4.id}');
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   print('_________');
-    // }
 
     Navigator.push(
       context,
@@ -166,7 +142,7 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
-                height: 150.0,
+                height: 120.0,
               ),
               Text(
                 'Slark',

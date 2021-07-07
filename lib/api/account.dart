@@ -40,13 +40,14 @@ class API_Account_Provider {
   Future login(userData) async {
     var response;
     print('In login API');
-    var request = await post(
-      Uri.parse('$baseUrl$loginUrl'),
-      headers: {'content-type': 'application/json'},
-      body: jsonEncode(userData),
-    );
-    print(request.body);
-    if (request.statusCode == 201) {
+    try {
+      var request = await post(
+        Uri.parse('$baseUrl$loginUrl'),
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode(userData),
+      );
+      print(request.body);
+      // if (request.statusCode == 201) {
       print('201 Status Coddee if statement');
       response = accountLoginFromJson(request.body);
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,9 +55,13 @@ class API_Account_Provider {
       await prefs.setString("userId", response.user.id);
       // print('AN ISSUE IS HERE ');
       // response = passwordFromJson(request.body);
-    } else {
-      print('AN ISSUE IS HERE 401 STATUS CODEE');
-      response = issueFromJson(request.body);
+      // } else {
+      // print('AN ISSUE IS HERE 401 STATUS CODEE');
+      // response = issueFromJson(request.body);
+      // }
+    } catch (e) {
+      response = e.toString();
+      print(response);
     }
     //  else if (request.statusCode == 200) {
     //   print('200 Status Coddee if statement');

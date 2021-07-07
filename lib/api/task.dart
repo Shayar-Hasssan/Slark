@@ -19,6 +19,7 @@ class API_Task_Provider {
     var response;
     var request = await post(Uri.parse('$baseUrl$taskUrl'),
         headers: requestHeaders, body: jsonEncode(taskdata));
+    print(request.body);
     response = createtaskFromJson(request.body);
     print('Out of provider');
     return response;
@@ -26,12 +27,13 @@ class API_Task_Provider {
 
   Future updateTask(taskid, taskdata) async {
     print('IN API PROVIDER');
-    // var response;
+    var response;
     var request = await put(Uri.parse('$baseUrl$taskUrl/$taskid'),
         headers: requestHeaders, body: jsonEncode(taskdata));
-    // response = taskFromJson(request.body);
+    print(request.body);
+    response = taskFromJson(request.body);
     print('Out of provider');
-    return jsonDecode(request.body);
+    return response;
   }
 
   Future deleteTask(taskId) async {

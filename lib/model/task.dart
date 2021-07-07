@@ -38,15 +38,23 @@ class Task {
   int v;
 
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-        assets: List<Files>.from(json["assets"].map((x) => Files.fromJson(x))),
-        assignedUsers: List<dynamic>.from(json["_assignedUsers"].map((x) => x)),
-        subtasks: List<dynamic>.from(json["_subtasks"].map((x) => x)),
-        comments: List<dynamic>.from(json["comments"].map((x) => x)),
-        id: json["_id"],
-        name: json["name"],
-        list: Createlist.fromJson(json["_list"]),
-        priority: json["priority"],
-        v: json["__v"],
+        assets: json["assets"] == null
+            ? null
+            : List<Files>.from(json["assets"].map((x) => Files.fromJson(x))),
+        assignedUsers: json["_assignedUsers"] == null
+            ? null
+            : List<dynamic>.from(json["_assignedUsers"].map((x) => x)),
+        subtasks: json["_subtasks"] == null
+            ? null
+            : List<dynamic>.from(json["_subtasks"].map((x) => x)),
+        comments: json["comments"] == null
+            ? null
+            : List<dynamic>.from(json["comments"].map((x) => x)),
+        id: json["_id"] == null ? null : json["_id"],
+        name: json["name"] == null ? null : json["name"],
+        list: json["_list"] == null ? null : Createlist.fromJson(json["_list"]),
+        priority: json["priority"] == null ? null : json["priority"],
+        v: json["__v"] == null ? null : json["__v"],
       );
 
   Map<String, dynamic> toJson() => {

@@ -4,24 +4,24 @@ class TaskBloc {
   TaskBloc();
   Future createTask(taskdata) async {
     API_Task_Provider apiProv = new API_Task_Provider();
-    var taskdata;
+    var taskData;
     print('In Task Bloc');
     await apiProv.createTask(taskdata).then((value) {
-      taskdata = value;
+      taskData = value;
     });
     print('Out of Bloc');
-    return taskdata;
+    return taskData;
   }
 
   Future updateTask(taskid, taskdata) async {
     API_Task_Provider apiProv = new API_Task_Provider();
-    var taskdata;
+    var taskData;
     print('In Task Bloc');
     await apiProv.updateTask(taskid, taskdata).then((value) {
-      taskdata = value;
+      taskData = value;
     });
     print('Out of Bloc');
-    return taskdata;
+    return taskData;
   }
 
   Future deleteTask(taskId) async {

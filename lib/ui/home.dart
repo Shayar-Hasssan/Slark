@@ -343,7 +343,6 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              //TODO
               showUsersModal();
             },
             icon: Icon(
@@ -776,8 +775,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          ListInfo(data: listItem),
+                                      builder: (context) => ListInfo(
+                                          data: listItem,
+                                          updateList: () {
+                                            print('updated');
+                                          },
+                                          rmvList: () {
+                                            print('removed');
+                                          },
+                                          addTask: () {
+                                            print('TaskAdded');
+                                          }),
                                     ));
                               },
                               icon: Icon(
@@ -951,7 +959,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     await _spacebloc
                         .updateSpace(spaceId, updateSpace)
                         .then((value) {
-                      // newSpaceName = value.name;
                       for (var witem in widget.data.workspaces) {
                         if (witem.workspaceId == wsId) {
                           for (var sitem in witem.spaces) {

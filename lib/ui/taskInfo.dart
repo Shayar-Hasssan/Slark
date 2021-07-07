@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/task_bloc.dart';
 
+typedef VoidCall = void Function();
+
 class TaskInfo extends StatefulWidget {
   @override
   _TaskInfoState createState() => _TaskInfoState();
   final data;
+  final VoidCall rmvTask;
+  final VoidCall updateTask;
+
   final listname;
-  TaskInfo({Key key, this.data, this.listname}) : super(key: key);
+  TaskInfo({Key key, this.data, this.rmvTask, this.updateTask, this.listname})
+      : super(key: key);
 }
 
 class _TaskInfoState extends State<TaskInfo> {
@@ -57,7 +63,17 @@ class _TaskInfoState extends State<TaskInfo> {
         title: Text('SLARK'),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              var taskdata = {
+                'name': _taskController.text,
+              };
+              await _taskbloc
+                  .updateTask(widget.data.id, taskdata)
+                  .then((value) {
+                print(value.name);
+                print(value.id);
+                widget.updateTask();
+              });
               Navigator.pop(context);
             },
             icon: Icon(Icons.done),
@@ -241,9 +257,12 @@ class _TaskInfoState extends State<TaskInfo> {
                           //   width: 8.0,
                           // ),
                           IconButton(
-                            //Add Subtask
-                            onPressed: () {
-                              //update task
+                            //TODO Add Subtask
+                            onPressed: () async {
+                              var taskdata = {'_subtasks': ""};
+                              await _taskbloc
+                                  .updateTask(widget.data.id, taskdata)
+                                  .then((value) {});
                             },
                             icon: Icon(Icons.add),
                             color: Colors.indigo,
@@ -394,7 +413,7 @@ class _TaskInfoState extends State<TaskInfo> {
             FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(ConfirmAction.Cancel);
+                Navigator.of(context).pop();
               },
             ),
             // ignore: deprecated_member_use
@@ -406,6 +425,7 @@ class _TaskInfoState extends State<TaskInfo> {
                 await _taskbloc.deleteTask(taskid).then((value) {
                   print('task ${value.name} deleted');
                   print('task ${widget.data.name} deleted');
+                  widget.rmvTask();
                 });
                 Navigator.of(context).pop();
               },

@@ -897,6 +897,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       builder: (context) => TaskInfo(
                                         data: taskItem,
                                         listname: listname,
+                                        updateTask: () {
+                                          print('TaskUpdated');
+                                        },
                                       ),
                                     ));
                               },

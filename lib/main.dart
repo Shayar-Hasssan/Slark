@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
         //   '/gantt': (ctx) => GanttChartScreen(),
         //   '/stepper': (ctx) => StepperScreen(data)
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

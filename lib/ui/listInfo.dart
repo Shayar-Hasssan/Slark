@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/list_bloc.dart';
 import 'package:slark/bloc/task_bloc.dart';
 import 'package:slark/dto/dto_task.dart';
+import 'package:slark/globals.dart';
 import 'package:slark/ui/taskInfo.dart';
 // import 'package:slark/dto/dto_task.dart';
 
@@ -14,7 +15,7 @@ class ListInfo extends StatefulWidget {
   final data;
   final VoidCall rmvList;
   final void Function(String name) updateList;
-  final void Function(String name) addTask;
+  final void Function(String id, String name) addTask;
   ListInfo({Key key, this.data, this.rmvList, this.addTask, this.updateList})
       : super(key: key);
 }
@@ -23,6 +24,7 @@ class _ListInfoState extends State<ListInfo> {
   bool _isEditingText = false;
   final _listbloc = ListBloc();
   final taskbloc = TaskBloc();
+  var taskdto = new DtoTask();
   TextEditingController _listController;
   TextEditingController _newTaskController = TextEditingController();
   String newTask = '';
@@ -114,16 +116,19 @@ class _ListInfoState extends State<ListInfo> {
                       ),
                       Row(
                         children: [
-                          IconButton(
-                            //delete list
-                            onPressed: () async {
-                              var deldata = widget.data.id;
-                              print(deldata);
-                              await _asyncConfirmDialog(context, deldata);
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red,
+                          Visibility(
+                            visible: checkRole(roleN),
+                            child: IconButton(
+                              //delete list
+                              onPressed: () async {
+                                var deldata = widget.data.id;
+                                print(deldata);
+                                await _asyncConfirmDialog(context, deldata);
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
                             ),
                           ),
                         ],
@@ -298,9 +303,11 @@ class _ListInfoState extends State<ListInfo> {
       );
     return InkWell(
       onTap: () {
-        setState(() {
-          _isEditingText = true;
-        });
+        if (checkRole(roleN)) {
+          setState(() {
+            _isEditingText = true;
+          });
+        }
       },
       child: Text(
         initialText,
@@ -316,64 +323,84 @@ class _ListInfoState extends State<ListInfo> {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.only(left: 60, right: 60.0),
-            title: Text(
-              'New Task Name',
-              style: TextStyle(color: Colors.indigo, fontSize: 24.0),
-            ),
-            content: Container(
-              height: 200.0,
-              width: 250.0,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  Container(
-                    width: 100.0,
-                    color: Colors.indigo[50],
-                    child: Center(
-                      child: Text('$initialListName'),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  TextField(
-                    controller: controller,
-                    decoration: InputDecoration(hintText: "Enter Task name"),
-                  ),
-                ],
+          return SingleChildScrollView(
+            child: AlertDialog(
+              contentPadding: EdgeInsets.only(left: 60, right: 60.0),
+              title: Text(
+                'New Task Name',
+                style: TextStyle(color: Colors.indigo, fontSize: 24.0),
               ),
-            ),
-            actions: <Widget>[
-              // ignore: deprecated_member_use
-              new FlatButton(
-                child: new Text(
-                  'SUBMIT',
-                  style: TextStyle(color: Colors.indigo, fontSize: 16),
+              content: Container(
+                height: 200.0,
+                width: 250.0,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    Container(
+                      width: 100.0,
+                      color: Colors.indigo[50],
+                      child: Center(
+                        child: Text('$initialListName'),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    TextField(
+                      controller: controller,
+                      decoration: InputDecoration(hintText: "Enter Task name"),
+                    ),
+                  ],
                 ),
-                onPressed: () async {
-                  // ignore: await_only_futures
-                  setState(() {
-                    newTask = controller.text;
-                  });
-                  print('Controller Value ${controller.text}');
-                  print('New Task Name is $newTask');
-                  //TODO
-                  var taskdata = {
-                    'name': controller.text,
-                    '_list': widget.data.id,
-                    'priority': 1
-                  };
-                  await taskbloc.createTask(taskdata).then((value) {
-                    print(value.name);
-                    print(value.id);
-                    //widget.addTask();
-                  });
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
+              ),
+              actions: <Widget>[
+                // ignore: deprecated_member_use
+                new FlatButton(
+                  child: new Text(
+                    'SUBMIT',
+                    style: TextStyle(color: Colors.indigo, fontSize: 16),
+                  ),
+                  onPressed: () async {
+                    // ignore: await_only_futures
+                    setState(() {
+                      newTask = controller.text;
+                    });
+                    print('Controller Value ${controller.text}');
+                    print('New Task Name is $newTask');
+                    //TODO
+                    var taskdata = {
+                      'name': controller.text,
+                      '_list': widget.data.id,
+                      'priority': 1
+                    };
+                    await taskbloc.createTask(taskdata).then((value) {
+                      String tId = '';
+                      String tname = '';
+                      setState(() {
+                        taskdto = new DtoTask();
+                        taskdto.assets = value.assets;
+                        taskdto.assignedUsers = value.assignedUsers;
+                        taskdto.comments = value.comments;
+                        taskdto.name = value.name;
+                        taskdto.id = value.id;
+                        taskdto.priority = value.priority;
+                        taskdto.subtasks = value.subtasks;
+                        print(value.name);
+                        print(value.id);
+                        tasks.add(taskdto);
+                        tId = value.id;
+                        tname = value.name;
+                      });
+
+                      print(tId);
+                      print(tname);
+                      widget.addTask(tId, tname);
+                    });
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ),
           );
         });
   }

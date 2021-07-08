@@ -26,10 +26,10 @@ class Listt {
   int v;
 
   factory Listt.fromJson(Map<String, dynamic> json) => Listt(
-        id: json["_id"],
-        name: json["name"],
-        space: Space.fromJson(json["_space"]),
-        v: json["__v"],
+        id: json["_id"] == null ? null : json["_id"],
+        name: json["name"] == null ? null : json["name"],
+        space: json["_space"] == null ? null : Space.fromJson(json["_space"]),
+        v: json["__v"] == null ? null : json["__v"],
       );
 
   Map<String, dynamic> toJson() => {

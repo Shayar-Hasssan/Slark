@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _newListController = TextEditingController();
   TextEditingController _newspaceController = TextEditingController();
   TextEditingController _newWSpaceController = TextEditingController();
+  TextEditingController _emailinviteController = TextEditingController();
 
   final _wsbloc = WorkspaceBloc();
   final _filebloc = FileBloc();
@@ -56,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String newWSName = '';
   String newSpaceName = '';
   String role = '';
+  // int roleNum = 1;
   // String newList = '';
   List<DtoSpace> spacesmenuItem = [];
   List<DtoList> listsItems = [];
@@ -87,6 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedWorkspace = widget.data.workspaces.first.workspacename;
       selectedWSId = widget.data.workspaces.first.workspaceId;
       role = widget.data.workspaces.first.roleName;
+      roleN = widget.data.workspaces.first.roleNum;
+      print('SSSSSSS $roleN');
     });
     for (var wsItem in widget.data.workspaces) {
       if (wsItem.workspaceId == selectedWSId) {
@@ -384,7 +388,8 @@ class _HomeScreenState extends State<HomeScreen> {
         double height = MediaQuery.of(context).size.height;
 
         return Container(
-          color: Color(0xff7b68ee),
+          // color: Colors.indigo[200],
+          // color: Colors.indigo[50],
           height: height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -397,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.5,
-                  color: Colors.indigo[50],
+                  // color: Colors.indigo[50],
                   child: workspaceList(),
                 ),
               ),
@@ -413,12 +418,15 @@ class _HomeScreenState extends State<HomeScreen> {
     for (var item in widget.data.workspaces) {
       buttons.add(
         Container(
+          // color: Colors.indigo[100],
           child: ListTile(
+            // tileColor: Colors.indigo[100],
             onTap: () {
               setState(() {
                 selectedWSId = item.workspaceId;
                 selectedWorkspace = item.workspacename;
                 role = item.roleName;
+                roleN = item.roleNum;
                 spacesmenuItem = <DtoSpace>[];
                 usersList = <DtoUser>[];
                 listsItems = <DtoList>[];
@@ -532,6 +540,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
+      buttons.add(SizedBox(height: 5.0));
+      buttons.add(Divider(
+        indent: 70,
+        endIndent: 70,
+      ));
     }
     return Padding(
       padding: const EdgeInsets.only(
@@ -548,16 +561,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return showModalBottomSheet(
       context: context,
       barrierColor: Colors.black38,
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.indigo,
       elevation: 10,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
+        borderRadius: BorderRadius.circular(15.0),
       ),
       builder: (BuildContext context) {
         double height = MediaQuery.of(context).size.height;
 
         return Container(
-          color: Color(0xff7b68ee),
+          // color: Colors.indigo[50],
+          // color: Color(0xff7b68ee),
           height: height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -570,7 +584,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.5,
-                  color: Colors.indigo[50],
+                  // color: Colors.white,
                   child: usersWidget(),
                 ),
               ),
@@ -785,7 +799,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             });
                                             print('updated');
                                           },
-                                          addTask: (String id) {
+                                          addTask: (String id, String name) {
                                             for (var ws
                                                 in widget.data.workspaces) {
                                               if (ws.workspaceId ==
@@ -798,12 +812,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       if (list.id ==
                                                           listItem.id) {
                                                         setState(() {
-                                                          space.lists
-                                                              .removeWhere(
-                                                                  (item) =>
-                                                                      item.id ==
-                                                                      listItem
-                                                                          .id);
+                                                          taskdto =
+                                                              new DtoTask();
+                                                          if (list.tasks ==
+                                                              null) {
+                                                            list.tasks =
+                                                                // ignore: deprecated_member_use
+                                                                new List<
+                                                                    DtoTask>();
+                                                            taskdto.id = id;
+                                                            taskdto.name = name;
+                                                            print(taskdto.id);
+                                                            print(taskdto.id);
+                                                            list.tasks
+                                                                .add(taskdto);
+                                                          } else {
+                                                            taskdto.id = id;
+                                                            taskdto.name = name;
+                                                            print(taskdto.id);
+                                                            print(taskdto.id);
+                                                            list.tasks
+                                                                .add(taskdto);
+                                                          }
                                                         });
                                                       }
                                                     }
@@ -811,7 +841,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 }
                                               }
                                             }
-                                            print('removed');
+                                            print('Added');
                                           },
                                           rmvList: () {
                                             var a = 0;
@@ -866,10 +896,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 listItem.tasks != null
                     ? Container(
-                        height: 250,
+                        height: 100,
                         // color: Colors.amber,
                         child: tasksWidget(listItem))
-                    : Text("no data")
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "no data",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
               ]),
         ));
       }
@@ -891,7 +927,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (listname.tasks.length == 0) {
       myWidget.add(Container(
         color: Colors.red,
-        height: 300,
+        height: 250,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1170,6 +1206,12 @@ class _HomeScreenState extends State<HomeScreen> {
               actions: <Widget>[
                 // ignore: deprecated_member_use
                 new FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: new Text('Cancel')),
+                // ignore: deprecated_member_use
+                new FlatButton(
                   child: new Text(
                     'SUBMIT',
                     style: TextStyle(color: Colors.indigo, fontSize: 16),
@@ -1211,6 +1253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         }
                       });
+                      controller.clear();
                       Navigator.pop(context);
                     }
                   },
@@ -1246,7 +1289,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           // if (value.code == 711) {
           listdto = new DtoList();
-          listsItems = <DtoList>[];
+          // listsItems = <DtoList>[];
           listdto.id = value.id;
           listdto.name = value.name;
           for (var ws in widget.data.workspaces) {
@@ -1273,8 +1316,10 @@ class _HomeScreenState extends State<HomeScreen> {
           // } else {
           //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
           // }
+          _newListController.clear();
           Navigator.pop(context);
         });
+
         _newTaskDialog(context, listsmenuItem, _newTaskController);
       },
     );
@@ -1475,20 +1520,105 @@ class _HomeScreenState extends State<HomeScreen> {
 
   usersWidget() {
     List<Widget> buttons = [];
+    buttons.add(ListTile(
+      title: Row(
+        children: [
+          Container(
+              // color: Colors.indigo[100],
+              width: 161,
+              height: 35.0,
+              child: TextField(
+                controller: _emailinviteController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 1.0, color: Colors.grey[400]),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 1.0,
+                      color: Color(0xff7b68ee),
+                    ),
+                  ),
+                ),
+              )),
+          TextButton(
+              onPressed: () async {
+                print(_emailinviteController.text);
+                Map<String, dynamic> invite = {
+                  "workspaceName": selectedWorkspace,
+                  "workspaceId": selectedWSId,
+                  "userEmail": _emailinviteController.text
+                };
+                print(invite);
+                await _wsbloc.invite(invite).then((value) {
+                  setState(() {
+                    // var invitaionData = value;
+                    Fluttertoast.showToast(
+                        msg: '$value',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    _emailinviteController.clear();
+                  });
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Invite user', style: TextStyle(fontSize: 15)),
+              )),
+        ],
+      ),
+    ));
 
+    buttons.add(Divider(
+      indent: 60,
+      endIndent: 60,
+    ));
+    buttons.add(SizedBox(height: 8.0));
     if (usersList.length > 0) {
       for (var uitem in usersList) {
         buttons.add(
           Container(
             child: ListTile(
                 onTap: () {},
-                title: Text(
-                  '${uitem.username}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'AdventPro',
-                    fontSize: 18.0,
-                  ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${uitem.username}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'AdventPro',
+                        fontSize: 18.0,
+                      ),
+                    ),
+                    Visibility(
+                      visible: checkRole(roleN),
+                      child: IconButton(
+                        onPressed: () async {
+                          var userdata = {
+                            "userId": uitem.id,
+                            "workspaceId": selectedWSId
+                          };
+
+                          await _wsbloc.removeUser(userdata).then((value) {
+                            print(value);
+                            setState(() {
+                              usersList.remove(uitem);
+                            });
+                          });
+                          print(uitem.id);
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 subtitle: Text('${uitem.email}')),
           ),
@@ -1497,9 +1627,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(
-          top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+      padding:
+          const EdgeInsets.only(top: 10.0, left: 5.0, bottom: 10.0, right: 5.0),
       child: Container(
+        // color: Colors.indigo[50],
         child: ListView(
           children: buttons,
         ),

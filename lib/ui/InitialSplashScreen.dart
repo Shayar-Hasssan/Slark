@@ -81,6 +81,7 @@ class _InitialSplashScreenState extends State<InitialSplashScreen> {
                   var wkspudto = new DtoUser();
                   wkspudto.email = user.email;
                   wkspudto.username = user.name;
+                  wkspudto.id = user.id;
                   print(user.name);
                   wsdto.users.add(wkspudto);
                 });

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:slark/globals.dart';
 import 'package:slark/model/CreateWorkSpeace.dart';
 import 'package:slark/model/allusers.dart';
+import 'package:slark/model/issue.dart';
 import 'package:slark/model/workspace.dart';
 
 // ignore: camel_case_types
@@ -45,10 +47,13 @@ class API_Workspace_Provider {
     if (request.statusCode == 201) {
       print(request.body);
       print('invited');
+      response = jsonDecode(request.body)['message'];
     } else {
+      response =
+          'Please invite your friend to join us to send him an invitation';
       print('Please invite your friend to join us to send him an invitation');
     }
-    response = jsonDecode(request.body);
+    // response = jsonDecode(request.body);
     // response = issueFromJson(request.body);
     print('Out of provider');
     return response;
@@ -77,12 +82,23 @@ class API_Workspace_Provider {
 
   Future removeUser(userInfo) async {
     print('IN PROVIDER');
-    var response;
-    var request = await delete(Uri.parse('$baseUrl$wsUrl$rmvuserUrl'),
-        headers: requestHeaders);
-    response = workspaceFromJson(request.body);
-    print('Out of provider');
-    return response;
+    // var response;
+    // var request = await delete(Uri.parse('$baseUrl$wsUrl$rmvuserUrl'),
+    //     headers: requestHeaders);
+    // response = workspaceFromJson(request.body);
+    // print('Out of provider');
+    // return response;
+
+    final url = Uri.parse('$baseUrl$wsUrl$rmvuserUrl');
+    final req = http.Request("DELETE", url);
+    req.headers.addAll(requestHeaders);
+    req.body = jsonEncode(userInfo);
+    final resp = await req.send();
+    // print(resp.statusCode);
+    // print(json(resp.stream.bytesToString()));
+    print('REMOVED');
+    print('Out of Provider');
+    return await resp.stream.bytesToString();
   }
 
   Future getAllUserInWs(wsId) async {

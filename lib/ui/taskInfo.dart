@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slark/bloc/task_bloc.dart';
+import 'package:slark/globals.dart';
 
 typedef VoidCall = void Function();
 
@@ -108,17 +109,20 @@ class _TaskInfoState extends State<TaskInfo> {
                           Icons.share,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          var taskid = widget.data.id;
-                          print(taskid);
-                          final ConfirmAction action =
-                              await _asyncConfirmDialog(context, taskid);
-                          print(action);
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                      Visibility(
+                        visible: checkRole(roleN),
+                        child: IconButton(
+                          onPressed: () async {
+                            var taskid = widget.data.id;
+                            print(taskid);
+                            final ConfirmAction action =
+                                await _asyncConfirmDialog(context, taskid);
+                            print(action);
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     ],
@@ -362,9 +366,11 @@ class _TaskInfoState extends State<TaskInfo> {
       );
     return InkWell(
       onTap: () {
-        setState(() {
-          _isEditingText = true;
-        });
+        if (checkRole(roleN)) {
+          setState(() {
+            _isEditingText = true;
+          });
+        }
       },
       child: Text(
         initialTask,
@@ -426,8 +432,9 @@ class _TaskInfoState extends State<TaskInfo> {
                   print('task ${value.name} deleted');
                   print('task ${widget.data.name} deleted');
                   widget.rmvTask();
+                  Navigator.of(context).pop();
                 });
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               },
             )
           ],

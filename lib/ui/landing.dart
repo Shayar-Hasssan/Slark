@@ -27,13 +27,13 @@ class _LandingUiState extends State<LandingUi> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset(
-                    'images/logo.png',
-                    height: 160.0,
-                    width: 160.0,
-                  ),
+                  // Image.asset(
+                  //   'images/logo.png',
+                  //   height: 160.0,
+                  //   width: 160.0,
+                  // ),
                   SizedBox(
-                    height: 15.0,
+                    height: 35.0,
                   ),
                   Text(
                     'Welcome to SLARK!',
@@ -43,7 +43,7 @@ class _LandingUiState extends State<LandingUi> {
                       fontSize: 30.0,
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 30.0),
                   Divider(
                     color: Color(0xff7b68ee),
                     thickness: 0.5,
@@ -51,7 +51,7 @@ class _LandingUiState extends State<LandingUi> {
                     endIndent: 50.0,
                   ),
                   SizedBox(
-                    height: 50.0,
+                    height: 100.0,
                   ),
                   SignInButtonBuilder(
                     text: '     Sign in with Email',
@@ -67,7 +67,8 @@ class _LandingUiState extends State<LandingUi> {
                       bottom: 20.0,
                     ),
                     elevation: 10.0,
-                    backgroundColor: Color(0xff697ffb),
+                    backgroundColor: Colors.red,
+                    // backgroundColor: Color(0xff697ffb),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

@@ -70,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
               DtoUser wsudto = new DtoUser();
               wsudto.email = user.email;
               wsudto.username = user.name;
+              wsudto.id = user.id;
               print(user.name);
               wsdto.users.add(wsudto);
             });

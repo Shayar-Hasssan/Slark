@@ -1,11 +1,15 @@
 library slark.globals;
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:slark/dto/dto_ws.dart';
 import 'package:slark/model/account_login.dart';
 import 'package:slark/model/user.dart';
 
 User user;
+
 AccountLogin login;
+bool isOwner;
+int roleN;
 String userId = ""; //login.user.id;
 String accToken = ""; //login.token;
 // String accToken =
@@ -22,4 +26,9 @@ Future<String> GetuserId() async {
     return accToken;
   else
     return "";
+}
+
+checkRole(roleN) {
+  roleN == 1 ? isOwner = false : isOwner = true;
+  return isOwner;
 }

@@ -12,9 +12,9 @@ class ListInfo extends StatefulWidget {
   @override
   _ListInfoState createState() => _ListInfoState();
   final data;
-  final void Function(String id) rmvList;
+  final VoidCall rmvList;
   final void Function(String name) updateList;
-  final VoidCall addTask;
+  final void Function(String name) addTask;
   ListInfo({Key key, this.data, this.rmvList, this.addTask, this.updateList})
       : super(key: key);
 }
@@ -39,9 +39,10 @@ class _ListInfoState extends State<ListInfo> {
   }
 
   setTasks() {
-    for (var item in widget.data.tasks) {
-      tasks.add(item);
-    }
+    if (widget.data.tasks != null && widget.data.tasks.length > 0)
+      for (var item in widget.data.tasks) {
+        tasks.add(item);
+      }
   }
 
   @override
@@ -367,7 +368,7 @@ class _ListInfoState extends State<ListInfo> {
                   await taskbloc.createTask(taskdata).then((value) {
                     print(value.name);
                     print(value.id);
-                    widget.addTask();
+                    //widget.addTask();
                   });
                   Navigator.of(context).pop();
                 },
@@ -402,11 +403,11 @@ class _ListInfoState extends State<ListInfo> {
               onPressed: () async {
                 //TODO Check if correct
                 await _listbloc.deleteList(deldata).then((value) {
-                  print(value.name);
-                  print(value.id);
-                  widget.rmvList(value.id);
-                  print('List ${value.name} deleted');
-                  print('List ${widget.data.name} deleted');
+                  // print(value.name);
+                  // print(value.id);
+                  widget.rmvList();
+                  // print('List ${value.name} deleted');
+                  // print('List ${widget.data.name} deleted');
                   Navigator.of(context).pop();
                 });
               },

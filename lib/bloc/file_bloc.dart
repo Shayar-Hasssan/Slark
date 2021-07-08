@@ -2,11 +2,16 @@ import 'package:slark/api/file.dart';
 
 class FileBloc {
   FileBloc();
-  Future uploadSingleFile(filedata) async {
+  Future uploadSingleFile() async {
     API_File_Provider apiProv = new API_File_Provider();
     var fileData;
     print('In File Bloc');
-    await apiProv.uploadS(filedata).then((value) {
+
+    // await apiProv.uploadS().then((value) {
+    //   fileData = value;
+    // });
+    await apiProv.asyncFileUpload().then((value) {
+      print(value);
       fileData = value;
     });
     print('out of Bloc');

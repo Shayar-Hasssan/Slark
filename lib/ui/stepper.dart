@@ -23,6 +23,7 @@ class _StepperScreenState extends State<StepperScreen> {
   static TextEditingController _emailsController = TextEditingController();
   static TextEditingController _wsController = new TextEditingController();
   final WorkspaceBloc wkbloc = new WorkspaceBloc();
+  final FileBloc fb = new FileBloc();
   final SpaceBloc spacebloc = new SpaceBloc();
   final FileBloc filebloc = new FileBloc();
 
@@ -72,26 +73,28 @@ class _StepperScreenState extends State<StepperScreen> {
       if (currentStep == 0) {
         if (workspace.isNotEmpty) {
           print('//STARTING CREATION REQUEST FROM UI');
-          //TODO file creation!
-          Map<String, dynamic> ws = {
-            "name": workspace,
-            "image": '' //TODO
-          };
-          await wkbloc.createWorkspace(ws).then((value) {
-            setState(() {
-              workspaceId = value.id;
-              workspaceData = value; // the response object
-              wsdto.workspaceId = value.id;
-              wsdto.workspacename = value.name;
-              udto.workspaces.add(wsdto);
-              Fluttertoast.showToast(
-                  msg: 'Your Workspace Created',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+          await fb.uploadSingleFile().then((value) async {
+            //TODO file creation!
+            Map<String, dynamic> ws = {
+              "name": workspace,
+              "image": value //TODO
+            };
+            await wkbloc.createWorkspace(ws).then((value) {
+              setState(() {
+                workspaceId = value.id;
+                workspaceData = value; // the response object
+                wsdto.workspaceId = value.id;
+                wsdto.workspacename = value.name;
+                udto.workspaces.add(wsdto);
+                Fluttertoast.showToast(
+                    msg: 'Your Workspace Created',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              });
             });
           });
           goTo(currentStep + 1);
@@ -131,7 +134,7 @@ class _StepperScreenState extends State<StepperScreen> {
             '_workspace': workspaceData.id,
           };
           await spacebloc.createSpace(newspace).then((value) {
-            print(value.message);
+            print(value);
             setState(() {
               spaceData = value;
               spacedto.spaceId = value.id;

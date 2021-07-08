@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:slark/bloc/file_bloc.dart';
 import 'package:slark/bloc/list_bloc.dart';
 import 'package:slark/bloc/space_bloc.dart';
 import 'package:slark/bloc/task_bloc.dart';
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _newWSpaceController = TextEditingController();
 
   final _wsbloc = WorkspaceBloc();
+  final _filebloc = FileBloc();
   final _spacebloc = SpaceBloc();
   final _listbloc = ListBloc();
   final _taskbloc = TaskBloc();
@@ -783,7 +785,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             });
                                             print('updated');
                                           },
-                                          rmvList: (String id) {
+                                          addTask: (String id) {
                                             for (var ws
                                                 in widget.data.workspaces) {
                                               if (ws.workspaceId ==
@@ -811,7 +813,44 @@ class _HomeScreenState extends State<HomeScreen> {
                                             }
                                             print('removed');
                                           },
-                                          addTask: () {
+                                          rmvList: () {
+                                            var a = 0;
+                                            for (var ws
+                                                in widget.data.workspaces) {
+                                              if (ws.workspaceId ==
+                                                  selectedWSId) {
+                                                for (var space in ws.spaces) {
+                                                  if (space.spaceId ==
+                                                      selectedSpaceId) {
+                                                    for (var list
+                                                        in space.lists) {
+                                                      if (list.id ==
+                                                          listItem.id) {
+                                                        a = space.lists
+                                                            .indexOf(list);
+                                                        print(a);
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+
+                                            print('removed');
+                                            for (var ws
+                                                in widget.data.workspaces) {
+                                              if (ws.workspaceId ==
+                                                  selectedWSId) {
+                                                for (var space in ws.spaces) {
+                                                  if (space.spaceId ==
+                                                      selectedSpaceId) {
+                                                    setState(() {
+                                                      space.lists.removeAt(a);
+                                                    });
+                                                  }
+                                                }
+                                              }
+                                            }
                                             print('TaskAdded');
                                           }),
                                     ));
@@ -916,6 +955,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           });
                                         },
                                         rmvTask: () {
+                                          var a = 0;
                                           for (var ws
                                               in widget.data.workspaces) {
                                             if (ws.workspaceId ==
@@ -930,14 +970,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       for (var task
                                                           in list.tasks) {
                                                         if (task.id ==
-                                                            taskItem.id)
-                                                          setState(() {
-                                                            list.tasks.removeWhere(
-                                                                (item) =>
-                                                                    item.id ==
-                                                                    taskItem
-                                                                        .id);
-                                                          });
+                                                            taskItem.id) {
+                                                          a = list.tasks
+                                                              .indexOf(task);
+                                                          print(a);
+                                                        }
                                                       }
                                                     }
                                                   }
@@ -945,7 +982,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }
                                             }
                                           }
+
                                           print('removed');
+                                          for (var ws
+                                              in widget.data.workspaces) {
+                                            if (ws.workspaceId ==
+                                                selectedWSId) {
+                                              for (var space in ws.spaces) {
+                                                if (space.spaceId ==
+                                                    selectedSpaceId) {
+                                                  for (var list
+                                                      in space.lists) {
+                                                    if (list.id ==
+                                                        listname.id) {
+                                                      setState(() {
+                                                        list.tasks.removeAt(a);
+                                                      });
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
                                         },
                                       ),
                                     ));
@@ -1314,29 +1372,34 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       onPressed: () async {
         newWS = _newWSpaceController.text;
-        Map<String, dynamic> wsNew = {
-          "name": newWS,
-        };
-        await _wsbloc.createWorkspace(wsNew).then((value) {
-          // print(value.message);
-          final snackBar = SnackBar(
-            content: Text('Created successfully'),
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            behavior: SnackBarBehavior.floating,
-            width: 300,
-          );
-          // if (value.code == 711) {
-          wsdto = new DtoWS();
-          wsdto.workspaceId = value.id;
-          wsdto.workspacename = value.name;
-          widget.data.workspaces.add(wsdto);
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // } else {
-          //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // }
-          Navigator.pop(context);
+
+        await _filebloc.uploadSingleFile().then((value) async {
+          print(value);
+          Map<String, dynamic> wsNew = {
+            "name": newWS,
+            "image": value,
+          };
+          await _wsbloc.createWorkspace(wsNew).then((value) {
+            // print(value.message);
+            final snackBar = SnackBar(
+              content: Text('Created successfully'),
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              behavior: SnackBarBehavior.floating,
+              width: 300,
+            );
+            // if (value.code == 711) {
+            wsdto = new DtoWS();
+            wsdto.workspaceId = value.id;
+            wsdto.workspacename = value.name;
+            widget.data.workspaces.add(wsdto);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            // } else {
+            //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            // }
+            Navigator.pop(context);
+          });
         });
       },
     );

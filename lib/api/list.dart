@@ -33,7 +33,8 @@ class API_List_Provider {
     var response;
     var request = await delete(Uri.parse('$baseUrl$listUrl/$listId'),
         headers: requestHeaders);
-    response = listtFromJson(request.body);
+    //TODO check response
+    //response = listtFromJson(request.body);
     print('Out of provider');
     return response;
   }

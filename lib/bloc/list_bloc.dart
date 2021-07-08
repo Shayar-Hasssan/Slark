@@ -50,6 +50,7 @@ class ListBloc {
     API_List_Provider apiProv = new API_List_Provider();
     var listdata;
     print('IN List Bloc');
+    print(listId);
     await apiProv.updateList(listId, newdata).then((value) {
       listdata = value;
     });

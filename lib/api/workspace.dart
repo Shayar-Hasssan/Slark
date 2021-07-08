@@ -22,6 +22,7 @@ class API_Workspace_Provider {
     var response;
     print(requestHeaders);
     print('$baseUrl$wsUrl');
+    print('$body');
     var request = await post(
       Uri.parse('$baseUrl$wsUrl'),
       headers: requestHeaders,

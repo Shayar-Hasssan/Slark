@@ -206,10 +206,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                             await _bloc.registerAcc(register).then((value) {
                               setState(() {
-                                message = value.message;
-                                code = value.code;
+                                print(value);
+
+                                // message = value.message;
+                                // code = value.code;
                               });
-                              showAlertDialog(context, code, message);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                              //showAlertDialog(context, 200, "ok");
                             });
                           },
                         ),
